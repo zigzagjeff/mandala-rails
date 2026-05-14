@@ -1,0 +1,5 @@
+<%= turbo_stream.replace "tile_#{@tile.id}" do %>
+  <div class="mandala-tile <%= 'tile-center' if @tile.position == 4 %> <%= 'tile-has-children' if @tile.has_children? %>">
+    <%= link_to @tile.content.presence || "+", edit_chart_tile_path(@chart, @tile), class: "tile-link" %>
+  </div>
+<% end %>

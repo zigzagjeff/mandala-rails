@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  grid: one
+  position: 1
+  tile_type: MyString
+  content: MyText
+  metadata: 
+
+two:
+  grid: two
+  position: 1
+  tile_type: MyString
+  content: MyText
+  metadata: 

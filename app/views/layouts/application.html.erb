@@ -20,9 +20,20 @@
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app %>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@hotwired/turbo@8.0.12/dist/turbo.es2017-esm.js"></script>
   </head>
 
   <body>
-    <%= yield %>
+    <nav class="app-nav">
+      <span class="app-nav-brand">Mandala</span>
+      <% if authenticated? %>
+        <span class="app-nav-user"><%= Current.user.email_address %></span>
+        <%= button_to "Sign out", session_path, method: :delete, class: "button button-small" %>
+      <% end %>
+    </nav>
+
+    <main class="app-main">
+      <%= yield %>
+    </main>
   </body>
 </html>

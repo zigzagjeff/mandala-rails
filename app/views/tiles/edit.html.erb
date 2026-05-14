@@ -1,0 +1,7 @@
+<turbo-frame id="tile_<%= @tile.id %>">
+  <%= form_with model: [@chart, @tile] do |f| %>
+    <%= f.text_area :content, placeholder: "What goes here?", autofocus: true %>
+    <%= f.submit "Save" %>
+    <%= link_to "Cancel", chart_path(@chart) %>
+  <% end %>
+</turbo-frame>
