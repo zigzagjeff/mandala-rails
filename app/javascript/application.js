@@ -1,0 +1,5 @@
+import "@hotwired/turbo"
+import "@rails/activestorage"
+import "trix"
+import "@rails/actiontext"
+import "lexxy"

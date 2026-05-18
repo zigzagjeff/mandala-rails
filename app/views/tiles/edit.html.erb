@@ -1,14 +1,22 @@
-<turbo-frame id="tile_<%= @tile.id %>">
-  <%= form_with model: [@chart, @tile] do |f| %>
-    <%= f.text_field :title,
-          placeholder: "Title",
-          autofocus: true,
-          maxlength: Tile::TITLE_MAX_LENGTH %>
-    <%= f.text_field :subtitle,
-          placeholder: "Subtitle",
-          maxlength: Tile::SUBTITLE_MAX_LENGTH %>
-    <%= f.text_area :body, placeholder: "Body (markdown supported)" %>
-    <%= f.submit "Save" %>
-    <%= link_to "Cancel", chart_path(@chart) %>
+<turbo-frame id="tile_<%= @tile.id %>" class="tile-edit-frame">
+  <%= form_with model: [@chart, @tile], class: "tile-edit-form" do |f| %>
+    <div class="tile-edit-fields">
+      <%= f.text_field :title,
+            placeholder: "Title",
+            autofocus: true,
+            maxlength: Tile::TITLE_MAX_LENGTH,
+            class: "tile-edit-title" %>
+      <%= f.text_field :subtitle,
+            placeholder: "Subtitle",
+            maxlength: Tile::SUBTITLE_MAX_LENGTH,
+            class: "tile-edit-subtitle" %>
+    </div>
+    <div class="tile-edit-body">
+      <%= f.lexxy_rich_text_area :body, placeholder: "Body (markdown supported)" %>
+    </div>
+    <div class="tile-edit-actions">
+      <%= f.submit "Save", class: "button" %>
+      <%= link_to "Cancel", chart_path(@chart), class: "tile-edit-cancel" %>
+    </div>
   <% end %>
 </turbo-frame>

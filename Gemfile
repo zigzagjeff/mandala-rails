@@ -60,3 +60,7 @@ group :test do
   gem "selenium-webdriver"
 end
 gem "dotenv-rails", groups: [:development, :test]
+
+gem "lexxy", "~> 0.1.4.beta"
+
+gem "importmap-rails", "~> 2.2"

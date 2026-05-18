@@ -1,6 +1,7 @@
 class Tile < ApplicationRecord
   belongs_to :grid
   has_one :child_grid, class_name: "Grid", foreign_key: :parent_tile_id, dependent: :destroy
+  has_rich_text :body
 
   TITLE_MAX_LENGTH = 60
   SUBTITLE_MAX_LENGTH = 120
