@@ -1,0 +1,4 @@
+// @lexical/selection@0.44.0 downloaded from https://ga.jspm.io/npm:@lexical/selection@0.44.0/LexicalSelection.prod.mjs
+
+export{$cloneWithProperties,$selectAll}from"lexical";export{L as $addNodeStyle,U as $copyBlockFormatIndent,j as $ensureForwardRangeSelection,D as $forEachSelectedTextNode,b as $getComputedStyleForElement,z as $getComputedStyleForParent,n as $getSelectionStyleValueForProperty,A as $isAtNodeEnd,Z as $isParentElementRTL,O as $isParentRTL,Y as $moveCaretSelection,e as $moveCharacter,$ as $patchStyleText,H as $setBlocksType,Q as $shouldOverrideDefaultCharacterSelection,R as $sliceSelectedTextNodeContent,_ as $trimTextContentFromAnchor,X as $wrapNodes,I as createDOMRange,B as createRectsFromDOMRange,F as getCSSFromStyleObject,o as getStyleObjectFromCSS,l as trimTextContentFromAnchor}from"./_/I6WMEPg6.js";
+
