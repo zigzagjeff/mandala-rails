@@ -1,6 +1,13 @@
 <turbo-frame id="tile_<%= @tile.id %>">
   <%= form_with model: [@chart, @tile] do |f| %>
-    <%= f.text_area :content, placeholder: "What goes here?", autofocus: true %>
+    <%= f.text_field :title,
+          placeholder: "Title",
+          autofocus: true,
+          maxlength: Tile::TITLE_MAX_LENGTH %>
+    <%= f.text_field :subtitle,
+          placeholder: "Subtitle",
+          maxlength: Tile::SUBTITLE_MAX_LENGTH %>
+    <%= f.text_area :body, placeholder: "Body (markdown supported)" %>
     <%= f.submit "Save" %>
     <%= link_to "Cancel", chart_path(@chart) %>
   <% end %>

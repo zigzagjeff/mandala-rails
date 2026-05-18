@@ -9,10 +9,7 @@
 <div class="mandala-grid">
   <% @tiles.each do |tile| %>
     <turbo-frame id="tile_<%= tile.id %>">
-      <div class="mandala-tile <%= 'tile-center' if tile.position == 4 %> <%= 'tile-has-children' if tile.has_children? %>">
-        <%= link_to tile.content.presence || "+", edit_chart_tile_path(@chart, tile), class: "tile-content" %>
-        <%= link_to "▶", drill_chart_tile_path(@chart, tile), class: "tile-drill", data: { turbo_frame: "_top" } %>
-      </div>
+      <%= render "tiles/tile", tile: tile, chart: @chart %>
     </turbo-frame>
   <% end %>
 </div>

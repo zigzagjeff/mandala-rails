@@ -2,18 +2,27 @@ class Tile < ApplicationRecord
   belongs_to :grid
   has_one :child_grid, class_name: "Grid", foreign_key: :parent_tile_id, dependent: :destroy
 
+  TITLE_MAX_LENGTH = 60
+  SUBTITLE_MAX_LENGTH = 120
+
   validates :position, presence: true,
                        inclusion: { in: 0..8 },
                        uniqueness: { scope: :grid_id }
+  validates :title, length: { maximum: TITLE_MAX_LENGTH }, allow_blank: true
+  validates :subtitle, length: { maximum: SUBTITLE_MAX_LENGTH }, allow_blank: true
 
   def has_children?
     child_grid.present?
   end
 
+  def display_title
+    title.presence || "+"
+  end
+
   def find_or_create_child_grid!
     child_grid || begin
       g = grid.chart.grids.create!(parent_tile: self)
-      9.times { |i| g.tiles.create!(position: i, content: i == 4 ? content : nil) }
+      9.times { |i| g.tiles.create!(position: i, title: i == 4 ? title : nil) }
       g
     end
   end

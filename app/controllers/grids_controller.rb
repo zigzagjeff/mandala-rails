@@ -19,7 +19,7 @@ class GridsController < ApplicationController
     grid = @grid
     while grid.parent_tile
       tile = grid.parent_tile
-      crumbs.unshift({ label: tile.content.presence || "(untitled)", grid: tile.grid })
+      crumbs.unshift({ label: tile.display_title, grid: tile.grid })
       grid = tile.grid
     end
     crumbs

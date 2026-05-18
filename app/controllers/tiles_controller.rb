@@ -28,10 +28,10 @@ class TilesController < ApplicationController
   end
 
   def set_tile
-    @tile = @chart.grids.flat_map(&:tiles).find { |t| t.id == params[:id].to_i }
+    @tile = Tile.joins(:grid).find_by!(grids: { chart_id: @chart.id }, id: params[:id])
   end
 
   def tile_params
-    params.require(:tile).permit(:content)
+    params.require(:tile).permit(:title, :subtitle, :body)
   end
 end

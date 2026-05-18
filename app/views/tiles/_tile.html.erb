@@ -1,0 +1,9 @@
+<div class="mandala-tile <%= 'tile-center' if tile.position == 4 %> <%= 'tile-has-children' if tile.has_children? %>">
+  <%= link_to edit_chart_tile_path(chart, tile), class: "tile-content" do %>
+    <span class="tile-title"><%= tile.display_title %></span>
+    <% if tile.subtitle.present? %>
+      <span class="tile-subtitle"><%= tile.subtitle %></span>
+    <% end %>
+  <% end %>
+  <%= link_to "▶", drill_chart_tile_path(chart, tile), class: "tile-drill", data: { turbo_frame: "_top" } %>
+</div>

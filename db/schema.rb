@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_13_211151) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_18_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,12 +40,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_211151) do
   end
 
   create_table "tiles", force: :cascade do |t|
-    t.text "content"
+    t.text "agentic_summary"
+    t.text "body"
     t.datetime "created_at", null: false
     t.bigint "grid_id", null: false
     t.jsonb "metadata"
     t.integer "position"
+    t.string "subtitle"
     t.string "tile_type"
+    t.string "title"
     t.datetime "updated_at", null: false
     t.index ["grid_id"], name: "index_tiles_on_grid_id"
   end

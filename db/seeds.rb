@@ -18,17 +18,19 @@ root_grid = Grid.create!(chart: chart, parent_tile_id: nil)
   Tile.create!(
     grid: root_grid,
     position: i,
-    content: i == 4 ? "My Goal" : nil
+    title: i == 4 ? "My Goal" : nil
   )
 end
 
-center_tile = root_grid.tiles.find_by(position: 4)
-child_grid = Grid.create!(chart: chart, parent_tile: center_tile)
+brainstorm = Chart.create!(title: "Brainstorm", mode: "brainstorm", user: user)
 
-9.times do |i|
-  Tile.create!(grid: child_grid, position: i, content: nil)
+brainstorm_grid = Grid.create!(chart: brainstorm, parent_tile_id: nil)
+
+brainstorm_titles = ["BFP Community", "June event calendar", "App development", nil, nil, nil, nil, nil, nil]
+
+brainstorm_titles.each_with_index do |t, i|
+  Tile.create!(grid: brainstorm_grid, position: i, title: t)
 end
 
-puts "Seeded: 1 user, 1 chart, 2 grids, 18 tiles"
+puts "Seeded: 1 user, 2 charts, 2 grids, 18 tiles"
 puts "Login: jeff@example.com / password"
-puts "Center tile type: #{center_tile.tile_type}"
