@@ -13,6 +13,31 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.3.0] — 2026-05-18
+
+### Added
+- Lexxy rich text editor for tile body field — built on Meta's Lexical framework, shipped by 37signals
+- `importmap-rails` gem — full JS pipeline via import maps and Propshaft
+- `has_rich_text :body` on `Tile` — body now stored in `action_text_rich_texts` table
+- Action Text and Active Storage infrastructure (`action_text:install`)
+- Lexxy stylesheet via `stylesheet_link_tag "lexxy"` in application layout
+- Action Text content template updated to use `lexxy-content` class for consistent rendering
+- Tile edit form expands inline as a full-width panel with title, subtitle, and Lexxy body editor
+- `.tile-edit-frame`, `.tile-edit-form`, `.tile-edit-body` CSS — edit panel breaks out of grid cell constraints
+- `.tile-title` and `.tile-subtitle` CSS — subtitle renders stacked below title on tile card
+- CI workflow: bumped `actions/checkout` to v4, `actions/cache` to v5
+
+### Changed
+- `tile_params` updated to permit `body:` as rich text (Action Text format)
+- `_tile.html.erb` partial updated with `tile-title` and `tile-subtitle` span classes
+- `app/views/layouts/action_text/contents/_content.html.erb` — renders with `lexxy-content` class
+
+### Removed
+- `body` (text) column from `tiles` — superseded by Action Text `has_rich_text :body`
+- Hardcoded CDN `<script>` tag for Turbo — now loaded via importmap
+
+---
+
 ## [0.2.0] — 2026-05-18
 
 ### Added
