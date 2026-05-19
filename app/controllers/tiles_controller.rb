@@ -32,6 +32,6 @@ class TilesController < ApplicationController
   end
 
   def tile_params
-    params.require(:tile).permit(:title, :subtitle, :body, body: {})
+    params.require(:tile).permit(:title, :subtitle, :body, body: { })
   end
 end
