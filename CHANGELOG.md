@@ -33,6 +33,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - [#17](https://github.com/zigzagjeff/mandala-rails/issues/17) — Feature: enforce 9-chart limit per user (Miller's Law) — `notnow`
 - [#18](https://github.com/zigzagjeff/mandala-rails/issues/18) — Decision: tiles are documents, not containers ✅ closed
 - [#20](https://github.com/zigzagjeff/mandala-rails/issues/20) — UX: tile interaction model — rename, write, and drill as distinct intents
+- [#21](https://github.com/zigzagjeff/mandala-rails/issues/21) — UX: opening a tile for full editing should show only that document
+- [#22](https://github.com/zigzagjeff/mandala-rails/issues/22) — Refactor: extract character counter into a Stimulus controller
+- [#23](https://github.com/zigzagjeff/mandala-rails/issues/23) — Tidy: remove or justify `Tile#tile_type` — defined but never used — `notnow`
+- [#24](https://github.com/zigzagjeff/mandala-rails/issues/24) — Agentic: populate `agentic_summary` via contextual tile compression
 
 ### External
 - Filed [basecamp/lexxy#1057](https://github.com/basecamp/lexxy/issues/1057) — feature request to expose `CheckListPlugin` for importmap + Propshaft setups
