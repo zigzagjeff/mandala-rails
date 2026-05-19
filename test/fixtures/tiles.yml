@@ -3,13 +3,9 @@
 one:
   grid: one
   position: 1
-  tile_type: MyString
-  content: MyText
-  metadata: 
+  title: BFP Community
 
 two:
   grid: two
-  position: 1
-  tile_type: MyString
-  content: MyText
-  metadata: 
+  position: 5
+  title: My Goal
