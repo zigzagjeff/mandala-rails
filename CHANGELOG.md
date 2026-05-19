@@ -9,7 +9,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
-- `CHANGELOG.md` — this file
+- `README.md` — full project README replacing Rails boilerplate; covers purpose, architecture, data model, local dev setup, environment variables, design decisions table, and open issues index
+- `AGENTS.md` — AI agent orientation document; covers architecture map, agentic design intent, `agentic_summary` XML format spec, working conventions, and explicit do-not-do list
+
+### Issues filed
+- [#13](https://github.com/zigzagjeff/mandala-rails/issues/13) — Feature: drag and drop to reorder tiles within a grid
+- [#14](https://github.com/zigzagjeff/mandala-rails/issues/14) — Dev experience: switch development database to local Postgres
+- [#15](https://github.com/zigzagjeff/mandala-rails/issues/15) — Docs: write a proper README
+- [#16](https://github.com/zigzagjeff/mandala-rails/issues/16) — Docs: create AGENTS.md for AI collaborator orientation
+- [#17](https://github.com/zigzagjeff/mandala-rails/issues/17) — Feature: enforce 9-chart limit per user (Miller's Law)
+- [#18](https://github.com/zigzagjeff/mandala-rails/issues/18) — Decision: tiles are documents, not containers — external launchers and image tiles out of scope
 
 ---
 
