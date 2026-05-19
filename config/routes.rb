@@ -11,9 +11,9 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  resources :charts, only: [:index, :new, :create, :show, :destroy] do
-    resources :grids, only: [:show]
-    resources :tiles, only: [:edit, :update] do
+  resources :charts, only: [ :index, :new, :create, :show, :destroy ] do
+    resources :grids, only: [ :show ]
+    resources :tiles, only: [ :edit, :update ] do
       get :drill, on: :member
     end
   end

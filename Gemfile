@@ -59,7 +59,7 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
-gem "dotenv-rails", groups: [:development, :test]
+gem "dotenv-rails", groups: [ :development, :test ]
 
 gem "lexxy", "~> 0.1.4.beta"
 

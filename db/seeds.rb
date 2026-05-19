@@ -26,7 +26,7 @@ brainstorm = Chart.create!(title: "Brainstorm", mode: "brainstorm", user: user)
 
 brainstorm_grid = Grid.create!(chart: brainstorm, parent_tile_id: nil)
 
-brainstorm_titles = ["BFP Community", "June event calendar", "App development", nil, nil, nil, nil, nil, nil]
+brainstorm_titles = [ "BFP Community", "June event calendar", "App development", nil, nil, nil, nil, nil, nil ]
 
 brainstorm_titles.each_with_index do |t, i|
   Tile.create!(grid: brainstorm_grid, position: i, title: t)
