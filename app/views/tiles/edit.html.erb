@@ -1,15 +1,27 @@
 <turbo-frame id="tile_<%= @tile.id %>" class="tile-edit-frame">
   <%= form_with model: [@chart, @tile], class: "tile-edit-form" do |f| %>
     <div class="tile-edit-fields">
-      <%= f.text_field :title,
-            placeholder: "Title",
-            autofocus: true,
-            maxlength: Tile::TITLE_MAX_LENGTH,
-            class: "tile-edit-title" %>
-      <%= f.text_field :subtitle,
-            placeholder: "Subtitle",
-            maxlength: Tile::SUBTITLE_MAX_LENGTH,
-            class: "tile-edit-subtitle" %>
+      <div class="tile-edit-field-wrap">
+        <%= f.text_field :title,
+              placeholder: "Title",
+              autofocus: true,
+              maxlength: Tile::TITLE_MAX_LENGTH,
+              class: "tile-edit-title",
+              data: { counter_target: "title", counter_max: Tile::TITLE_MAX_LENGTH } %>
+        <span class="char-counter" data-counter="title">
+          <span class="char-count"><%= @tile.title&.length || 0 %></span>/<%= Tile::TITLE_MAX_LENGTH %>
+        </span>
+      </div>
+      <div class="tile-edit-field-wrap">
+        <%= f.text_field :subtitle,
+              placeholder: "Subtitle",
+              maxlength: Tile::SUBTITLE_MAX_LENGTH,
+              class: "tile-edit-subtitle",
+              data: { counter_target: "subtitle", counter_max: Tile::SUBTITLE_MAX_LENGTH } %>
+        <span class="char-counter" data-counter="subtitle">
+          <span class="char-count"><%= @tile.subtitle&.length || 0 %></span>/<%= Tile::SUBTITLE_MAX_LENGTH %>
+        </span>
+      </div>
     </div>
     <div class="tile-edit-body">
       <%= f.lexxy_rich_text_area :body, placeholder: "Body (markdown supported)" %>
@@ -19,4 +31,30 @@
       <%= link_to "Cancel", chart_path(@chart), class: "tile-edit-cancel" %>
     </div>
   <% end %>
+  <script>
+    (function() {
+      var fields = document.querySelectorAll('[data-counter-target]');
+      fields.forEach(function(field) {
+        var target = field.dataset.counterTarget;
+        var max = parseInt(field.dataset.counterMax);
+        var counter = document.querySelector('[data-counter="' + target + '"] .char-count');
+        var wrapper = document.querySelector('[data-counter="' + target + '"]');
+        function update() {
+          var len = field.value.length;
+          counter.textContent = len;
+          if (len >= max) {
+            wrapper.classList.add('char-counter--danger');
+            wrapper.classList.remove('char-counter--warn');
+          } else if (len >= Math.floor(max * 0.8)) {
+            wrapper.classList.add('char-counter--warn');
+            wrapper.classList.remove('char-counter--danger');
+          } else {
+            wrapper.classList.remove('char-counter--warn', 'char-counter--danger');
+          }
+        }
+        field.addEventListener('input', update);
+        update();
+      });
+    })();
+  </script>
 </turbo-frame>

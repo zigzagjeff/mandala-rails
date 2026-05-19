@@ -148,12 +148,27 @@ body {
   font-size: 0.9rem;
   font-weight: 500;
   line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .tile-subtitle {
   font-size: 0.75rem;
   color: #888;
   line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tile-body-preview {
+  font-size: 0.75rem;
+  color: #aaa;
+  line-height: 1.2;
+  font-style: italic;
 }
 
 .tile-drill {
@@ -221,6 +236,22 @@ body {
   flex-direction: column;
   gap: 0.5rem;
 }
+
+.tile-edit-field-wrap {
+  position: relative;
+}
+
+.char-counter {
+  position: absolute;
+  bottom: 6px;
+  right: 8px;
+  font-size: 0.7rem;
+  color: #ccc;
+  pointer-events: none;
+}
+
+.char-counter--warn  { color: #e0a800; }
+.char-counter--danger { color: #c0392b; }
 
 .tile-edit-title {
   font-size: 1.1rem;
