@@ -11,14 +11,31 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 - `README.md` — full project README replacing Rails boilerplate; covers purpose, architecture, data model, local dev setup, environment variables, design decisions table, and open issues index
 - `AGENTS.md` — AI agent orientation document; covers architecture map, agentic design intent, `agentic_summary` XML format spec, working conventions, and explicit do-not-do list
+- Tile body preview on tile card — `to_plain_text` truncated to 80 chars, checklist markup stripped, rendered in `.tile-body-preview` (italic, muted)
+- Character counter on tile edit form — live count on title (max 60) and subtitle (max 120); soft warning at 80%, danger at limit
+- `line-clamp` on tile card — title clamped to 2 lines, subtitle to 1 line; overflow hidden with ellipsis
+- Local Postgres as development and test database — eliminates Neon cold start latency in dev
+- Neon URL moved to Rails encrypted credentials — removed from `.env`
+- Issue labels: `waitingfor`, `notnow`, `ux`, `agentic`
+
+### Changed
+- `database.yml` — dev/test environments use local Postgres credentials; production reads `Rails.application.credentials.database_url`
+- `.tile-title` and `.tile-subtitle` now use `-webkit-line-clamp` for overflow control
+
+### Fixed
+- Checklist markup (`[ ]`, `[x]`) stripped from tile body preview via regex before display
 
 ### Issues filed
-- [#13](https://github.com/zigzagjeff/mandala-rails/issues/13) — Feature: drag and drop to reorder tiles within a grid
-- [#14](https://github.com/zigzagjeff/mandala-rails/issues/14) — Dev experience: switch development database to local Postgres
-- [#15](https://github.com/zigzagjeff/mandala-rails/issues/15) — Docs: write a proper README
-- [#16](https://github.com/zigzagjeff/mandala-rails/issues/16) — Docs: create AGENTS.md for AI collaborator orientation
-- [#17](https://github.com/zigzagjeff/mandala-rails/issues/17) — Feature: enforce 9-chart limit per user (Miller's Law)
-- [#18](https://github.com/zigzagjeff/mandala-rails/issues/18) — Decision: tiles are documents, not containers — external launchers and image tiles out of scope
+- [#13](https://github.com/zigzagjeff/mandala-rails/issues/13) — UX: drag and drop to reorder tiles within a grid
+- [#14](https://github.com/zigzagjeff/mandala-rails/issues/14) — Dev experience: switch development database to local Postgres ✅ closed
+- [#15](https://github.com/zigzagjeff/mandala-rails/issues/15) — Docs: write a proper README ✅ closed
+- [#16](https://github.com/zigzagjeff/mandala-rails/issues/16) — Docs: create AGENTS.md for AI collaborator orientation ✅ closed
+- [#17](https://github.com/zigzagjeff/mandala-rails/issues/17) — Feature: enforce 9-chart limit per user (Miller's Law) — `notnow`
+- [#18](https://github.com/zigzagjeff/mandala-rails/issues/18) — Decision: tiles are documents, not containers ✅ closed
+- [#20](https://github.com/zigzagjeff/mandala-rails/issues/20) — UX: tile interaction model — rename, write, and drill as distinct intents
+
+### External
+- Filed [basecamp/lexxy#1057](https://github.com/basecamp/lexxy/issues/1057) — feature request to expose `CheckListPlugin` for importmap + Propshaft setups
 
 ---
 
