@@ -1,20 +1,16 @@
 default: &default
-  adapter: postgresql
-  encoding: unicode
+  adapter: sqlite3
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
 
 development:
   <<: *default
-  database: mandala_rails_development
-  username: <%= ENV.fetch("PGUSER") { ENV["USER"] } %>
-  host: localhost
+  database: storage/development.sqlite3
 
 test:
   <<: *default
-  database: mandala_rails_test
-  username: <%= ENV.fetch("PGUSER") { ENV["USER"] } %>
-  host: localhost
+  database: storage/test.sqlite3
 
 production:
   <<: *default
-  url: <%= Rails.application.credentials.database_url %>
+  database: storage/production.sqlite3

@@ -5,7 +5,7 @@ class CreateTiles < ActiveRecord::Migration[8.1]
       t.integer :position
       t.string :tile_type
       t.text :content
-      t.jsonb :metadata
+      t.text :metadata
 
       t.timestamps
     end
