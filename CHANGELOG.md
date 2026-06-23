@@ -8,6 +8,29 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+- Database switched from PostgreSQL to SQLite — `gem "pg"` replaced with `gem "sqlite3", "~> 2.1"`; `config/database.yml` rewritten for file-based adapter (`storage/*.sqlite3`); `grids.parent_tile_id` column type changed from `uuid` to `string`; `tiles.metadata` column type changed from `jsonb` to `text`; `serialize :metadata, coder: JSON` added to `Tile` model
+
+### Issues filed
+- [#56](https://github.com/zigzagjeff/mandala-rails/issues/56) — Infra: switch database from PostgreSQL to SQLite ✅ closed
+- [#57](https://github.com/zigzagjeff/mandala-rails/issues/57) — Infra: configure SQLite for production — backup strategy + Neon data migration
+- [#58](https://github.com/zigzagjeff/mandala-rails/issues/58) — Decision: iterate on existing codebase, not rewrite ✅ closed
+- [#46](https://github.com/zigzagjeff/mandala-rails/issues/46) — Security: enable Content Security Policy
+- [#47](https://github.com/zigzagjeff/mandala-rails/issues/47) — UX: body content indicator on tile cards
+- [#48](https://github.com/zigzagjeff/mandala-rails/issues/48) — UX: show chart mode (planning/brainstorm) during use
+- [#49](https://github.com/zigzagjeff/mandala-rails/issues/49) — UX: empty state copy for blank tiles
+- [#50](https://github.com/zigzagjeff/mandala-rails/issues/50) — UX: chart index should preview center tile goal
+- [#51](https://github.com/zigzagjeff/mandala-rails/issues/51) — UX: mobile layout pass for the mandala grid
+- [#52](https://github.com/zigzagjeff/mandala-rails/issues/52) — Test: core domain coverage — Chart, Grid, Tile, drill-down
+- [#53](https://github.com/zigzagjeff/mandala-rails/issues/53) — Tidy: remove commented-out PWA manifest and service worker
+- [#54](https://github.com/zigzagjeff/mandala-rails/issues/54) — Perf: preload parent_tile chain in breadcrumb to avoid N+1
+- [#55](https://github.com/zigzagjeff/mandala-rails/issues/55) — Sprint: v0.4 engineering cleanup + design pass (tracking issue)
+- [#25](https://github.com/zigzagjeff/mandala-rails/issues/25) — API: build `api/v1/` namespace — foundation for agent access
+
+---
+
+## [Unreleased — prior]
+
 ### Added
 - `README.md` — full project README replacing Rails boilerplate; covers purpose, architecture, data model, local dev setup, environment variables, design decisions table, and open issues index
 - `AGENTS.md` — AI agent orientation document; covers architecture map, agentic design intent, `agentic_summary` XML format spec, working conventions, and explicit do-not-do list
