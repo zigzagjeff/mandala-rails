@@ -2,7 +2,11 @@
 
 <div class="charts-header">
   <h1>My Mandalas</h1>
-  <%= link_to "New Mandala", new_chart_path, class: "button" %>
+  <% if @charts.size >= Chart::LIMIT %>
+    <p class="chart-limit-notice">9-chart limit reached. Delete a mandala to create a new one.</p>
+  <% else %>
+    <%= link_to "New Mandala", new_chart_path, class: "button" %>
+  <% end %>
 </div>
 
 <% if @charts.empty? %>
