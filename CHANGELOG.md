@@ -10,6 +10,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 - Enforce 9-chart limit per user (Miller's Law) — model validation on create, controller guard in `ChartsController#new`, UI replaces "New Mandala" button with limit notice at cap; `Chart::LIMIT = 9` constant; model tests cover valid 9th chart, rejection of 10th, and constant value (closes #17)
+- Removed dead PWA scaffolding — `app/views/pwa/manifest.json.erb`, `app/views/pwa/service-worker.js`, commented-out routes, and commented-out manifest link tag in layout; no PWA intent exists and the files were never activated (closes #53)
 - Breadcrumb N+1 fixed — `GridsController#build_breadcrumb` now preloads all grids and their parent tiles for the chart in 2 queries, then walks the parent chain in memory using an id-keyed hash; was 2 queries per depth level (closes #54)
 - Character counter extracted from inline `<script>` in `tiles/edit.html.erb` into `app/javascript/character_counter.js` ES module — `initCharacterCounters(root)` initializes all `[data-counter-target]` fields in scope; wired in `application.js` on `turbo:load` and `turbo:frame-render`; pinned in importmap; view is now script-free (closes #22)
 - `Tile#tile_type` justified as a computed method (no stored column) — adds one-line intent comment; tested in #52; used by agent pipeline and future UI classification (closes #23)
