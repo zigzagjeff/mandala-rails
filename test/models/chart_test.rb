@@ -1,6 +1,38 @@
 require "test_helper"
 
 class ChartTest < ActiveSupport::TestCase
+  # --- validations ---
+
+  test "requires title" do
+    chart = users(:one).charts.build(mode: "planning")
+    assert_not chart.valid?
+    assert chart.errors[:title].any?
+  end
+
+  test "mode must be planning or brainstorm" do
+    chart = users(:one).charts.build(title: "Test", mode: "invalid")
+    assert_not chart.valid?
+    assert chart.errors[:mode].any?
+  end
+
+  test "planning mode is valid" do
+    chart = users(:one).charts.build(title: "Test", mode: "planning")
+    assert chart.valid?
+  end
+
+  test "brainstorm mode is valid" do
+    chart = users(:one).charts.build(title: "Test", mode: "brainstorm")
+    assert chart.valid?
+  end
+
+  # --- root_grid ---
+
+  test "root_grid returns the grid with no parent_tile_id" do
+    assert_equal grids(:one), charts(:one).root_grid
+  end
+
+  # --- 9-chart limit ---
+
   setup do
     @user = User.create!(email_address: "test_chart_#{SecureRandom.hex(4)}@example.com", password: "password")
   end

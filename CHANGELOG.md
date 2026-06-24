@@ -10,6 +10,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 - Enforce 9-chart limit per user (Miller's Law) — model validation on create, controller guard in `ChartsController#new`, UI replaces "New Mandala" button with limit notice at cap; `Chart::LIMIT = 9` constant; model tests cover valid 9th chart, rejection of 10th, and constant value (closes #17)
+- Test coverage for core domain — Chart (validations, `root_grid`, 9-chart limit), Grid (`root?`, parent tile association), Tile (position/length validations, `display_title`, `has_children?`, `find_or_create_child_grid!` idempotency and seeding, `tile_type`), `ChartsController` (create seeds 9 tiles, new guard at limit), `TilesController` (drill idempotency, update Turbo Stream, cross-user scoping); fixtures updated with valid mode and user associations (closes #52)
 
 ### Changed
 - Database switched from PostgreSQL to SQLite — `gem "pg"` replaced with `gem "sqlite3", "~> 2.1"`; `config/database.yml` rewritten for file-based adapter (`storage/*.sqlite3`); `grids.parent_tile_id` column type changed from `uuid` to `string`; `tiles.metadata` column type changed from `jsonb` to `text`; `serialize :metadata, coder: JSON` added to `Tile` model
