@@ -4,26 +4,27 @@
 # See the Securing Rails Applications Guide for more information:
 # https://guides.rubyonrails.org/security.html#content-security-policy-header
 
-# Rails.application.configure do
-#   config.content_security_policy do |policy|
-#     policy.default_src :self, :https
-#     policy.font_src    :self, :https, :data
-#     policy.img_src     :self, :https, :data
-#     policy.object_src  :none
-#     policy.script_src  :self, :https
-#     policy.style_src   :self, :https
-#     # Specify URI for violation reports
-#     # policy.report_uri "/csp-violation-report-endpoint"
-#   end
-#
-#   # Generate session nonces for permitted importmap, inline scripts, and inline styles.
-#   config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
-#   config.content_security_policy_nonce_directives = %w(script-src style-src)
-#
-#   # Automatically add `nonce` to `javascript_tag`, `javascript_include_tag`, and `stylesheet_link_tag`
-#   # if the corresponding directives are specified in `content_security_policy_nonce_directives`.
-#   # config.content_security_policy_nonce_auto = true
-#
-#   # Report violations without enforcing the policy.
-#   # config.content_security_policy_report_only = true
-# end
+Rails.application.configure do
+  config.content_security_policy do |policy|
+    policy.default_src :self
+    policy.font_src    :self
+    policy.img_src     :self, :data, :blob
+    policy.object_src  :none
+    # Lexical (Lexxy) uses the Function constructor for state serialization.
+    policy.script_src  :self, :unsafe_eval
+    # Trix (Action Text) applies inline styles to editor content.
+    policy.style_src   :self, :unsafe_inline
+    policy.connect_src :self
+    policy.media_src   :self
+    # Blob workers for Lexical's async processing.
+    policy.worker_src  :self, :blob
+  end
+
+  # Nonces for importmap inline <script> tags (auto-added by javascript_importmap_tags).
+  config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
+  config.content_security_policy_nonce_directives = %w[script-src]
+
+  # Report-only: violations are logged, nothing is blocked during rollout.
+  # Remove this line to enforce once violations have been reviewed.
+  config.content_security_policy_report_only = true
+end
