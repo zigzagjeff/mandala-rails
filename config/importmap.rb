@@ -1,6 +1,7 @@
 # Pin npm packages by running ./bin/importmap
 
 pin "application"
+pin "character_counter", to: "character_counter.js"
 pin "lexxy", to: "lexxy.js"
 pin "lexxy_config", to: "lexxy_config.js"
 pin "@rails/activestorage", to: "@rails--activestorage.js" # @8.1.300
