@@ -30,6 +30,7 @@ class Tile < ApplicationRecord
     end
   end
 
+  # Used by agent pipeline and UI to classify tiles without a stored column.
   def tile_type
     if grid.root?
       position == 4 ? :goal : :theme
