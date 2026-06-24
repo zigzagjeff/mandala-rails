@@ -15,12 +15,16 @@ class GridsController < ApplicationController
   end
 
   def build_breadcrumb
+    # 2 queries (all grids + their parent tiles) instead of 2 per depth level.
+    grids_by_id = @chart.grids.includes(:parent_tile).index_by(&:id)
+
     crumbs = []
-    grid = @grid
-    while grid.parent_tile
-      tile = grid.parent_tile
-      crumbs.unshift({ label: tile.display_title, grid: tile.grid })
-      grid = tile.grid
+    grid = grids_by_id[@grid.id] || @grid
+    while (tile = grid.parent_tile)
+      parent_grid = grids_by_id[tile.grid_id]
+      crumbs.unshift({ label: tile.display_title, grid: parent_grid })
+      grid = parent_grid
+      break unless grid
     end
     crumbs
   end
