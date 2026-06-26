@@ -6,6 +6,7 @@ class TilesController < ApplicationController
   end
 
   def drill
+    return redirect_to chart_path(@chart), status: :see_other unless @tile.grid.root?
     child_grid = @tile.find_or_create_child_grid!
     redirect_to chart_grid_path(@chart, child_grid)
   end
