@@ -19,7 +19,15 @@ jobs:
           bundler-cache: true
 
       - name: Scan for common Rails security vulnerabilities using static analysis
-        run: bin/brakeman --no-pager
+        run: |
+          set +e
+          bin/brakeman --no-pager
+          BRAKEMAN_EXIT=$?
+          set -e
+          # Exit code 5 means "not the latest version" — not a scan failure.
+          if [ $BRAKEMAN_EXIT -ne 0 ] && [ $BRAKEMAN_EXIT -ne 5 ]; then
+            exit $BRAKEMAN_EXIT
+          fi
 
       - name: Scan for known security vulnerabilities in gems used
         run: bin/bundler-audit
@@ -53,19 +61,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
-
     steps:
       - name: Install packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libpq-dev libvips
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libvips
 
       - name: Checkout code
         uses: actions/checkout@v4
@@ -78,5 +76,4 @@ jobs:
       - name: Run tests
         env:
           RAILS_ENV: test
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/mandala_rails_test
         run: bin/rails db:test:prepare test
