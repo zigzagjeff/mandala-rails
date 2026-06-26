@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_18_221813) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_26_044708) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -60,7 +60,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_18_221813) do
   create_table "grids", force: :cascade do |t|
     t.bigint "chart_id", null: false
     t.datetime "created_at", null: false
-    t.string "parent_tile_id"
+    t.bigint "parent_tile_id"
     t.datetime "updated_at", null: false
     t.index ["chart_id"], name: "index_grids_on_chart_id"
   end
