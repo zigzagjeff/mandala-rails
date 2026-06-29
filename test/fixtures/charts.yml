@@ -1,11 +1,9 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 one:
-  title: MyString
-  mode: MyString
-  user_id: 
+  title: My Planning Mandala
+  mode: planning
+  user: one
 
 two:
-  title: MyString
-  mode: MyString
-  user_id: 
+  title: My Brainstorm Mandala
+  mode: brainstorm
+  user: two

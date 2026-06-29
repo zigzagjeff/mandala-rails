@@ -31,30 +31,4 @@
       <%= link_to "Cancel", chart_path(@chart), class: "tile-edit-cancel" %>
     </div>
   <% end %>
-  <script>
-    (function() {
-      var fields = document.querySelectorAll('[data-counter-target]');
-      fields.forEach(function(field) {
-        var target = field.dataset.counterTarget;
-        var max = parseInt(field.dataset.counterMax);
-        var counter = document.querySelector('[data-counter="' + target + '"] .char-count');
-        var wrapper = document.querySelector('[data-counter="' + target + '"]');
-        function update() {
-          var len = field.value.length;
-          counter.textContent = len;
-          if (len >= max) {
-            wrapper.classList.add('char-counter--danger');
-            wrapper.classList.remove('char-counter--warn');
-          } else if (len >= Math.floor(max * 0.8)) {
-            wrapper.classList.add('char-counter--warn');
-            wrapper.classList.remove('char-counter--danger');
-          } else {
-            wrapper.classList.remove('char-counter--warn', 'char-counter--danger');
-          }
-        }
-        field.addEventListener('input', update);
-        update();
-      });
-    })();
-  </script>
 </turbo-frame>

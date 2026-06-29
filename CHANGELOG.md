@@ -9,6 +9,38 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Enforce 9-chart limit per user (Miller's Law) — model validation on create, controller guard in `ChartsController#new`, UI replaces "New Mandala" button with limit notice at cap; `Chart::LIMIT = 9` constant; model tests cover valid 9th chart, rejection of 10th, and constant value (closes #17)
+- Removed dead PWA scaffolding — `app/views/pwa/manifest.json.erb`, `app/views/pwa/service-worker.js`, commented-out routes, and commented-out manifest link tag in layout; no PWA intent exists and the files were never activated (closes #53)
+- Breadcrumb N+1 fixed — `GridsController#build_breadcrumb` now preloads all grids and their parent tiles for the chart in 2 queries, then walks the parent chain in memory using an id-keyed hash; was 2 queries per depth level (closes #54)
+- Character counter extracted from inline `<script>` in `tiles/edit.html.erb` into `app/javascript/character_counter.js` ES module — `initCharacterCounters(root)` initializes all `[data-counter-target]` fields in scope; wired in `application.js` on `turbo:load` and `turbo:frame-render`; pinned in importmap; view is now script-free (closes #22)
+- `Tile#tile_type` justified as a computed method (no stored column) — adds one-line intent comment; tested in #52; used by agent pipeline and future UI classification (closes #23)
+- Content Security Policy enabled in report-only mode — `config/initializers/content_security_policy.rb` configured for this app's actual sources: `self` for default/font/connect/media, `data blob` for images, `unsafe-eval` for Lexical (Lexxy Function constructor), `unsafe-inline` for style (Trix inline styles), `blob` workers; nonce generator wired for importmap inline scripts; `report_only = true` logs violations without blocking — remove that line to enforce (closes #46)
+- Test coverage for core domain — Chart (validations, `root_grid`, 9-chart limit), Grid (`root?`, parent tile association), Tile (position/length validations, `display_title`, `has_children?`, `find_or_create_child_grid!` idempotency and seeding, `tile_type`), `ChartsController` (create seeds 9 tiles, new guard at limit), `TilesController` (drill idempotency, update Turbo Stream, cross-user scoping); fixtures updated with valid mode and user associations (closes #52)
+
+### Changed
+- Database switched from PostgreSQL to SQLite — `gem "pg"` replaced with `gem "sqlite3", "~> 2.1"`; `config/database.yml` rewritten for file-based adapter (`storage/*.sqlite3`); `grids.parent_tile_id` column type changed from `uuid` to `string`; `tiles.metadata` column type changed from `jsonb` to `text`; `serialize :metadata, coder: JSON` added to `Tile` model
+
+### Issues filed
+- [#56](https://github.com/zigzagjeff/mandala-rails/issues/56) — Infra: switch database from PostgreSQL to SQLite ✅ closed
+- [#57](https://github.com/zigzagjeff/mandala-rails/issues/57) — Infra: configure SQLite for production — backup strategy + Neon data migration
+- [#58](https://github.com/zigzagjeff/mandala-rails/issues/58) — Decision: iterate on existing codebase, not rewrite ✅ closed
+- [#46](https://github.com/zigzagjeff/mandala-rails/issues/46) — Security: enable Content Security Policy
+- [#47](https://github.com/zigzagjeff/mandala-rails/issues/47) — UX: body content indicator on tile cards
+- [#48](https://github.com/zigzagjeff/mandala-rails/issues/48) — UX: show chart mode (planning/brainstorm) during use
+- [#49](https://github.com/zigzagjeff/mandala-rails/issues/49) — UX: empty state copy for blank tiles
+- [#50](https://github.com/zigzagjeff/mandala-rails/issues/50) — UX: chart index should preview center tile goal
+- [#51](https://github.com/zigzagjeff/mandala-rails/issues/51) — UX: mobile layout pass for the mandala grid
+- [#52](https://github.com/zigzagjeff/mandala-rails/issues/52) — Test: core domain coverage — Chart, Grid, Tile, drill-down
+- [#53](https://github.com/zigzagjeff/mandala-rails/issues/53) — Tidy: remove commented-out PWA manifest and service worker
+- [#54](https://github.com/zigzagjeff/mandala-rails/issues/54) — Perf: preload parent_tile chain in breadcrumb to avoid N+1
+- [#55](https://github.com/zigzagjeff/mandala-rails/issues/55) — Sprint: v0.4 engineering cleanup + design pass (tracking issue)
+- [#25](https://github.com/zigzagjeff/mandala-rails/issues/25) — API: build `api/v1/` namespace — foundation for agent access
+
+---
+
+## [Unreleased — prior]
+
+### Added
 - `README.md` — full project README replacing Rails boilerplate; covers purpose, architecture, data model, local dev setup, environment variables, design decisions table, and open issues index
 - `AGENTS.md` — AI agent orientation document; covers architecture map, agentic design intent, `agentic_summary` XML format spec, working conventions, and explicit do-not-do list
 - Tile body preview on tile card — `to_plain_text` truncated to 80 chars, checklist markup stripped, rendered in `.tile-body-preview` (italic, muted)

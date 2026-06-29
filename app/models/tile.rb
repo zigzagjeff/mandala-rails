@@ -1,7 +1,9 @@
 class Tile < ApplicationRecord
   belongs_to :grid
-  has_one :child_grid, class_name: "Grid", foreign_key: :parent_tile_id, dependent: :destroy
+  has_one :child_grid, class_name: "Grid", foreign_key: :parent_tile_id, primary_key: :id, dependent: :destroy
   has_rich_text :body
+
+  serialize :metadata, coder: JSON
 
   TITLE_MAX_LENGTH = 60
   SUBTITLE_MAX_LENGTH = 120
@@ -22,12 +24,13 @@ class Tile < ApplicationRecord
 
   def find_or_create_child_grid!
     child_grid || begin
-      g = grid.chart.grids.create!(parent_tile: self)
+      g = grid.chart.grids.create!(parent_tile_id: id)
       9.times { |i| g.tiles.create!(position: i, title: i == 4 ? title : nil) }
       g
     end
   end
 
+  # Used by agent pipeline and UI to classify tiles without a stored column.
   def tile_type
     if grid.root?
       position == 4 ? :goal : :theme

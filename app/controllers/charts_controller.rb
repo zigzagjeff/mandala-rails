@@ -4,6 +4,10 @@ class ChartsController < ApplicationController
   end
 
   def new
+    if Current.user.charts.count >= Chart::LIMIT
+      redirect_to charts_path, alert: "You've reached the 9-chart limit. To create a new chart, delete an existing one."
+      return
+    end
     @chart = Chart.new
   end
 

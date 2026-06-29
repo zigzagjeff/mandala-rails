@@ -8,5 +8,7 @@
       <span class="tile-body-preview"><%= tile.body.to_plain_text.gsub(/\[\s?[xX]?\]/, '').squish.truncate(80) %></span>
     <% end %>
   <% end %>
-  <%= link_to "▶", drill_chart_tile_path(chart, tile), class: "tile-drill", data: { turbo_frame: "_top" } %>
+  <% if tile.grid.root? %>
+    <%= link_to "▶", drill_chart_tile_path(chart, tile), class: "tile-drill", data: { turbo_frame: "_top" } %>
+  <% end %>
 </div>
