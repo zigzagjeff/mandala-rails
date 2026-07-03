@@ -33,4 +33,8 @@
 # Ignore key files for decrypting credentials and more.
 /config/*.key
 
-.claude/
+# Ignore personal, machine-specific Claude Code config...
+.claude/*
+# ...but share the team tooling that should travel with the repo.
+!.claude/settings.json
+!.claude/hooks/
