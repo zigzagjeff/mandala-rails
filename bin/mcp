@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+# The Mandala MCP server — stdio transport, no Rails boot.
+# Configure with MANDALA_URL (default http://localhost:3000) and
+# MANDALA_API_TOKEN (see AGENTS.md).
+
+require_relative "../lib/mandala_mcp/server"
+
+MandalaMcp::Server.new.run

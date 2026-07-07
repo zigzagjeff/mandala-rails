@@ -131,9 +131,18 @@ To summarize one tile:
 
 Per-tile slugs are what is stored; the nested chart document above is what gets *assembled* from them at read time. Re-summarize a tile when its title or body changes materially; neighbors changing is usually not reason enough.
 
-### MCP server (planned)
+### MCP server
 
-Issue [#10](https://github.com/zigzagjeff/mandala-rails/issues/10) specifies a Model Context Protocol server for structured agent access to chart data. Tools will include `list_charts`, `get_chart`, `get_grid`, `get_tile`, and `write_agentic_summary`. It is a consumption layer over API v1 — no new capabilities, just the MCP shape.
+`bin/mcp` (issue [#10](https://github.com/zigzagjeff/mandala-rails/issues/10), shipped) is a stdio MCP server exposing five tools: `list_charts`, `get_chart`, `get_grid`, `get_tile`, and `write_agentic_summary`. It is a consumption layer over API v1 — every tool is one HTTP call rendered as nested XML, no new capabilities. It boots without Rails; configure with env vars:
+
+```sh
+claude mcp add mandala \
+  --env MANDALA_API_TOKEN=$(bin/rails runner 'print User.first.api_token') \
+  --env MANDALA_URL=http://localhost:3000 \
+  -- bin/mcp
+```
+
+The Rails server must be running for the tools to answer.
 
 **Do not write to `body` as an agent.** `body` is the user's writing surface. `agentic_summary` is yours. (The PATCH endpoint permits `body` so a user can direct an agent to draft for them — but unprompted, stay out.)
 
