@@ -23,7 +23,7 @@ class GridsController < ApplicationController
     # walk starts one level above it.
     grid = @parent_tile && grids_by_id[@parent_tile.grid_id]
     while grid && (tile = grid.parent_tile)
-      crumbs.unshift({ label: tile.display_title, grid: grid })
+      crumbs.unshift({ label: tile.title, grid: grid })
       grid = grids_by_id[tile.grid_id]
     end
     crumbs

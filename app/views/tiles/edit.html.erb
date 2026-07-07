@@ -1,4 +1,4 @@
-<% content_for :title, "Edit: #{@tile.display_title}" %>
+<% content_for :title, "Edit: #{@tile.title}" %>
 
 <div class="tile-document-header">
   <%= link_to "← Back", surface_path, class: "tile-document-back" %>
@@ -6,7 +6,7 @@
     <span class="tile-document-chart-title"><%= @chart.title %></span>
     <% unless @tile.grid.root? %>
       <span class="tile-document-sep">›</span>
-      <span class="tile-document-grid-label"><%= @tile.grid.parent_tile&.display_title %></span>
+      <span class="tile-document-grid-label"><%= @tile.grid.parent_tile&.title %></span>
     <% end %>
   </div>
 </div>

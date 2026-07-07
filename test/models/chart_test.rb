@@ -31,6 +31,17 @@ class ChartTest < ActiveSupport::TestCase
     assert_equal grids(:one), charts(:one).root_grid
   end
 
+  # --- goal_tile ---
+
+  test "goal_tile returns the root grid's center tile" do
+    goal = grids(:one).tiles.create!(position: 4, title: "Run a marathon")
+    assert_equal goal, charts(:one).goal_tile
+  end
+
+  test "goal_tile is nil when the center tile does not exist" do
+    assert_nil charts(:one).goal_tile
+  end
+
   # --- 9-chart limit ---
 
   setup do

@@ -64,6 +64,7 @@ body {
 }
 .chart-card-info  { flex: 1; display: flex; flex-direction: column; gap: 0.25rem; }
 .chart-title      { font-weight: 600; font-size: 1rem; }
+.chart-goal-preview { font-size: 0.85rem; color: #666; }
 .chart-mode       { font-size: 0.8rem; color: #888; text-transform: capitalize; }
 .chart-card-actions { display: flex; gap: 0.5rem; }
 
@@ -178,6 +179,12 @@ body {
   min-height: 1.8rem;
 }
 .tile-title-zone:hover { background: rgba(0, 0, 0, 0.04); }
+
+.tile-title--placeholder {
+  color: #aaa;
+  font-style: italic;
+  font-weight: 400;
+}
 
 .tile-body-zone {
   display: flex;

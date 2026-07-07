@@ -15,4 +15,9 @@ class GridTest < ActiveSupport::TestCase
   test "belongs to chart" do
     assert_equal charts(:one), grids(:one).chart
   end
+
+  test "center_tile returns the tile at the center position" do
+    center = grids(:one).tiles.create!(position: 4, title: "My Goal")
+    assert_equal center, grids(:one).center_tile
+  end
 end

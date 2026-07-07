@@ -17,6 +17,9 @@
       <div class="chart-card">
         <div class="chart-card-info">
           <span class="chart-title"><%= chart.title %></span>
+          <% if (goal = chart.goal_tile) && goal.title.present? %>
+            <span class="chart-goal-preview"><%= goal.title %></span>
+          <% end %>
           <span class="chart-mode"><%= chart.mode %></span>
         </div>
         <div class="chart-card-actions">

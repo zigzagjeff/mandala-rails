@@ -10,7 +10,7 @@
       <%= link_to crumb[:label], chart_grid_path(@chart, crumb[:grid]) %>
     <% end %>
     <span class="breadcrumb-sep">›</span>
-    <span class="breadcrumb-current"><%= @parent_tile&.display_title %></span>
+    <span class="breadcrumb-current"><%= @parent_tile&.title %></span>
   </div>
   <span class="chart-mode-badge"><%= @chart.mode %></span>
 </div>

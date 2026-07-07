@@ -8,4 +8,8 @@ class Grid < ApplicationRecord
   def root?
     parent_tile_id.nil?
   end
+
+  def center_tile
+    tiles.find_by(position: Tile::CENTER_POSITION)
+  end
 end

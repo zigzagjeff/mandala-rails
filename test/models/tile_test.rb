@@ -39,15 +39,20 @@ class TileTest < ActiveSupport::TestCase
     assert tile.valid?
   end
 
-  # --- display_title ---
+  # --- title_placeholder ---
 
-  test "display_title returns title when present" do
-    assert_equal "BFP Community", tiles(:one).display_title
+  test "title_placeholder invites a goal on the root center tile" do
+    center = @grid.tiles.create!(position: 4)
+    assert_equal "Set your goal", center.title_placeholder
   end
 
-  test "display_title returns empty string when title is blank" do
-    tile = @grid.tiles.build(position: 0, title: nil)
-    assert_equal "", tile.display_title
+  test "title_placeholder invites a theme on root surrounding tiles" do
+    assert_equal "Add a theme", tiles(:one).title_placeholder
+  end
+
+  test "title_placeholder invites a task on sub-grid tiles" do
+    child = tiles(:one).find_or_create_child_grid!
+    assert_equal "Add a task", child.tiles.find_by(position: 0).title_placeholder
   end
 
   # --- has_children? ---

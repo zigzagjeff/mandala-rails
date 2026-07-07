@@ -23,8 +23,12 @@ class Tile < ApplicationRecord
     child_grid.present?
   end
 
-  def display_title
-    title.presence || ""
+  def title_placeholder
+    case tile_type
+    when :goal  then "Set your goal"
+    when :theme then "Add a theme"
+    else             "Add a task"
+    end
   end
 
   def body_preview

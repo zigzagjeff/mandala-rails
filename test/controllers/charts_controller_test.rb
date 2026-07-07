@@ -45,4 +45,24 @@ class ChartsControllerTest < ActionDispatch::IntegrationTest
     get chart_path(chart)
     assert_select "a.tile-drill[href=?]", drill_chart_tile_path(chart, center), count: 0
   end
+
+  test "blank tiles invite with placeholder copy" do
+    chart = charts(:one)
+    chart.root_grid.tiles.create!(position: 4)
+    chart.root_grid.tiles.create!(position: 0)
+    get chart_path(chart)
+    assert_select "a.tile-title--placeholder", text: "Set your goal"
+    assert_select "a.tile-title--placeholder", text: "Add a theme"
+  end
+
+  test "index previews each chart's goal under its title" do
+    charts(:one).root_grid.tiles.create!(position: 4, title: "Run a marathon")
+    get charts_path
+    assert_select ".chart-goal-preview", text: "Run a marathon"
+  end
+
+  test "index shows no preview when the goal tile is blank" do
+    get charts_path
+    assert_select ".chart-goal-preview", count: 0
+  end
 end

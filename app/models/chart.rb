@@ -12,6 +12,10 @@ class Chart < ApplicationRecord
     grids.find_by(parent_tile_id: nil)
   end
 
+  def goal_tile
+    root_grid.center_tile
+  end
+
   private
 
   def chart_limit_not_exceeded
