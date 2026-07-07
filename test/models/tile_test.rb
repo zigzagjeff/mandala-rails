@@ -86,6 +86,37 @@ class TileTest < ActiveSupport::TestCase
     assert_equal first.id, second.id
   end
 
+  # --- depth ---
+
+  test "find_or_create_child_grid! sets child depth one below the parent grid" do
+    child = tiles(:one).find_or_create_child_grid!
+    assert_equal 1, child.depth
+
+    grandchild = child.tiles.find_by(position: 0).find_or_create_child_grid!
+    assert_equal 2, grandchild.depth
+  end
+
+  # --- heading_level ---
+
+  test "heading_level is 1 for the root center tile" do
+    center = @grid.tiles.create!(position: 4)
+    assert_equal 1, center.heading_level
+  end
+
+  test "heading_level is 2 for root surrounding tiles" do
+    assert_equal 2, tiles(:one).heading_level
+  end
+
+  test "heading_level is 2 for a child grid center tile" do
+    child = tiles(:one).find_or_create_child_grid!
+    assert_equal 2, child.tiles.find_by(position: 4).heading_level
+  end
+
+  test "heading_level is 3 for child grid surrounding tiles" do
+    child = tiles(:one).find_or_create_child_grid!
+    assert_equal 3, child.tiles.find_by(position: 0).heading_level
+  end
+
   # --- tile_type ---
 
   test "tile_type is :goal for root grid center tile (position 4)" do

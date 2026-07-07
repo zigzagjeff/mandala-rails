@@ -5,6 +5,7 @@ class Tile < ApplicationRecord
 
   serialize :metadata, coder: JSON
 
+  CENTER_POSITION = 4
   TITLE_MAX_LENGTH = 60
   SUBTITLE_MAX_LENGTH = 120
 
@@ -22,18 +23,26 @@ class Tile < ApplicationRecord
     title.presence || ""
   end
 
+  def center?
+    position == CENTER_POSITION
+  end
+
   def find_or_create_child_grid!
     child_grid || begin
-      g = grid.chart.grids.create!(parent_tile_id: id)
-      9.times { |i| g.tiles.create!(position: i, title: i == 4 ? title : nil) }
-      g
+      child = grid.chart.grids.create!(parent_tile_id: id)
+      9.times { |i| child.tiles.create!(position: i, title: i == CENTER_POSITION ? title : nil) }
+      child
     end
+  end
+
+  def heading_level
+    center? ? grid.depth + 1 : grid.depth + 2
   end
 
   # Used by agent pipeline and UI to classify tiles without a stored column.
   def tile_type
     if grid.root?
-      position == 4 ? :goal : :theme
+      center? ? :goal : :theme
     else
       :task
     end
