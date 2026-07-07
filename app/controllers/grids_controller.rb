@@ -4,7 +4,7 @@ class GridsController < ApplicationController
   def show
     @grid = @chart.grids.find(params[:id])
     @parent_tile = @grid.parent_tile
-    @tiles = @grid.tiles.order(:position)
+    @tiles = @grid.tiles.with_previews.positioned
     @breadcrumb = build_breadcrumb
   end
 

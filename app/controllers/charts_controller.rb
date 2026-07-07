@@ -25,7 +25,7 @@ class ChartsController < ApplicationController
   def show
     @chart = Current.user.charts.find(params[:id])
     @root_grid = @chart.root_grid
-    @tiles = @root_grid.tiles.order(:position)
+    @tiles = @root_grid.tiles.with_previews.positioned
   end
 
   def edit
