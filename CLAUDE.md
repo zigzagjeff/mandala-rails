@@ -17,7 +17,9 @@ Full canon files (read on demand, cite by ID):
 - `/Users/dev/DHH/canon/05-testing.md` — testing without test damage
 - `/Users/dev/DHH/canon/06-lifecycle-patterns.md` — destruction, grace periods
 - `/Users/dev/DHH/canon/07-evolution-review.md` — the Reviewer's charter
+- `/Users/dev/DHH/canon/08-agentic-practice.md` — how agent code earns the merge
 - `/Users/dev/DHH/canon/deviations.md` — where the canon overrides the linter
+- `/Users/dev/DHH/canon/rulings.md` — case law from review cycles; check before applying a contested rule
 
 Living exemplars (read before inventing a structure — the answer usually
 already exists in one of these):
@@ -29,7 +31,11 @@ already exists in one of these):
 Every coding task flows: **Plan → Code → Gate → Review.**
 
 1. **Plan** (this file, always loaded): shape the change per the planning
-   rules below before writing anything.
+   rules below before writing anything. When the change is C6-grade —
+   irreversible operations, destructive migrations or backfills, auth
+   surfaces, anything whose failure loses user state — the plan itself
+   goes to the `dhh-reviewer` for one adversarial round before any code
+   exists (C8.3). Everything else plans lightly and moves on.
 2. **Code**: invoke the `dhh-coder` skill when it is time to write. Do not
    write application code without it.
 3. **Gate**: run `bin/check` after writing or modifying code. Deterministic,
@@ -43,10 +49,18 @@ Every coding task flows: **Plan → Code → Gate → Review.**
      philosophy review.
 4. **Review**: the Reviewer approves, or returns specific canon-cited
    objections. Objections route back to Code. An objection that cites no
-   rule ID is an opinion and defers to the Coder (C0.2).
+   rule ID is an opinion and defers to the Coder (C0.2). When a cycle
+   calibrates a rule against the corpus, the calibration is appended to
+   `canon/rulings.md` before the task closes (C8.2).
 
 The task is done when the gate passes AND the Reviewer approves. Neither
 alone is done.
+
+**The pipeline governs what merges (C8.4).** Exploratory drafts — spikes,
+hunches, "show me what this would look like" — skip the gate and the
+Reviewer, are never committed to main, and end exactly one of two ways:
+deleted, or promoted by entering the pipeline at Code. Docs-only changes
+run `bin/check --lint-only` and skip the Reviewer.
 
 ## Planning rules (cite IDs; full text in canon)
 
@@ -74,7 +88,8 @@ Choose the data store by criticality tier and say which tier (C2.11).
 
 **Irreversible operations get the full treatment.** Command pattern with
 `possible?` re-verification (C6.2), a grace period proportional to the
-loss (C6.3), far-future work as jobs that own their wait (C6.4).
+loss (C6.3), far-future work as jobs that own their wait (C6.4) — and the
+plan for such a change is reviewed before code exists (C8.3).
 
 **Sharp knives are priced at plan time.** Using `Current`, bending
 privacy, or any other deliberate rule-bend must be stated in the plan with
