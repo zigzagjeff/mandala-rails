@@ -19,12 +19,12 @@ class GridsController < ApplicationController
     grids_by_id = @chart.grids.includes(:parent_tile).index_by(&:id)
 
     crumbs = []
-    grid = grids_by_id[@grid.id] || @grid
-    while (tile = grid.parent_tile)
-      parent_grid = grids_by_id[tile.grid_id]
-      crumbs.unshift({ label: tile.display_title, grid: parent_grid })
-      grid = parent_grid
-      break unless grid
+    # The view renders @parent_tile as the final, non-linked label, so the
+    # walk starts one level above it.
+    grid = @parent_tile && grids_by_id[@parent_tile.grid_id]
+    while grid && (tile = grid.parent_tile)
+      crumbs.unshift({ label: tile.display_title, grid: grid })
+      grid = grids_by_id[tile.grid_id]
     end
     crumbs
   end
