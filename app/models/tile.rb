@@ -8,6 +8,7 @@ class Tile < ApplicationRecord
   CENTER_POSITION = 4
   TITLE_MAX_LENGTH = 60
   SUBTITLE_MAX_LENGTH = 120
+  BODY_PREVIEW_LENGTH = 80
 
   validates :position, presence: true,
                        inclusion: { in: 0..8 },
@@ -23,8 +24,16 @@ class Tile < ApplicationRecord
     title.presence || ""
   end
 
+  def body_preview
+    body.to_plain_text.gsub(/\[\s?[xX]?\]/, "").squish.truncate(BODY_PREVIEW_LENGTH)
+  end
+
   def center?
     position == CENTER_POSITION
+  end
+
+  def drillable?
+    grid.root? && !center?
   end
 
   def find_or_create_child_grid!

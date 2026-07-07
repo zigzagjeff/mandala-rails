@@ -1,0 +1,12 @@
+<%= turbo_frame_tag @tile do %>
+  <div class="mandala-tile <%= "tile-center" if @tile.center? %> tile-renaming">
+    <%= form_with model: [ @chart, @tile ], class: "tile-rename-form" do |f| %>
+      <%= f.text_field :title,
+            placeholder: "Title",
+            autofocus: true,
+            maxlength: Tile::TITLE_MAX_LENGTH,
+            class: "tile-rename-input" %>
+    <% end %>
+    <%= link_to "✕", surface_path, class: "tile-rename-cancel", title: "Cancel" %>
+  </div>
+<% end %>

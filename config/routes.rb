@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   resources :charts, only: [ :index, :new, :create, :show, :edit, :update, :destroy ] do
     resources :grids, only: [ :show ]
     resources :tiles, only: [ :edit, :update ] do
+      get :rename, on: :member
       get :drill, on: :member
     end
   end

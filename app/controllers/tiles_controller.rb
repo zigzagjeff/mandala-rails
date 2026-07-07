@@ -2,18 +2,23 @@ class TilesController < ApplicationController
   before_action :set_chart
   before_action :set_tile
 
+  helper_method :surface_path
+
   def edit
   end
 
+  def rename
+  end
+
   def drill
-    return redirect_to chart_path(@chart), status: :see_other unless @tile.grid.root?
+    return redirect_to chart_path(@chart), status: :see_other unless @tile.drillable?
     child_grid = @tile.find_or_create_child_grid!
     redirect_to chart_grid_path(@chart, child_grid)
   end
 
   def update
     if @tile.update(tile_params)
-      redirect_to after_edit_path
+      redirect_to surface_path
     else
       render :edit, status: :unprocessable_entity
     end
@@ -33,7 +38,7 @@ class TilesController < ApplicationController
     params.require(:tile).permit(:title, :subtitle, :body, body: {})
   end
 
-  def after_edit_path
+  def surface_path
     @tile.grid.root? ? chart_path(@chart) : chart_grid_path(@chart, @tile.grid)
   end
 end

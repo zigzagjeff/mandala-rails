@@ -31,6 +31,15 @@ class GridsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".breadcrumb a", text: "Seattle", count: 0
   end
 
+  test "sub-grid tiles offer no drill" do
+    child = @tile.find_or_create_child_grid!
+
+    get chart_grid_path(@chart, child)
+
+    assert_response :success
+    assert_select "a.tile-drill", count: 0
+  end
+
   test "show cannot reach another user's grid" do
     other_grid = grids(:two)
 

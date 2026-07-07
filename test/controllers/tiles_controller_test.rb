@@ -23,6 +23,23 @@ class TilesControllerTest < ActionDispatch::IntegrationTest
     assert_equal 1, @chart.grids.where(parent_tile: @tile).count
   end
 
+  test "drill on the center tile redirects back to the chart" do
+    center = @tile.grid.tiles.create!(position: 4)
+    get drill_chart_tile_path(@chart, center)
+    assert_redirected_to chart_path(@chart)
+  end
+
+  # --- rename ---
+
+  test "rename renders an in-place title form inside the tile frame" do
+    get rename_chart_tile_path(@chart, @tile)
+    assert_response :success
+    assert_select "turbo-frame#tile_#{@tile.id}" do
+      assert_select "form[action=?]", chart_tile_path(@chart, @tile)
+      assert_select "input[name='tile[title]'][maxlength=?]", Tile::TITLE_MAX_LENGTH.to_s
+    end
+  end
+
   # --- update ---
 
   test "update of a root-grid tile redirects to the chart" do

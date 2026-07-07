@@ -28,4 +28,21 @@ class ChartsControllerTest < ActionDispatch::IntegrationTest
     get new_chart_path
     assert_redirected_to charts_path
   end
+
+  test "show maps tile zones: title renames, body writes, arrow drills" do
+    chart = charts(:one)
+    tile = tiles(:one)
+    get chart_path(chart)
+    assert_response :success
+    assert_select "a.tile-title-zone[href=?]", rename_chart_tile_path(chart, tile)
+    assert_select "a.tile-body-zone[href=?]", edit_chart_tile_path(chart, tile)
+    assert_select "a.tile-drill[href=?]", drill_chart_tile_path(chart, tile)
+  end
+
+  test "show offers no drill on the center tile" do
+    chart = charts(:one)
+    center = chart.root_grid.tiles.create!(position: 4, title: "Goal")
+    get chart_path(chart)
+    assert_select "a.tile-drill[href=?]", drill_chart_tile_path(chart, center), count: 0
+  end
 end
