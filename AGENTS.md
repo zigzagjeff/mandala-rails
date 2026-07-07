@@ -93,11 +93,49 @@ Example of intended summary format:
 
 This format enables efficient context traversal without loading full `body` content. When navigating a chart, read `agentic_summary` first. Load `body` only when the task requires it.
 
+### API v1 — how agents read and write
+
+The versioned JSON API (issue [#25](https://github.com/zigzagjeff/mandala-rails/issues/25), shipped) is the agent's front door. Every request carries a bearer token:
+
+```
+Authorization: Bearer <api_token>
+```
+
+The token lives on the user (`User#api_token`, `has_secure_token`). Retrieve it locally with `bin/rails runner 'print User.first.api_token'`; regenerate with `user.regenerate_api_token` if leaked. One token, one user, scoped to that user's charts.
+
+The traversal model: read summaries first, load a body only when the task demands it.
+
+| Verb + path | Returns |
+|---|---|
+| `GET /api/v1/charts` | the user's charts |
+| `GET /api/v1/charts/:id` | chart metadata + `root_grid_id` |
+| `POST /api/v1/charts` | creates a chart (born with root grid + 9 tiles) |
+| `GET /api/v1/grids/:id` | grid + its 9 tiles embedded — titles, subtitles, `agentic_summary`, `heading_level`, `child_grid_id`; **no bodies** |
+| `GET /api/v1/tiles/:id` | full tile including `body` as plain text |
+| `PATCH /api/v1/tiles/:id` | writes `title`, `subtitle`, `body`, `agentic_summary` |
+| `POST /api/v1/tiles/:id/drill` | creates/returns the tile's child grid |
+
+Descend by following `root_grid_id` → tiles → `child_grid_id`. Errors are `{ "errors": [...] }` with 401/404/422. No deletes — the API deliberately has none.
+
+`heading_level` on every tile is derived from stored grid depth (issue [#63](https://github.com/zigzagjeff/mandala-rails/issues/63)): depth 0 center → 1 (the goal), depth 0 ring → 2 (themes), depth 1 center → 2, depth 1 ring → 3 (tasks). When assembling chart context client-side, order by depth then position — the same order the server derives in one query.
+
+### Populating `agentic_summary` (issue #24)
+
+To summarize one tile:
+
+1. `GET /api/v1/grids/:id` for the tile's grid → the 8 neighbor titles.
+2. `GET /api/v1/tiles/:id` for the tile's own title and body.
+3. If the grid has a `parent_tile_id`, `GET` that tile for parent context.
+4. Compose a snake_case XML slug capturing the tile's **unique contribution within its grid** — neighbors force distinctness, the parent anchors meaning. A human would write `<hiring>`; seeing the whole grid, write `<revenue_hiring_growth>Hiring three new sales reps to hit 2026 revenue targets</revenue_hiring_growth>`.
+5. `PATCH /api/v1/tiles/:id` with `{ "tile": { "agentic_summary": "<slug>…</slug>" } }`.
+
+Per-tile slugs are what is stored; the nested chart document above is what gets *assembled* from them at read time. Re-summarize a tile when its title or body changes materially; neighbors changing is usually not reason enough.
+
 ### MCP server (planned)
 
-Issue [#10](https://github.com/zigzagjeff/mandala-rails/issues/10) specifies a Model Context Protocol server for structured agent access to chart data. Tools will include `list_charts`, `get_chart`, `get_grid`, `get_tile`, and `write_agentic_summary`. Until this exists, agents access data via Rails console or direct database queries.
+Issue [#10](https://github.com/zigzagjeff/mandala-rails/issues/10) specifies a Model Context Protocol server for structured agent access to chart data. Tools will include `list_charts`, `get_chart`, `get_grid`, `get_tile`, and `write_agentic_summary`. It is a consumption layer over API v1 — no new capabilities, just the MCP shape.
 
-**Do not write to `body` as an agent.** `body` is the user's writing surface. `agentic_summary` is yours.
+**Do not write to `body` as an agent.** `body` is the user's writing surface. `agentic_summary` is yours. (The PATCH endpoint permits `body` so a user can direct an agent to draft for them — but unprompted, stay out.)
 
 ---
 
