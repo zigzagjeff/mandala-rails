@@ -1,34 +1,46 @@
-<turbo-frame id="tile_<%= @tile.id %>" class="tile-edit-frame">
-  <%= form_with model: [@chart, @tile], class: "tile-edit-form" do |f| %>
-    <div class="tile-edit-fields">
-      <div class="tile-edit-field-wrap">
-        <%= f.text_field :title,
-              placeholder: "Title",
-              autofocus: true,
-              maxlength: Tile::TITLE_MAX_LENGTH,
-              class: "tile-edit-title",
-              data: { counter_target: "title", counter_max: Tile::TITLE_MAX_LENGTH } %>
-        <span class="char-counter" data-counter="title">
-          <span class="char-count"><%= @tile.title&.length || 0 %></span>/<%= Tile::TITLE_MAX_LENGTH %>
-        </span>
-      </div>
-      <div class="tile-edit-field-wrap">
-        <%= f.text_field :subtitle,
-              placeholder: "Subtitle",
-              maxlength: Tile::SUBTITLE_MAX_LENGTH,
-              class: "tile-edit-subtitle",
-              data: { counter_target: "subtitle", counter_max: Tile::SUBTITLE_MAX_LENGTH } %>
-        <span class="char-counter" data-counter="subtitle">
-          <span class="char-count"><%= @tile.subtitle&.length || 0 %></span>/<%= Tile::SUBTITLE_MAX_LENGTH %>
-        </span>
-      </div>
+<% content_for :title, "Edit: #{@tile.display_title}" %>
+
+<div class="tile-document-header">
+  <% back_path = @tile.grid.root? ? chart_path(@chart) : chart_grid_path(@chart, @tile.grid) %>
+  <%= link_to "← Back", back_path, class: "tile-document-back" %>
+  <div class="tile-document-context">
+    <span class="tile-document-chart-title"><%= @chart.title %></span>
+    <% unless @tile.grid.root? %>
+      <span class="tile-document-sep">›</span>
+      <span class="tile-document-grid-label"><%= @tile.grid.parent_tile&.display_title %></span>
+    <% end %>
+  </div>
+</div>
+
+<div class="tile-document-page">
+  <%= form_with model: [@chart, @tile], class: "tile-document-form" do |f| %>
+    <div class="tile-document-title-wrap" data-controller="character-counter" data-character-counter-max-value="<%= Tile::TITLE_MAX_LENGTH %>">
+      <%= f.text_field :title,
+            placeholder: "Title",
+            autofocus: true,
+            maxlength: Tile::TITLE_MAX_LENGTH,
+            class: "tile-document-title",
+            data: { character_counter_target: "field", action: "input->character-counter#update" } %>
+      <span class="char-counter">
+        <span data-character-counter-target="count"><%= @tile.title&.length || 0 %></span>/<%= Tile::TITLE_MAX_LENGTH %>
+      </span>
     </div>
-    <div class="tile-edit-body">
-      <%= f.lexxy_rich_text_area :body, placeholder: "Body (markdown supported)" %>
+    <div class="tile-document-subtitle-wrap" data-controller="character-counter" data-character-counter-max-value="<%= Tile::SUBTITLE_MAX_LENGTH %>">
+      <%= f.text_field :subtitle,
+            placeholder: "Subtitle",
+            maxlength: Tile::SUBTITLE_MAX_LENGTH,
+            class: "tile-document-subtitle",
+            data: { character_counter_target: "field", action: "input->character-counter#update" } %>
+      <span class="char-counter">
+        <span data-character-counter-target="count"><%= @tile.subtitle&.length || 0 %></span>/<%= Tile::SUBTITLE_MAX_LENGTH %>
+      </span>
     </div>
-    <div class="tile-edit-actions">
+    <div class="tile-document-body">
+      <%= f.lexxy_rich_text_area :body, placeholder: "Body" %>
+    </div>
+    <div class="tile-document-actions">
       <%= f.submit "Save", class: "button" %>
-      <%= link_to "Cancel", chart_path(@chart), class: "tile-edit-cancel" %>
+      <%= link_to "Cancel", back_path, class: "tile-edit-cancel" %>
     </div>
   <% end %>
-</turbo-frame>
+</div>

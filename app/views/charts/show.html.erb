@@ -2,7 +2,9 @@
 
 <div class="chart-show-header">
   <%= link_to "← My Mandalas", charts_path %>
-  <h1><%= @chart.title %></h1>
+  <turbo-frame id="chart-title">
+    <%= link_to @chart.title, edit_chart_path(@chart), class: "chart-title-editable" %>
+  </turbo-frame>
   <span class="chart-mode-badge"><%= @chart.mode %></span>
 </div>
 

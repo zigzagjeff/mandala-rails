@@ -45,9 +45,9 @@ class TileTest < ActiveSupport::TestCase
     assert_equal "BFP Community", tiles(:one).display_title
   end
 
-  test "display_title returns '+' when title is blank" do
+  test "display_title returns empty string when title is blank" do
     tile = @grid.tiles.build(position: 0, title: nil)
-    assert_equal "+", tile.display_title
+    assert_equal "", tile.display_title
   end
 
   # --- has_children? ---

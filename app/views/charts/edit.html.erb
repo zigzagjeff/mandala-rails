@@ -1,0 +1,16 @@
+<% content_for :title, @chart.title %>
+
+<div class="chart-show-header">
+  <%= link_to "← My Mandalas", charts_path %>
+  <turbo-frame id="chart-title">
+    <%= form_with model: @chart, class: "chart-title-form" do |f| %>
+      <%= f.text_field :title,
+            autofocus: true,
+            class: "chart-title-input",
+            placeholder: "Mandala title" %>
+      <%= f.submit "Save", class: "button button-small" %>
+      <%= link_to "Cancel", chart_path(@chart), class: "tile-edit-cancel" %>
+    <% end %>
+  </turbo-frame>
+  <span class="chart-mode-badge"><%= @chart.mode %></span>
+</div>

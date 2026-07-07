@@ -19,7 +19,7 @@ class Tile < ApplicationRecord
   end
 
   def display_title
-    title.presence || "+"
+    title.presence || ""
   end
 
   def find_or_create_child_grid!

@@ -1,14 +1,26 @@
 <div class="mandala-tile <%= 'tile-center' if tile.position == 4 %> <%= 'tile-has-children' if tile.has_children? %>">
-  <%= link_to edit_chart_tile_path(chart, tile), class: "tile-content" do %>
-    <span class="tile-title"><%= tile.display_title %></span>
-    <% if tile.subtitle.present? %>
-      <span class="tile-subtitle"><%= tile.subtitle %></span>
-    <% end %>
-    <% if tile.body.present? %>
-      <span class="tile-body-preview"><%= tile.body.to_plain_text.gsub(/\[\s?[xX]?\]/, '').squish.truncate(80) %></span>
+  <% if tile.position == 4 %>
+    <div class="tile-content tile-content--center">
+      <span class="tile-title"><%= tile.display_title %></span>
+      <% if tile.subtitle.present? %>
+        <span class="tile-subtitle"><%= tile.subtitle %></span>
+      <% end %>
+      <% if tile.body.present? %>
+        <span class="tile-body-preview"><%= tile.body.to_plain_text.gsub(/\[\s?[xX]?\]/, '').squish.truncate(80) %></span>
+      <% end %>
+    </div>
+  <% else %>
+    <%= link_to drill_chart_tile_path(chart, tile), class: "tile-content", data: { turbo_frame: "_top" } do %>
+      <span class="tile-title"><%= tile.display_title %></span>
+      <% if tile.subtitle.present? %>
+        <span class="tile-subtitle"><%= tile.subtitle %></span>
+      <% end %>
+      <% if tile.body.present? %>
+        <span class="tile-body-preview"><%= tile.body.to_plain_text.gsub(/\[\s?[xX]?\]/, '').squish.truncate(80) %></span>
+      <% end %>
     <% end %>
   <% end %>
-  <% if tile.grid.root? %>
-    <%= link_to "▶", drill_chart_tile_path(chart, tile), class: "tile-drill", data: { turbo_frame: "_top" } %>
+  <%= link_to edit_chart_tile_path(chart, tile), class: "tile-edit-icon", data: { turbo_frame: "_top" }, title: "Edit" do %>
+    ✏
   <% end %>
 </div>

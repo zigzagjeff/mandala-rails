@@ -13,10 +13,7 @@ class TilesController < ApplicationController
 
   def update
     if @tile.update(tile_params)
-      respond_to do |format|
-        format.turbo_stream
-        format.html { redirect_to chart_path(@chart) }
-      end
+      redirect_to after_edit_path
     else
       render :edit, status: :unprocessable_entity
     end
@@ -34,5 +31,9 @@ class TilesController < ApplicationController
 
   def tile_params
     params.require(:tile).permit(:title, :subtitle, :body, body: {})
+  end
+
+  def after_edit_path
+    @tile.grid.root? ? chart_path(@chart) : chart_grid_path(@chart, @tile.grid)
   end
 end

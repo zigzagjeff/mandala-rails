@@ -28,6 +28,19 @@ class ChartsController < ApplicationController
     @tiles = @root_grid.tiles.order(:position)
   end
 
+  def edit
+    @chart = Current.user.charts.find(params[:id])
+  end
+
+  def update
+    @chart = Current.user.charts.find(params[:id])
+    if @chart.update(chart_params)
+      redirect_to chart_path(@chart)
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
   def destroy
     Current.user.charts.find(params[:id]).destroy
     redirect_to charts_path, notice: "Mandala deleted."

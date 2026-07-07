@@ -25,18 +25,20 @@ class TilesControllerTest < ActionDispatch::IntegrationTest
 
   # --- update ---
 
-  test "update responds with turbo stream" do
-    patch chart_tile_path(@chart, @tile),
-          params: { tile: { title: "Updated" } },
-          headers: { "Accept" => "text/vnd.turbo-stream.html" }
-    assert_response :success
-    assert_equal "text/vnd.turbo-stream.html", response.media_type
+  test "update of a root-grid tile redirects to the chart" do
+    patch chart_tile_path(@chart, @tile), params: { tile: { title: "Updated" } }
+    assert_redirected_to chart_path(@chart)
+  end
+
+  test "update of a sub-grid tile redirects to its grid" do
+    child_grid = @tile.find_or_create_child_grid!
+    sub_tile = child_grid.tiles.find_by(position: 0)
+    patch chart_tile_path(@chart, sub_tile), params: { tile: { title: "Updated" } }
+    assert_redirected_to chart_grid_path(@chart, child_grid)
   end
 
   test "update saves changes" do
-    patch chart_tile_path(@chart, @tile),
-          params: { tile: { title: "Changed Title" } },
-          headers: { "Accept" => "text/vnd.turbo-stream.html" }
+    patch chart_tile_path(@chart, @tile), params: { tile: { title: "Changed Title" } }
     assert_equal "Changed Title", @tile.reload.title
   end
 
