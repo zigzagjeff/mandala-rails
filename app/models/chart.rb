@@ -8,6 +8,8 @@ class Chart < ApplicationRecord
   validates :mode, inclusion: { in: %w[planning brainstorm] }
   validate :chart_limit_not_exceeded, on: :create
 
+  after_create :seed_root_grid
+
   def root_grid
     grids.find_by(parent_tile_id: nil)
   end
@@ -17,6 +19,10 @@ class Chart < ApplicationRecord
   end
 
   private
+
+  def seed_root_grid
+    grids.create!
+  end
 
   def chart_limit_not_exceeded
     return unless user

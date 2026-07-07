@@ -14,8 +14,6 @@ class ChartsController < ApplicationController
   def create
     @chart = Current.user.charts.build(chart_params)
     if @chart.save
-      root_grid = @chart.grids.create!(parent_tile_id: nil)
-      9.times { |i| root_grid.tiles.create!(position: i) }
       redirect_to charts_path, notice: "Mandala created."
     else
       render :new, status: :unprocessable_entity

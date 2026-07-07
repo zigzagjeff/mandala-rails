@@ -11,7 +11,7 @@ class Tile < ApplicationRecord
   BODY_PREVIEW_LENGTH = 80
 
   validates :position, presence: true,
-                       inclusion: { in: 0..8 },
+                       inclusion: { in: Grid::POSITIONS },
                        uniqueness: { scope: :grid_id }
   validates :title, length: { maximum: TITLE_MAX_LENGTH }, allow_blank: true
   validates :subtitle, length: { maximum: SUBTITLE_MAX_LENGTH }, allow_blank: true
@@ -44,10 +44,8 @@ class Tile < ApplicationRecord
   end
 
   def find_or_create_child_grid!
-    child_grid || begin
-      child = grid.chart.grids.create!(parent_tile_id: id)
-      9.times { |i| child.tiles.create!(position: i, title: i == CENTER_POSITION ? title : nil) }
-      child
+    child_grid || grid.chart.grids.create!(parent_tile: self).tap do |child|
+      child.center_tile.update!(title: title)
     end
   end
 
