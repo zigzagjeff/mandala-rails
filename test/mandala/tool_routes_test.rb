@@ -1,13 +1,13 @@
 require "test_helper"
-require_relative "../../lib/mandala_mcp/server"
+require_relative "../../lib/mandala/mcp_server"
 
 # Real Api against stubbed sockets — the Campfire webhook_test pattern.
-class MandalaMcp::ToolRoutesTest < ActiveSupport::TestCase
+class Mandala::ToolRoutesTest < ActiveSupport::TestCase
   BASE = "http://mandala.test"
   AUTH = { "Authorization" => "Bearer secret-token" }
 
   setup do
-    @server = MandalaMcp::Server.new(api: MandalaMcp::Api.new(base_url: BASE, token: "secret-token"))
+    @server = Mandala::McpServer.new(api: Mandala::Api.new(base_url: BASE, token: "secret-token"))
   end
 
   test "list_charts GETs the charts index and renders the list" do

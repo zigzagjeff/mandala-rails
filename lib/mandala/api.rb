@@ -1,7 +1,7 @@
 require "net/http"
 require "json"
 
-module MandalaMcp
+module Mandala
   class Api
     Error = Class.new(StandardError)
 
@@ -13,6 +13,10 @@ module MandalaMcp
 
     def get(path)
       request Net::HTTP::Get.new(uri(path))
+    end
+
+    def post(path)
+      request Net::HTTP::Post.new(uri(path))
     end
 
     def patch(path, payload)

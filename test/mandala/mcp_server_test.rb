@@ -1,15 +1,15 @@
 require "test_helper"
-require_relative "../../lib/mandala_mcp/server"
+require_relative "../../lib/mandala/mcp_server"
 
-class MandalaMcp::ServerTest < ActiveSupport::TestCase
+class Mandala::McpServerTest < ActiveSupport::TestCase
   setup do
-    @server = MandalaMcp::Server.new
+    @server = Mandala::McpServer.new
   end
 
   test "initialize handshake declares the tools capability" do
     response = @server.handle({ "jsonrpc" => "2.0", "id" => 1, "method" => "initialize" })
     assert_equal 1, response[:id]
-    assert_equal MandalaMcp::Server::PROTOCOL_VERSION, response[:result][:protocolVersion]
+    assert_equal Mandala::McpServer::PROTOCOL_VERSION, response[:result][:protocolVersion]
     assert response[:result][:capabilities].key?(:tools)
     assert_equal "mandala", response[:result][:serverInfo][:name]
   end

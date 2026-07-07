@@ -3,7 +3,7 @@ require "cgi"
 # Renders API v1 payloads as the nested XML that agents consume.
 # All text is escaped, agentic_summary included: a summary is a leaf
 # text node here, even though its content is itself XML-shaped.
-module MandalaMcp
+module Mandala
   module Xml
     module_function
 

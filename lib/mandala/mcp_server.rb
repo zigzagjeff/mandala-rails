@@ -6,8 +6,8 @@ require_relative "xml"
 # over API v1 — every tool is one HTTP call rendered as XML. The
 # protocol surface is hand-rolled on purpose: five tools do not earn
 # a gem dependency, and the framing below is the whole of it.
-module MandalaMcp
-  class Server
+module Mandala
+  class McpServer
     PROTOCOL_VERSION = "2024-11-05"
 
     TOOLS = [

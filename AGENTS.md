@@ -131,6 +131,21 @@ To summarize one tile:
 
 Per-tile slugs are what is stored; the nested chart document above is what gets *assembled* from them at read time. Re-summarize a tile when its title or body changes materially; neighbors changing is usually not reason enough.
 
+### CLI
+
+`bin/mandala` (issue [#64](https://github.com/zigzagjeff/mandala-rails/issues/64)) is the Unix-pipe face of the same API — one HTTP call per subcommand, nested XML to stdout, errors to stderr:
+
+```sh
+bin/mandala charts                      # list charts
+bin/mandala chart 2                     # metadata + root grid id
+bin/mandala grid 15                     # nine tiles, no bodies
+bin/mandala tile 128                    # full tile including body
+bin/mandala drill 128                   # create/return the child grid
+bin/mandala summarize 128 "<slug>…</slug>"
+```
+
+Same env vars as the MCP server; composes with `gh`, `jq`-adjacent tooling, and other CLIs in agent pipelines.
+
 ### MCP server
 
 `bin/mcp` (issue [#10](https://github.com/zigzagjeff/mandala-rails/issues/10), shipped) is a stdio MCP server exposing five tools: `list_charts`, `get_chart`, `get_grid`, `get_tile`, and `write_agentic_summary`. It is a consumption layer over API v1 — every tool is one HTTP call rendered as nested XML, no new capabilities. It boots without Rails; configure with env vars:

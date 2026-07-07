@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+# The Mandala CLI — API v1 over pipes, no Rails boot.
+# Configure with MANDALA_URL (default http://localhost:3000) and
+# MANDALA_API_TOKEN (see AGENTS.md).
+
+require_relative "../lib/mandala/cli"
+
+exit Mandala::Cli.new(ARGV).run
