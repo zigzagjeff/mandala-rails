@@ -188,6 +188,10 @@ Update it with every meaningful change. Follow [Keep a Changelog](https://keepac
 
 Don't skip them to ship faster. This is a learning project and tests are part of the learning. If a test is failing for a known reason, file an issue — don't delete the test.
 
+### Fixing bugs
+
+A bug fix begins with its reproduction, seen failing (canon C8.6). Invoke the `bugs-reproducer` skill before investigating any fix — it classifies the bug (model/controller, CLI/MCP, UI/Turbo, or upstream Lexxy) and produces the failing test. Fix under `dhh-coder`; then validate two-sided (C8.7): the bug reproduces on `main` and is gone on the branch, through the real app. Editor-core bugs (typing, cursor, formatting inside Lexxy) belong upstream in `basecamp/lexxy` — file or link the issue there rather than papering over them here, as with #61/#12 → lexxy#1057.
+
 ### Gems
 
 Don't add gems without flagging them in the commit message or issue body. Don't upgrade gems unless asked. Both are decisions, not implementation details.
