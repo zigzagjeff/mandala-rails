@@ -61,7 +61,7 @@ group :test do
 end
 gem "dotenv-rails", groups: [ :development, :test ]
 
-gem "lexxy", "~> 0.1.4.beta"
+gem "lexxy", "~> 0.9.23"
 
 gem "importmap-rails", "~> 2.2"
 
