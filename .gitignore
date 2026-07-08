@@ -44,3 +44,6 @@
 .claude/skills/*
 !.claude/skills/mandala/
 !.claude/skills/bugs-reproducer/
+
+# macOS Finder droppings
+.DS_Store
