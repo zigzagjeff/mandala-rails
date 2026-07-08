@@ -51,7 +51,7 @@ class TileTest < ActiveSupport::TestCase
   end
 
   test "title_placeholder invites a task on sub-grid tiles" do
-    child = tiles(:one).find_or_create_child_grid!
+    child = tiles(:one).drill
     assert_equal "Add a task", child.tiles.find_by(position: 0).title_placeholder
   end
 
@@ -63,41 +63,41 @@ class TileTest < ActiveSupport::TestCase
 
   test "has_children? is true after child grid is created" do
     tile = tiles(:one)
-    tile.find_or_create_child_grid!
+    tile.drill
     assert tile.reload.has_children?
   end
 
-  # --- find_or_create_child_grid! ---
+  # --- drill ---
 
-  test "find_or_create_child_grid! creates a child grid with 9 tiles" do
+  test "drill creates a child grid with 9 tiles" do
     tile = tiles(:one)
-    child = tile.find_or_create_child_grid!
+    child = tile.drill
     assert_not_nil child
     assert_equal 9, child.tiles.count
   end
 
-  test "find_or_create_child_grid! seeds center tile title from parent" do
+  test "drill seeds center tile title from parent" do
     tile = tiles(:one)
-    child = tile.find_or_create_child_grid!
+    child = tile.drill
     center = child.tiles.find_by(position: 4)
     assert_equal tile.title, center.title
   end
 
-  test "find_or_create_child_grid! is idempotent" do
+  test "drill is idempotent" do
     tile = tiles(:one)
-    first = tile.find_or_create_child_grid!
+    first = tile.drill
     # Reload to clear the cached nil association, mirroring real usage (fresh request)
-    second = Tile.find(tile.id).find_or_create_child_grid!
+    second = Tile.find(tile.id).drill
     assert_equal first.id, second.id
   end
 
   # --- depth ---
 
-  test "find_or_create_child_grid! sets child depth one below the parent grid" do
-    child = tiles(:one).find_or_create_child_grid!
+  test "drill sets child depth one below the parent grid" do
+    child = tiles(:one).drill
     assert_equal 1, child.depth
 
-    grandchild = child.tiles.find_by(position: 0).find_or_create_child_grid!
+    grandchild = child.tiles.find_by(position: 0).drill
     assert_equal 2, grandchild.depth
   end
 
@@ -113,12 +113,12 @@ class TileTest < ActiveSupport::TestCase
   end
 
   test "heading_level is 2 for a child grid center tile" do
-    child = tiles(:one).find_or_create_child_grid!
+    child = tiles(:one).drill
     assert_equal 2, child.tiles.find_by(position: 4).heading_level
   end
 
   test "heading_level is 3 for child grid surrounding tiles" do
-    child = tiles(:one).find_or_create_child_grid!
+    child = tiles(:one).drill
     assert_equal 3, child.tiles.find_by(position: 0).heading_level
   end
 
@@ -135,7 +135,7 @@ class TileTest < ActiveSupport::TestCase
 
   test "tile_type is :task for tile in a sub-grid" do
     parent_tile = tiles(:one)
-    child_grid = parent_tile.find_or_create_child_grid!
+    child_grid = parent_tile.drill
     task_tile = child_grid.tiles.find_by(position: 0)
     assert_equal :task, task_tile.tile_type
   end

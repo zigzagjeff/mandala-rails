@@ -45,7 +45,7 @@ class Api::V1::TilesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "drill is idempotent" do
-    existing = @tile.find_or_create_child_grid!
+    existing = @tile.drill
     assert_no_difference "Grid.count" do
       post drill_api_v1_tile_path(@tile), headers: authorized_headers
     end
@@ -53,7 +53,7 @@ class Api::V1::TilesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "drill on an undrillable tile is rejected" do
-    task_tile = @tile.find_or_create_child_grid!.tiles.first
+    task_tile = @tile.drill.tiles.first
     post drill_api_v1_tile_path(task_tile), headers: authorized_headers
     assert_response :unprocessable_entity
   end

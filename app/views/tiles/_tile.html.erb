@@ -11,7 +11,7 @@
     <% end %>
   <% end %>
   <% if tile.drillable? %>
-    <%= link_to "▶", drill_chart_tile_path(chart, tile),
-          class: "tile-drill", data: { turbo_frame: "_top" }, title: "Open sub-grid" %>
+    <%= button_to "▶", chart_tile_drill_path(chart, tile),
+          class: "tile-drill", form: { data: { turbo_frame: "_top" } }, title: "Open sub-grid" %>
   <% end %>
 </div>

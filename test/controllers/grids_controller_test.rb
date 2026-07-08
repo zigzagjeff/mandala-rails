@@ -8,7 +8,7 @@ class GridsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "breadcrumb at depth 1 shows the parent tile once, as the current label" do
-    child = @tile.find_or_create_child_grid!
+    child = @tile.drill
 
     get chart_grid_path(@chart, child)
 
@@ -18,10 +18,10 @@ class GridsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "breadcrumb at depth 2 links the intermediate tile to its child grid" do
-    child = @tile.find_or_create_child_grid!
+    child = @tile.drill
     inner_tile = child.tiles.find_by(position: 2)
     inner_tile.update!(title: "Seattle")
-    grandchild = inner_tile.find_or_create_child_grid!
+    grandchild = inner_tile.drill
 
     get chart_grid_path(@chart, grandchild)
 
@@ -32,12 +32,12 @@ class GridsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "sub-grid tiles offer no drill" do
-    child = @tile.find_or_create_child_grid!
+    child = @tile.drill
 
     get chart_grid_path(@chart, child)
 
     assert_response :success
-    assert_select "a.tile-drill", count: 0
+    assert_select "button.tile-drill", count: 0
   end
 
   test "show cannot reach another user's grid" do

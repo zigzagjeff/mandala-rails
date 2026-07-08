@@ -229,13 +229,18 @@ body {
 }
 
 /* ── Drill arrow ── */
+.mandala-tile form.button_to { display: contents; }
+
 .tile-drill {
   position: absolute;
   bottom: 5px;
   right: 8px;
   font-size: 0.65rem;
   color: #ccc;
-  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
   line-height: 1;
   transition: color 0.15s;
   z-index: 1;

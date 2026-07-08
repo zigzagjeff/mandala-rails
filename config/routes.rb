@@ -11,7 +11,7 @@ Rails.application.routes.draw do
     resources :grids, only: [ :show ]
     resources :tiles, only: [ :edit, :update ] do
       get :rename, on: :member
-      get :drill, on: :member
+      resource :drill, only: :create, module: :tiles
     end
   end
 

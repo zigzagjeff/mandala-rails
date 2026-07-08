@@ -10,12 +10,6 @@ class TilesController < ApplicationController
   def rename
   end
 
-  def drill
-    return redirect_to chart_path(@chart), status: :see_other unless @tile.drillable?
-    child_grid = @tile.find_or_create_child_grid!
-    redirect_to chart_grid_path(@chart, child_grid)
-  end
-
   def update
     if @tile.update(tile_params)
       redirect_to surface_path

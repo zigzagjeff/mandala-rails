@@ -14,7 +14,7 @@ class Api::V1::TilesController < Api::V1::BaseController
 
   def drill
     if @tile.drillable?
-      @grid = @tile.find_or_create_child_grid!
+      @grid = @tile.drill
       render "api/v1/grids/show"
     else
       render json: { errors: [ "Tile cannot be drilled" ] }, status: :unprocessable_entity

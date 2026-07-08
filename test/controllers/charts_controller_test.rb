@@ -36,14 +36,14 @@ class ChartsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "a.tile-title-zone[href=?]", rename_chart_tile_path(chart, tile)
     assert_select "a.tile-body-zone[href=?]", edit_chart_tile_path(chart, tile)
-    assert_select "a.tile-drill[href=?]", drill_chart_tile_path(chart, tile)
+    assert_select "form[action=?] button.tile-drill", chart_tile_drill_path(chart, tile)
   end
 
   test "show offers no drill on the center tile" do
     chart = charts(:one)
     center = chart.root_grid.tiles.create!(position: 4, title: "Goal")
     get chart_path(chart)
-    assert_select "a.tile-drill[href=?]", drill_chart_tile_path(chart, center), count: 0
+    assert_select "form[action=?]", chart_tile_drill_path(chart, center), count: 0
   end
 
   test "blank tiles invite with placeholder copy" do

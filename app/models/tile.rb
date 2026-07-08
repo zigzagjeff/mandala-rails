@@ -43,7 +43,7 @@ class Tile < ApplicationRecord
     grid.root? && !center?
   end
 
-  def find_or_create_child_grid!
+  def drill
     child_grid || grid.chart.grids.create!(parent_tile: self).tap do |child|
       child.center_tile.update!(title: title)
     end

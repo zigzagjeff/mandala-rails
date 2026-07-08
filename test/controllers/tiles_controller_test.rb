@@ -8,27 +8,6 @@ class TilesControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(@user)
   end
 
-  # --- drill ---
-
-  test "drill creates a child grid on first call" do
-    assert_nil @tile.child_grid
-    get drill_chart_tile_path(@chart, @tile)
-    assert_redirected_to chart_grid_path(@chart, @tile.reload.child_grid)
-  end
-
-  test "drill navigates to existing child grid on second call" do
-    existing = @tile.find_or_create_child_grid!
-    get drill_chart_tile_path(@chart, @tile)
-    assert_redirected_to chart_grid_path(@chart, existing)
-    assert_equal 1, @chart.grids.where(parent_tile: @tile).count
-  end
-
-  test "drill on the center tile redirects back to the chart" do
-    center = @tile.grid.tiles.create!(position: 4)
-    get drill_chart_tile_path(@chart, center)
-    assert_redirected_to chart_path(@chart)
-  end
-
   # --- rename ---
 
   test "rename renders an in-place title form inside the tile frame" do
@@ -48,7 +27,7 @@ class TilesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "update of a sub-grid tile redirects to its grid" do
-    child_grid = @tile.find_or_create_child_grid!
+    child_grid = @tile.drill
     sub_tile = child_grid.tiles.find_by(position: 0)
     patch chart_tile_path(@chart, sub_tile), params: { tile: { title: "Updated" } }
     assert_redirected_to chart_grid_path(@chart, child_grid)

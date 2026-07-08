@@ -2,7 +2,7 @@ require "test_helper"
 
 class Api::V1::GridsControllerTest < ActionDispatch::IntegrationTest
   test "show embeds the grid's tiles without bodies" do
-    grid = tiles(:one).find_or_create_child_grid!
+    grid = tiles(:one).drill
 
     get api_v1_grid_path(grid), headers: authorized_headers
 
