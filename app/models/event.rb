@@ -6,6 +6,8 @@ class Event < ApplicationRecord
   scope :chronologically, -> { order created_at: :asc, id: :asc }
   scope :since, ->(time) { where("created_at > ?", time) if time }
 
+  after_create_commit -> { broadcast_refresh_later_to chart }
+
   thread_mattr_accessor :recording, default: true
 
   def self.suppressing_recording(&block)

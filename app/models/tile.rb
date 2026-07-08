@@ -48,11 +48,13 @@ class Tile < ApplicationRecord
   end
 
   def drill
-    child_grid || create_child_grid!(chart: chart).tap do |child|
-      Event.suppressing_recording do
-        child.center_tile.update!(title: title)
+    child_grid || transaction do
+      create_child_grid!(chart: chart).tap do |child|
+        Event.suppressing_recording do
+          child.center_tile.update!(title: title)
+        end
+        track_event "drilled"
       end
-      track_event "drilled"
     end
   end
 

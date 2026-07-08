@@ -7,6 +7,16 @@ class GridsControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(users(:one))
   end
 
+  test "show subscribes to the chart's event stream" do
+    child = @tile.drill
+
+    get chart_grid_path(@chart, child)
+
+    assert_response :success
+    assert_select "turbo-cable-stream-source[signed-stream-name=?]",
+      Turbo::StreamsChannel.signed_stream_name(@chart)
+  end
+
   test "breadcrumb at depth 1 shows the parent tile once, as the current label" do
     child = @tile.drill
 

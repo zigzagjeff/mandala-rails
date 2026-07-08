@@ -17,6 +17,14 @@ class ChartsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 9, root_grid.tiles.count
   end
 
+  test "show subscribes to the chart's event stream" do
+    get chart_path(charts(:one))
+
+    assert_response :success
+    assert_select "turbo-cable-stream-source[signed-stream-name=?]",
+      Turbo::StreamsChannel.signed_stream_name(charts(:one))
+  end
+
   test "create with invalid params re-renders new" do
     post charts_path, params: { chart: { title: "", mode: "planning" } }
     assert_response :unprocessable_entity

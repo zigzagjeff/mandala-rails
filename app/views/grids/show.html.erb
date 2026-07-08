@@ -1,5 +1,7 @@
 <% content_for :title, @chart.title %>
 
+<%= turbo_stream_from @chart %>
+
 <div class="chart-show-header">
   <div class="breadcrumb">
     <%= link_to "← My Mandalas", charts_path %>

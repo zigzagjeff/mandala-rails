@@ -1,6 +1,10 @@
 require "test_helper"
+require "turbo/broadcastable/test_helper"
 
 class EventTest < ActiveSupport::TestCase
+  include ActiveJob::TestHelper
+  include Turbo::Broadcastable::TestHelper
+
   setup do
     @chart = charts(:one)
     @user = users(:one)
@@ -27,6 +31,26 @@ class EventTest < ActiveSupport::TestCase
     event = record_event_at 1.hour.ago
 
     assert_includes @chart.events.since(nil), event
+  end
+
+  test "recording an event broadcasts a refresh to the chart" do
+    Current.user = @user
+
+    perform_enqueued_jobs do
+      assert_turbo_stream_broadcasts @chart, count: 1 do
+        tiles(:one).update!(title: "Live update")
+      end
+    end
+  end
+
+  test "suppressed recording broadcasts nothing" do
+    Current.user = @user
+
+    perform_enqueued_jobs do
+      assert_no_turbo_stream_broadcasts @chart do
+        Event.suppressing_recording { tiles(:one).update!(title: "Quiet update") }
+      end
+    end
   end
 
   test "suppressing_recording restores recording even when the block raises" do
