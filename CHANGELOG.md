@@ -9,6 +9,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- `bin/check` gate gains a bundler-audit stage (fizzy `bin/ci` parity) — activated by the existing `bin/bundler-audit` binstub; first run surfaced three advisories (crass GHSA-wwpr-jff3-395c, json CVE-2026-54696, msgpack CVE-2026-54522), patched with conservative updates to crass 1.0.7, json 2.20.0, msgpack 1.8.3
 - Enforce 9-chart limit per user (Miller's Law) — model validation on create, controller guard in `ChartsController#new`, UI replaces "New Mandala" button with limit notice at cap; `Chart::LIMIT = 9` constant; model tests cover valid 9th chart, rejection of 10th, and constant value (closes #17)
 - Removed dead PWA scaffolding — `app/views/pwa/manifest.json.erb`, `app/views/pwa/service-worker.js`, commented-out routes, and commented-out manifest link tag in layout; no PWA intent exists and the files were never activated (closes #53)
 - Breadcrumb N+1 fixed — `GridsController#build_breadcrumb` now preloads all grids and their parent tiles for the chart in 2 queries, then walks the parent chain in memory using an id-keyed hash; was 2 queries per depth level (closes #54)
@@ -18,6 +19,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Test coverage for core domain — Chart (validations, `root_grid`, 9-chart limit), Grid (`root?`, parent tile association), Tile (position/length validations, `display_title`, `has_children?`, `find_or_create_child_grid!` idempotency and seeding, `tile_type`), `ChartsController` (create seeds 9 tiles, new guard at limit), `TilesController` (drill idempotency, update Turbo Stream, cross-user scoping); fixtures updated with valid mode and user associations (closes #52)
 
 ### Changed
+- Drill speaks the domain and stops mutating on GET — `Tile#find_or_create_child_grid!` renamed to `Tile#drill` (the domain word, canon C4.5; bang dropped per C4.7 — raise semantics still propagate from `create!` inside); web route `get :drill, on: :member` replaced with `resource :drill, only: :create` → new `Tiles::DrillsController#create` (canon C2.13, fizzy closures pattern — also fixes grid creation on a GET, which prefetchers could trigger); tile arrow is now a `button_to` POST; API v1 `POST /tiles/:id/drill` route unchanged pending #65; drill controller tests moved to `test/controllers/tiles/drills_controller_test.rb` mirroring the new controller, plus a cross-user scoping test the old action lacked
 - Database switched from PostgreSQL to SQLite — `gem "pg"` replaced with `gem "sqlite3", "~> 2.1"`; `config/database.yml` rewritten for file-based adapter (`storage/*.sqlite3`); `grids.parent_tile_id` column type changed from `uuid` to `string`; `tiles.metadata` column type changed from `jsonb` to `text`; `serialize :metadata, coder: JSON` added to `Tile` model
 
 ### Issues filed
