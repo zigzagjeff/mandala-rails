@@ -17,7 +17,9 @@ Rails.application.routes.draw do
 
   namespace :api, defaults: { format: :json } do
     namespace :v1 do
-      resources :charts, only: [ :index, :show, :create ]
+      resources :charts, only: [ :index, :show, :create ] do
+        resources :events, only: :index
+      end
       resources :grids, only: [ :show ]
       resources :tiles, only: [ :show, :update ] do
         post :drill, on: :member

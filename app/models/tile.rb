@@ -1,7 +1,11 @@
 class Tile < ApplicationRecord
+  include Eventable
+
   belongs_to :grid
   has_one :child_grid, class_name: "Grid", foreign_key: :parent_tile_id, primary_key: :id, dependent: :destroy
   has_rich_text :body
+
+  delegate :chart, to: :grid
 
   serialize :metadata, coder: JSON
 
@@ -44,8 +48,11 @@ class Tile < ApplicationRecord
   end
 
   def drill
-    child_grid || grid.chart.grids.create!(parent_tile: self).tap do |child|
-      child.center_tile.update!(title: title)
+    child_grid || create_child_grid!(chart: chart).tap do |child|
+      Event.suppressing_recording do
+        child.center_tile.update!(title: title)
+      end
+      track_event "drilled"
     end
   end
 

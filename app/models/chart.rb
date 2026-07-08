@@ -1,4 +1,6 @@
 class Chart < ApplicationRecord
+  include Eventable
+
   LIMIT = 9
 
   belongs_to :user
