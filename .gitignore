@@ -33,6 +33,15 @@
 # Ignore key files for decrypting credentials and more.
 /config/*.key
 
+# Private planner (DHH pipeline) — loads globally from ~/.claude/CLAUDE.md,
+# never travels with the public repo. A project-only CLAUDE.local.md, if
+# ever needed, stays local too.
+/CLAUDE.md
+/CLAUDE.local.md
+
+# Local working notes, not for publication.
+/resources/
+
 # Ignore personal, machine-specific Claude Code config...
 .claude/*
 # ...but share the team tooling that should travel with the repo.
