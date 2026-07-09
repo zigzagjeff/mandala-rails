@@ -1,7 +1,32 @@
 #!/bin/bash -e
 
-# If running the rails server then create or migrate existing database
+# If running the rails server, restore the database from the off-site replica
+# when the volume is empty, then create or migrate it.
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
+  db="/rails/storage/production.sqlite3"
+
+  # Restore only when the primary is missing (a fresh box or a wiped volume);
+  # an existing live database is never touched. Restore to a temp file, verify
+  # it, and only then move it into place — a partial or corrupt restore must
+  # never satisfy the "db exists" guard and get migrated (canon C3.6, C6.2).
+  if [ ! -f "$db" ]; then
+    tmp="${db}.restoring"
+    rm -f "$tmp"
+    litestream restore -config /rails/config/litestream.yml -if-replica-exists -o "$tmp" "$db"
+    if [ -f "$tmp" ]; then
+      if [ "$(sqlite3 "$tmp" 'PRAGMA integrity_check;')" == "ok" ]; then
+        mv "$tmp" "$db"
+        echo "Restored $db from the Litestream replica."
+      else
+        echo "Litestream restore failed integrity_check; refusing to use it." >&2
+        rm -f "$tmp"
+        exit 1
+      fi
+    else
+      echo "No Litestream replica yet; starting with a fresh database."
+    fi
+  fi
+
   ./bin/rails db:prepare
 fi
 

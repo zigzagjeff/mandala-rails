@@ -1,0 +1,26 @@
+# Litestream continuous replication for the production SQLite database.
+#
+# Only the PRIMARY database is replicated. cache/queue/cable are disposable
+# (canon C2.11) — a restored box recreates them from db/*_schema.rb via
+# db:prepare. Credentials and endpoint come from the environment; nothing
+# secret lives in this file.
+#
+# Run model: a single long-lived `litestream replicate` sidecar (Kamal
+# accessory) is the SOLE replicator. The app container never runs replicate —
+# it only restores-if-missing on boot — so rolling deploys never produce two
+# replicators writing the same replica.
+dbs:
+  - path: /rails/storage/production.sqlite3
+    replicas:
+      - type: s3
+        endpoint: ${LITESTREAM_ENDPOINT}
+        region: ${LITESTREAM_REGION}
+        bucket: ${LITESTREAM_BUCKET}
+        path: production
+        access-key-id: ${LITESTREAM_ACCESS_KEY_ID}
+        secret-access-key: ${LITESTREAM_SECRET_ACCESS_KEY}
+        # 30-day point-in-time window: proportional to the loss for the sole
+        # off-site copy of live user data (canon C6.3) — long enough to catch
+        # logical corruption that isn't noticed for days.
+        retention: 720h
+        snapshot-interval: 24h
