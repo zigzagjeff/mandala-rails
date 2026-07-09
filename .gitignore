@@ -48,7 +48,7 @@
 !.claude/settings.json
 !.claude/hooks/
 # Project-owned skills travel too; environment-provided skills
-# (dhh-coder and friends, linked from /Users/dev/DHH) stay local.
+# (dhh-coder and friends, symlinked from outside the repo) stay local.
 !.claude/skills/
 .claude/skills/*
 !.claude/skills/mandala/
