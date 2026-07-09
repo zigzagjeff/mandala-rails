@@ -26,11 +26,11 @@ Current version: **0.3.0** (see [CHANGELOG.md](./CHANGELOG.md)).
 
 ### Stack
 
-- Rails 8.1, PostgreSQL, Propshaft, Import maps
+- Rails 8.1, SQLite, Propshaft, Import maps
 - Hotwire: Turbo Frames for inline edit, Turbo Streams for partial page updates
 - Lexxy for rich text (Action Text under the hood)
 - Kamal for deployment
-- Neon Serverless Postgres in production; local Postgres in development (see issue [#14](https://github.com/zigzagjeff/mandala-rails/issues/14))
+- SQLite in every environment (file-based, `storage/*.sqlite3`); the Rails 8 Solid stack (Queue, Cache, Cable) runs on SQLite — no Redis, no external database
 
 ### Data model
 
@@ -83,7 +83,7 @@ Example of intended summary format:
       <summary>Establish local dev environment for fast iteration.</summary>
       <grid depth="1">
         <tile position="4" type="task">
-          <summary>Switch from Neon to local Postgres in development.</summary>
+          <summary>Establish the SQLite dev database and load fixtures.</summary>
         </tile>
       </grid>
     </tile>

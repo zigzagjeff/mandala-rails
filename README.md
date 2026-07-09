@@ -24,7 +24,7 @@ Users are limited to 9 charts. That's Miller's Law too.
 ## Architecture
 
 - **Rails 8.1** — Hotwire (Turbo Frames + Turbo Streams) for inline editing without page reloads
-- **PostgreSQL** — local in development, [Neon Serverless](https://neon.tech) in production
+- **SQLite** — file-based, every environment; the Rails 8 Solid stack (Solid Queue, Solid Cache, Solid Cable) runs on it, so there is no Redis and no external database
 - **Propshaft** — asset pipeline
 - **Import maps** — JavaScript without a bundler
 - **Lexxy** — rich text editor for tile body (built on Meta's Lexical framework, shipped by 37signals)
@@ -43,7 +43,7 @@ User
             ├── subtitle (string, max 120 chars)
             ├── body (rich text via Action Text)
             ├── agentic_summary (text, nullable — written by AI agent)
-            ├── metadata (jsonb — reserved)
+            ├── metadata (text, JSON-serialized — reserved)
             └── child_grid → Grid (fractal drill-down)
 ```
 
@@ -60,8 +60,9 @@ The center tile is position 4. `tile_type` returns `:goal` (root grid, position 
 ### Prerequisites
 
 - Ruby (see `Gemfile` — Rails `~> 8.1.3`)
-- PostgreSQL running locally (`brew install postgresql@16` on macOS)
 - Bundler
+
+SQLite needs no separate install — the `sqlite3` gem bundles it.
 
 ### Setup
 
@@ -86,16 +87,15 @@ App runs at `http://localhost:3000`.
 
 | Variable | Purpose |
 |---|---|
-| `DATABASE_URL` | Production Neon connection string (not used in local dev) |
 | `RAILS_MASTER_KEY` | Credentials decryption key — get from project owner |
 
-Local development uses a local Postgres instance configured in `config/database.yml`. No `DATABASE_URL` needed in dev.
+The database is file-based SQLite (`storage/*.sqlite3`), configured in `config/database.yml`. No `DATABASE_URL` or external database in any environment.
 
 ---
 
 ## Deployment
 
-Kamal. See `config/deploy.yml` for configuration. Production database is Neon Serverless Postgres via `DATABASE_URL`.
+Kamal. See `config/deploy.yml` for configuration. The production database is SQLite on a Kamal-mounted volume (`storage/`).
 
 ```bash
 kamal deploy
@@ -122,7 +122,6 @@ See [GitHub Issues](https://github.com/zigzagjeff/mandala-rails/issues) for the 
 - [#7](https://github.com/zigzagjeff/mandala-rails/issues/7) — Tile card partial (single source of truth for tile markup)
 - [#10](https://github.com/zigzagjeff/mandala-rails/issues/10) — MCP server for AI agent access
 - [#13](https://github.com/zigzagjeff/mandala-rails/issues/13) — Drag and drop tile reordering
-- [#14](https://github.com/zigzagjeff/mandala-rails/issues/14) — Switch dev database to local Postgres
 - [#17](https://github.com/zigzagjeff/mandala-rails/issues/17) — Enforce 9-chart limit
 
 ---
