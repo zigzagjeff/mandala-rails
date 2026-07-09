@@ -8,11 +8,15 @@ How the production database is backed up off-site, and how to restore it.
 |---|---|---|
 | **Primary database** (`storage/production.sqlite3` — users, charts, grids, tiles) | Kamal volume `mandala_rails_storage` | **Yes** — Litestream → Scaleway Object Storage (EU, `fr-par`), continuous |
 | Solid Cache / Queue / Cable databases | same volume | No — disposable (canon C2.11); recreated from `db/*_schema.rb` by `db:prepare` on restore |
-| **Active Storage blobs** (uploaded images) | same volume, `storage/xx/…` | **NOT YET** — see "Known gap" below |
+| **Active Storage blobs** (uploaded images) | Scaleway bucket `mandala-backups` (root-level keys) | **Yes** — off-box via the S3 service (`config.active_storage.service = :scaleway`) |
 
-> **This is structured-data DR, not full DR.** Until Active Storage blobs move
-> off-server (#82 Part 2), a restore recovers the database but not uploaded
-> images. Do not treat #74 as closed for full recovery.
+> **Full DR:** both the database (Litestream) and uploaded blobs (Active
+> Storage → S3) live off the box, so a total-loss restore recovers everything.
+>
+> **⚠ Never add a bucket-level expiry / lifecycle rule to `mandala-backups`.**
+> It holds live user uploads that must never expire. Litestream manages its own
+> retention via explicit deletes and needs no lifecycle rule. An expiry rule
+> intended for "backups" would silently delete user images.
 
 ## How it works
 
@@ -42,8 +46,8 @@ Proves the replica is restorable without touching production. Needs the
 Litestream binary and the Scaleway credentials in the environment.
 
 ```sh
-export LITESTREAM_ENDPOINT=https://s3.fr-par.scw.cloud LITESTREAM_REGION=fr-par LITESTREAM_BUCKET=mandala-backups
-export LITESTREAM_ACCESS_KEY_ID=… LITESTREAM_SECRET_ACCESS_KEY=…
+export S3_ENDPOINT=https://s3.fr-par.scw.cloud S3_REGION=fr-par S3_BUCKET=mandala-backups
+export S3_ACCESS_KEY_ID=… S3_SECRET_ACCESS_KEY=…
 litestream restore -config config/litestream.yml -o /tmp/check.sqlite3 /rails/storage/production.sqlite3
 sqlite3 /tmp/check.sqlite3 'PRAGMA integrity_check;'   # expect: ok
 sqlite3 /tmp/check.sqlite3 'SELECT count(*) FROM charts;'
@@ -76,5 +80,5 @@ the app is safe.
 
 - Sidecar logs: `ssh <box> 'docker logs mandala_rails-litestream'` — healthy
   output shows `replica sync` with `txid.replica == txid.db`.
-- The credentials live in gitignored files (`.kamal/.litestream_*`), pulled
+- The credentials live in gitignored files (`.kamal/.s3_*`), pulled
   into `.kamal/secrets` at deploy time; nothing secret is committed.

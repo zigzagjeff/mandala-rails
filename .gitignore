@@ -39,8 +39,8 @@
 /.kamal/.registry_password
 
 # Scaleway credentials for Litestream — pulled into .kamal/secrets at deploy time.
-/.kamal/.litestream_access_key_id
-/.kamal/.litestream_secret_access_key
+/.kamal/.s3_access_key_id
+/.kamal/.s3_secret_access_key
 
 # Private planner (DHH pipeline) — loads globally from ~/.claude/CLAUDE.md,
 # never travels with the public repo. A project-only CLAUDE.local.md, if

@@ -13,12 +13,12 @@ dbs:
   - path: /rails/storage/production.sqlite3
     replicas:
       - type: s3
-        endpoint: ${LITESTREAM_ENDPOINT}
-        region: ${LITESTREAM_REGION}
-        bucket: ${LITESTREAM_BUCKET}
+        endpoint: ${S3_ENDPOINT}
+        region: ${S3_REGION}
+        bucket: ${S3_BUCKET}
         path: production
-        access-key-id: ${LITESTREAM_ACCESS_KEY_ID}
-        secret-access-key: ${LITESTREAM_SECRET_ACCESS_KEY}
+        access-key-id: ${S3_ACCESS_KEY_ID}
+        secret-access-key: ${S3_SECRET_ACCESS_KEY}
         # 30-day point-in-time window: proportional to the loss for the sole
         # off-site copy of live user data (canon C6.3) — long enough to catch
         # logical corruption that isn't noticed for days.
