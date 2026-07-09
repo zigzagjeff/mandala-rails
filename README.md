@@ -72,7 +72,7 @@ cd mandala-rails
 bundle install
 ```
 
-Create a `.env` file (or set environment variables) — see **Environment variables** below.
+Copy `.env.example` to `.env` and adjust as needed — see **Environment variables** below. Most local setups need nothing beyond `config/master.key`.
 
 ```bash
 rails db:create db:migrate db:seed
