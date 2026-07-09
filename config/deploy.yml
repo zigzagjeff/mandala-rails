@@ -2,12 +2,12 @@
 service: mandala_rails
 
 # Name of the container image (use your-user/app-name on external registries).
-image: mandala_rails
+image: zigzagjeff/mandala-rails
 
 # Deploy to these servers.
 servers:
   web:
-    - 192.168.0.1
+    - 167.233.95.168
   # job:
   #   hosts:
   #     - 192.168.0.1
@@ -26,15 +26,12 @@ servers:
 
 # Where you keep your container images.
 registry:
-  # Alternatives: hub.docker.com / registry.digitalocean.com / ghcr.io / ...
-  server: localhost:5555
-
-  # Needed for authenticated registries.
-  # username: your-user
+  server: ghcr.io
+  username: zigzagjeff
 
   # Always use an access token rather than real password when possible.
-  # password:
-  #   - KAMAL_REGISTRY_PASSWORD
+  password:
+    - KAMAL_REGISTRY_PASSWORD
 
 # Inject ENV variables into containers (secrets come from .kamal/secrets).
 env:
@@ -79,9 +76,9 @@ asset_path: /rails/public/assets
 # Configure the image builder.
 builder:
   arch: amd64
-
-  # # Build image via remote server (useful for faster amd64 builds on arm64 computers)
-  # remote: ssh://docker@docker-builder-server
+  # Build on the x86 server itself — native amd64, avoids slow QEMU emulation
+  # on the arm64 (Apple Silicon) workstation.
+  remote: ssh://root@167.233.95.168
   #
   # # Pass arguments and secrets to the Docker build process
   # args:
