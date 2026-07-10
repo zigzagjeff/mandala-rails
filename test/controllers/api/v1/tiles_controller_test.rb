@@ -26,6 +26,21 @@ class Api::V1::TilesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "<community_growth>BFP community building</community_growth>", @tile.agentic_summary
   end
 
+  # body stays writable by design: AGENTS.md's contract is that agents write it
+  # only when the user directs them to draft — the capability is deliberate,
+  # not an oversight in the permit (#90).
+  test "update writes body when the user directs a draft" do
+    assert_difference "Event.count", 1 do
+      patch api_v1_tile_path(@tile),
+            params: { tile: { body: "<p>Drafted on the user's behalf</p>" } },
+            headers: authorized_headers, as: :json
+    end
+
+    assert_response :success
+    assert_equal "Drafted on the user's behalf", @tile.reload.body.to_plain_text
+    assert_equal "tile_body_changed", @tile.events.last.action
+  end
+
   test "update with an overlong title returns errors" do
     patch api_v1_tile_path(@tile),
           params: { tile: { title: "a" * (Tile::TITLE_MAX_LENGTH + 1) } },
