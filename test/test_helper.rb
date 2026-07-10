@@ -13,6 +13,10 @@ module ActiveSupport
     # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
     fixtures :all
 
+    # Rate-limit counters live in the controller cache store; reset them so a
+    # count from one test can't trip a limit in the next.
+    setup { ActionController::Base.cache_store.clear }
+
     # Add more helper methods to be used by all tests here...
   end
 end

@@ -101,7 +101,9 @@ The versioned JSON API (issue [#25](https://github.com/zigzagjeff/mandala-rails/
 Authorization: Bearer <api_token>
 ```
 
-The token lives on the user (`User#api_token`, `has_secure_token`). Retrieve it locally with `bin/rails runner 'print User.first.api_token'`; regenerate with `user.regenerate_api_token` if leaked. One token, one user, scoped to that user's charts.
+The token lives on the user (`User#api_token`, `has_secure_token`). Retrieve it locally with `bin/rails runner 'print User.first.api_token'`; regenerate with `user.regenerate_api_token` if leaked. One token, one user, scoped to that user's charts. Rotate on any suspicion of a leak, and as a habit whenever you wire up a new agent integration — the blast radius of a leaked token is that one user's charts, read and write, so rotation is cheap insurance (issue [#100](https://github.com/zigzagjeff/mandala-rails/issues/100)).
+
+Requests are rate-limited (issue [#89](https://github.com/zigzagjeff/mandala-rails/issues/89)): **60 requests/minute per token**, with a wider 120/minute per-address backstop against token guessing. Exceeding either returns `429` with `{ "error": "Too many requests" }`. Budget accordingly when polling `?since=` or traversing large charts — the traversal model below exists so you rarely need more.
 
 The traversal model: read summaries first, load a body only when the task demands it.
 
