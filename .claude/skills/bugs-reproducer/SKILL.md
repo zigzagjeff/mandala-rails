@@ -32,6 +32,10 @@ Lexxy core (wiring, form params, Action Text persistence), reproduce the
 integration side in `test/system/` first — where the reproduction fails
 tells you whose bug it is.
 
+Then scan `watch.md` for the shape you are about to reproduce. A match is
+the second sighting — the bug is now a family: promote it per C8.8 (see
+"Common bug patterns" below).
+
 ## Reproduce
 
 1. Start from existing fixtures (`charts`, `grids`, `tiles`, `users`) —
@@ -58,5 +62,7 @@ reproduces on `main` and is gone on the branch, through the real app
 
 Families only — a pattern or subsystem that keeps producing bugs, never
 an individual fix (C8.8; instances belong to tests and commit messages).
+A single occurrence is not a family yet — stage it in `watch.md` and
+promote it here on the second sighting.
 
 *(none recorded yet)*
