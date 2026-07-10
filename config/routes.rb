@@ -10,6 +10,10 @@ Rails.application.routes.draw do
   resources :charts, only: [ :index, :new, :create, :show, :edit, :update, :destroy ] do
     resources :grids, only: [ :show ]
     resources :tiles, only: [ :edit, :update ] do
+      # Priced bend of C2.13 (canon C0.3): a read-only GET rendering the
+      # title-only rename form. The write goes through the normal #update.
+      # REST-ify into a Tiles::NamesController only if a second inline editor
+      # (e.g. subtitle) appears — see issue #66.
       get :rename, on: :member
       resource :drill, only: :create, module: :tiles
     end
@@ -22,6 +26,9 @@ Rails.application.routes.draw do
       end
       resources :grids, only: [ :show ]
       resources :tiles, only: [ :show, :update ] do
+        # Priced bend of C2.13 (canon C0.3): `drill` is the domain verb (C4.1)
+        # and reads clearer to agent consumers than a nested `grid` resource.
+        # Published v1 contract — priced in AGENTS.md, see issue #65.
         post :drill, on: :member
       end
     end

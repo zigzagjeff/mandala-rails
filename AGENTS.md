@@ -115,6 +115,8 @@ The traversal model: read summaries first, load a body only when the task demand
 | `PATCH /api/v1/tiles/:id` | writes `title`, `subtitle`, `body`, `agentic_summary` |
 | `POST /api/v1/tiles/:id/drill` | creates/returns the tile's child grid |
 
+`drill` is a priced bend of C2.13 (canon C0.3): the CRUD-conforming shape would be `POST /api/v1/tiles/:id/grid` (create-or-return the child grid), but `drill` is the domain verb (C4.1) and reads clearer to agent consumers than a nested `grid` resource. It stays as the published v1 contract; a conforming alias would only be added if an external consumer needed it (issue [#65](https://github.com/zigzagjeff/mandala-rails/issues/65)).
+
 Descend by following `root_grid_id` → tiles → `child_grid_id`. Errors are `{ "errors": [...] }` with 401/404/422. No deletes — the API deliberately has none.
 
 `heading_level` on every tile is derived from stored grid depth (issue [#63](https://github.com/zigzagjeff/mandala-rails/issues/63)): depth 0 center → 1 (the goal), depth 0 ring → 2 (themes), depth 1 center → 2, depth 1 ring → 3 (tasks). When assembling chart context client-side, order by depth then position — the same order the server derives in one query.
