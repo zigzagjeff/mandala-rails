@@ -39,6 +39,8 @@ env:
     - RAILS_MASTER_KEY
     - S3_ACCESS_KEY_ID
     - S3_SECRET_ACCESS_KEY
+    - SMTP_USERNAME
+    - SMTP_PASSWORD
   clear:
     # Shared Scaleway (EU) Object Storage credentials. Litestream reads them to
     # replicate/restore the primary database; Active Storage reads them to store
@@ -46,6 +48,11 @@ env:
     S3_ENDPOINT: https://s3.fr-par.scw.cloud
     S3_REGION: fr-par
     S3_BUCKET: mandala-backups
+
+    # Scaleway Transactional Email (EU) SMTP relay. Credentials (SMTP_USERNAME =
+    # Project ID, SMTP_PASSWORD = API secret key) come from env/secret above.
+    SMTP_ADDRESS: smtp.tem.scaleway.com
+    SMTP_PORT: 587
 
     # Run the Solid Queue Supervisor inside the web server's Puma process to do jobs.
     # When you start using multiple servers, you should split out job processing to a dedicated machine.

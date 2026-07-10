@@ -21,6 +21,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
     assert_emails 1 do
       perform_enqueued_jobs
     end
+    assert_equal [ "noreply@jlintelligence.net" ], ActionMailer::Base.deliveries.last.from
 
     follow_redirect!
     assert_notice "reset instructions sent"
