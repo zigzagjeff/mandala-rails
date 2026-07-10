@@ -45,7 +45,7 @@ class ChartTest < ActiveSupport::TestCase
   # --- 9-chart limit ---
 
   setup do
-    @user = User.create!(email_address: "test_chart_#{SecureRandom.hex(4)}@example.com", password: "password")
+    @user = User.create!(email_address: "test_chart_#{SecureRandom.hex(4)}@example.com", password: "a-secure-passphrase")
   end
 
   test "allows creating up to 9 charts" do
