@@ -6,8 +6,8 @@ User.destroy_all
 
 user = User.create!(
   email_address: "jeff@example.com",
-  password: "password",
-  password_confirmation: "password"
+  password: "password1234",
+  password_confirmation: "password1234"
 )
 
 # Chart#after_create seeds the root grid, and Grid#after_create seeds its nine
@@ -22,4 +22,4 @@ brainstorm = Chart.create!(title: "Brainstorm", mode: "brainstorm", user: user)
 end
 
 puts "Seeded: 1 user, 2 charts, 2 grids, 18 tiles"
-puts "Login: jeff@example.com / password"
+puts "Login: jeff@example.com / password1234"
