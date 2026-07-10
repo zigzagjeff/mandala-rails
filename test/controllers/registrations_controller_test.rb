@@ -8,6 +8,16 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "new form names its fields the way create permits them" do
+    get new_registration_path
+
+    assert_select "form[action=?]", registrations_path do
+      assert_select "input[name=?]", "email_address"
+      assert_select "input[name=?]", "password"
+      assert_select "input[name=?]", "password_confirmation"
+    end
+  end
+
   test "create with valid params starts a session and redirects" do
     assert_difference "User.count", 1 do
       post registrations_path, params: { email_address: "new-signup@example.com", password: "a-secure-passphrase", password_confirmation: "a-secure-passphrase" }
