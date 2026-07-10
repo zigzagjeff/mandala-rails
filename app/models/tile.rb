@@ -48,14 +48,7 @@ class Tile < ApplicationRecord
   end
 
   def drill
-    child_grid || transaction do
-      create_child_grid!(chart: chart).tap do |child|
-        Event.suppressing_recording do
-          child.center_tile.update!(title: title)
-        end
-        track_event "drilled"
-      end
-    end
+    child_grid || create_child_grid_once
   end
 
   def heading_level
@@ -70,4 +63,16 @@ class Tile < ApplicationRecord
       :task
     end
   end
+
+  private
+    def create_child_grid_once
+      Grid.create_or_find_by!(chart: chart, parent_tile: self).tap do |grid|
+        if grid.previously_new_record?
+          Event.suppressing_recording do
+            grid.center_tile.update!(title: title)
+          end
+          track_event "drilled"
+        end
+      end
+    end
 end
