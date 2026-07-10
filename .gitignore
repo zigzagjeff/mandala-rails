@@ -65,3 +65,7 @@
 
 # macOS Finder droppings
 .DS_Store
+
+# opencode CLI config (not part of this project's toolchain)
+/.opencode/
+/opencode.json
