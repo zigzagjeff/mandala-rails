@@ -70,6 +70,15 @@ class Tile::EventableTest < ActiveSupport::TestCase
     end
   end
 
+  test "losing the drill race records nothing" do
+    assert_nil @tile.child_grid
+    Grid.create!(chart: @tile.chart, parent_tile_id: @tile.id)
+
+    assert_no_difference "Event.count" do
+      @tile.drill
+    end
+  end
+
   test "creating a tile records nothing" do
     assert_no_difference "Event.count" do
       grids(:one).tiles.create!(position: 0)

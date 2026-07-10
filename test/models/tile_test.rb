@@ -91,6 +91,25 @@ class TileTest < ActiveSupport::TestCase
     assert_equal first.id, second.id
   end
 
+  test "drill does not duplicate when a child grid appears after its nil check" do
+    tile = tiles(:one)
+    assert_nil tile.child_grid
+    Grid.create!(chart: tile.chart, parent_tile_id: tile.id)
+
+    tile.drill
+
+    assert_equal 1, Grid.where(parent_tile_id: tile.id).count
+  end
+
+  test "the database refuses a second child grid for the same tile" do
+    tile = tiles(:one)
+    Grid.create!(chart: tile.chart, parent_tile_id: tile.id)
+
+    assert_raises ActiveRecord::RecordNotUnique do
+      Grid.create!(chart: tile.chart, parent_tile_id: tile.id)
+    end
+  end
+
   # --- depth ---
 
   test "drill sets child depth one below the parent grid" do
