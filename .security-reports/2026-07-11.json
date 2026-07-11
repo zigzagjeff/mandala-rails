@@ -1,0 +1,113 @@
+{
+  "date": "2026-07-11",
+  "mode": "full",
+  "tiers": [1, 2, 3],
+  "stack": "Ruby / Rails 8.1",
+  "model": "claude-fable-5",
+  "scope_note": "Tier 1-2 findings are mandala-rails repo-scoped; Tier 3 findings (firewall, OS update) are machine-level per the skill's CSO framing.",
+  "findings": [
+    {
+      "id": 1,
+      "severity": "HIGH",
+      "confidence": 9,
+      "status": "VERIFIED",
+      "category": "CI/CD",
+      "phase": "P7",
+      "file": ".github/workflows/ci.yml:17",
+      "title": "ruby/setup-ruby@v1 not SHA-pinned (third-party action)",
+      "detail": "Third-party action pinned to mutable tag v1, not a commit SHA. Tag repoint (maintainer compromise or force-move) executes attacker code in CI with GITHUB_TOKEN and source checkout in scope. tj-actions/changed-files attack class.",
+      "fix": "uses: ruby/setup-ruby@<40-char-sha>  # v1.x.x ; add .github/dependabot.yml for github-actions ecosystem.",
+      "scope": "repo"
+    },
+    {
+      "id": 2,
+      "severity": "MEDIUM",
+      "confidence": 8,
+      "status": "VERIFIED",
+      "category": "OS",
+      "phase": "P12",
+      "file": null,
+      "title": "Application firewall disabled (State = 0)",
+      "detail": "macOS application firewall off. Local listening services (Postgres 17, com.mandala.litestream, bin/mcp, Rails dev server) are unfiltered on inbound connections; exposure risk on untrusted networks. FileVault and SIP both on.",
+      "fix": "System Settings -> Network -> Firewall -> On. User action (security setting).",
+      "scope": "machine"
+    },
+    {
+      "id": 3,
+      "severity": "MEDIUM",
+      "confidence": 8,
+      "status": "VERIFIED",
+      "category": "OS",
+      "phase": "P12",
+      "file": null,
+      "title": "Pending macOS security update (Tahoe 26.5.2, recommended)",
+      "detail": "softwareupdate -l reports macOS Tahoe 26.5.2 (Recommended: YES, requires restart) uninstalled. Recommended point releases are typically security-relevant.",
+      "fix": "Install when a restart is acceptable.",
+      "scope": "machine"
+    },
+    {
+      "id": 4,
+      "severity": "MEDIUM",
+      "confidence": 8,
+      "status": "VERIFIED",
+      "category": "CI/CD",
+      "phase": "P7",
+      "file": ".github/workflows/ci.yml:14,41,49,68",
+      "title": "First-party actions tag-pinned, not SHA-pinned",
+      "detail": "actions/checkout@v7 and actions/cache@v6 pinned to mutable tags. GitHub-maintained so lower risk than Finding 1, but still tag-mutable. Skill rule: first-party actions unpinned = MEDIUM.",
+      "fix": "SHA-pin with version comment. Lower priority than Finding 1.",
+      "scope": "repo"
+    },
+    {
+      "id": 5,
+      "severity": "MEDIUM",
+      "confidence": 8,
+      "status": "VERIFIED",
+      "category": "CI/CD",
+      "phase": "P7",
+      "file": ".github/workflows/",
+      "title": "No CODEOWNERS on workflow files",
+      "detail": "No CODEOWNERS file in repo. Any write-access collaborator can modify ci.yml (e.g. add secret-exfil step) without mandatory second review. Low urgency on single-maintainer private repo.",
+      "fix": "Add .github/CODEOWNERS requiring review on .github/workflows/**.",
+      "scope": "repo"
+    }
+  ],
+  "passed": {
+    "tier1": [
+      "No secrets in working tree",
+      ".env and config/master.key gitignored and untracked",
+      "config/master.key permissioned 600",
+      "config/credentials.yml.enc encrypted (world-readable is Rails design, not a finding)",
+      "Gemfile.lock present and tracked",
+      "No typosquatting signal in Gemfile"
+    ],
+    "tier2": [
+      "Git history clean of literal secret values (AKIA/sk-ant/ghp_/gho_/pat/xox)",
+      "bundle audit: 0 vulnerabilities against 1200 advisories",
+      "No webhook/callback routes",
+      "Api::V1::BaseController skip_forgery_protection correct (Bearer-token auth, no session-cookie surface, rate-limited)",
+      "No disabled TLS verification",
+      ".claude/skills/ clean of exfiltration/credential-access/prompt-injection patterns",
+      "Background processes all known-good (com.mandala.litestream, bin/mcp)",
+      "mandala-rails repo PRIVATE"
+    ],
+    "tier3": [
+      "FileVault ON",
+      "SIP ENABLED",
+      "gh token scopes (gist, read:org, repo, workflow) normal for dev use",
+      "mandala-rails .env is 1 byte (no aged key)",
+      "No unfamiliar GitHub OAuth app installations"
+    ]
+  },
+  "totals": {
+    "reported": 5,
+    "high": 1,
+    "medium": 4,
+    "critical": 0,
+    "repo_scoped": 3,
+    "machine_scoped": 2
+  },
+  "trend": {
+    "note": "First report — baseline established. No prior report to compare."
+  }
+}
