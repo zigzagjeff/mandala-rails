@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  include Verification
+
   has_secure_password
   has_secure_token :api_token
   has_many :sessions, dependent: :destroy

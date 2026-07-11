@@ -11,6 +11,7 @@ class RegistrationsController < ApplicationController
 
     if @user.save
       start_new_session_for @user
+      VerificationMailer.verify_later @user
       redirect_to after_authentication_url
     else
       render :new, status: :unprocessable_entity

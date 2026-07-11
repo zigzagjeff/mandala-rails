@@ -40,6 +40,22 @@ body {
 .button-danger        { background: #c0392b; }
 .button-danger:hover  { background: #96281b; }
 
+/* ── Banner ── */
+.app-banner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 1.5rem;
+  background: #fdf3d0;
+  color: #5c4a12;
+  font-size: 0.9rem;
+}
+
+/* ── Flash ── */
+.flash { padding: 0.6rem 1.5rem; font-size: 0.9rem; }
+.flash-notice { color: #1e7a3c; }
+.flash-alert  { color: #c0392b; }
+
 /* ── App Main ── */
 .app-main { padding: 2rem 1.5rem; max-width: 960px; margin: 0 auto; }
 

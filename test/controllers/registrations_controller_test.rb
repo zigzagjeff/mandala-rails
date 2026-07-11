@@ -27,6 +27,12 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     assert cookies[:session_id]
   end
 
+  test "create sends a verification email" do
+    assert_enqueued_with job: Verifications::VerifyJob do
+      post registrations_path, params: { email_address: "new-signup@example.com", password: "a-secure-passphrase", password_confirmation: "a-secure-passphrase" }
+    end
+  end
+
   test "create with a taken email re-renders with an error" do
     assert_no_difference "User.count" do
       post registrations_path, params: { email_address: @user.email_address, password: "a-secure-passphrase", password_confirmation: "a-secure-passphrase" }
