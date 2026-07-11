@@ -26,7 +26,7 @@
     <nav class="app-nav">
       <span class="app-nav-brand">Mandala</span>
       <% if authenticated? %>
-        <span class="app-nav-user"><%= Current.user.email_address %></span>
+        <%= link_to Current.user.email_address, account_path, class: "app-nav-user" %>
         <%= button_to "Sign out", session_path, method: :delete, class: "button button-small" %>
       <% end %>
     </nav>
