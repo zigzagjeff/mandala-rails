@@ -4,6 +4,10 @@ Rails.application.routes.draw do
   resources :registrations, only: %i[ new create ]
   resources :email_verifications, only: %i[ create show update ], param: :token
 
+  resource :account, only: :show
+  resource :account_closure, only: %i[ new create destroy ]
+  resource :data_export, only: :show
+
   # Static legal pages (privacy policy, terms, operator legal notice; issue
   # #76) — named GET actions on one Pages controller per ruling R9 (the house
   # pattern for read-only informational documents, not a C2.13 bend; cf.
