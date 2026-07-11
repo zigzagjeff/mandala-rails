@@ -15,12 +15,13 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
       assert_select "input[name=?]", "email_address"
       assert_select "input[name=?]", "password"
       assert_select "input[name=?]", "password_confirmation"
+      assert_select "input[type=checkbox][name=?]", "terms_of_service"
     end
   end
 
   test "create with valid params starts a session and redirects" do
     assert_difference "User.count", 1 do
-      post registrations_path, params: { email_address: "new-signup@example.com", password: "a-secure-passphrase", password_confirmation: "a-secure-passphrase" }
+      post registrations_path, params: { email_address: "new-signup@example.com", password: "a-secure-passphrase", password_confirmation: "a-secure-passphrase", terms_of_service: "1" }
     end
 
     assert_redirected_to root_path
@@ -29,13 +30,23 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
 
   test "create sends a verification email" do
     assert_enqueued_with job: Verifications::VerifyJob do
-      post registrations_path, params: { email_address: "new-signup@example.com", password: "a-secure-passphrase", password_confirmation: "a-secure-passphrase" }
+      post registrations_path, params: { email_address: "new-signup@example.com", password: "a-secure-passphrase", password_confirmation: "a-secure-passphrase", terms_of_service: "1" }
     end
+  end
+
+  test "create without accepting the terms re-renders with an error" do
+    assert_no_difference "User.count" do
+      post registrations_path, params: { email_address: "new-signup@example.com", password: "a-secure-passphrase", password_confirmation: "a-secure-passphrase", terms_of_service: "0" }
+    end
+
+    assert_response :unprocessable_entity
+    assert_nil cookies[:session_id]
+    assert_select "div", /Terms of service must be accepted/
   end
 
   test "create with a taken email re-renders with an error" do
     assert_no_difference "User.count" do
-      post registrations_path, params: { email_address: @user.email_address, password: "a-secure-passphrase", password_confirmation: "a-secure-passphrase" }
+      post registrations_path, params: { email_address: @user.email_address, password: "a-secure-passphrase", password_confirmation: "a-secure-passphrase", terms_of_service: "1" }
     end
 
     assert_response :unprocessable_entity
@@ -45,7 +56,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
 
   test "create with a password below the minimum length re-renders with an error" do
     assert_no_difference "User.count" do
-      post registrations_path, params: { email_address: "new-signup@example.com", password: "short", password_confirmation: "short" }
+      post registrations_path, params: { email_address: "new-signup@example.com", password: "short", password_confirmation: "short", terms_of_service: "1" }
     end
 
     assert_response :unprocessable_entity
@@ -55,7 +66,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
 
   test "create with mismatched password confirmation re-renders with an error" do
     assert_no_difference "User.count" do
-      post registrations_path, params: { email_address: "new-signup@example.com", password: "a-secure-passphrase", password_confirmation: "a-different-passphrase" }
+      post registrations_path, params: { email_address: "new-signup@example.com", password: "a-secure-passphrase", password_confirmation: "a-different-passphrase", terms_of_service: "1" }
     end
 
     assert_response :unprocessable_entity
@@ -65,7 +76,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
 
   test "create rate limits repeated attempts" do
     11.times do |i|
-      post registrations_path, params: { email_address: "signup-#{i}@example.com", password: "a-secure-passphrase", password_confirmation: "a-secure-passphrase" }
+      post registrations_path, params: { email_address: "signup-#{i}@example.com", password: "a-secure-passphrase", password_confirmation: "a-secure-passphrase", terms_of_service: "1" }
     end
 
     assert_redirected_to new_registration_path

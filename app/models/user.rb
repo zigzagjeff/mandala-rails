@@ -12,4 +12,5 @@ class User < ApplicationRecord
 
   validates :email_address, presence: true, uniqueness: true
   validates :password, length: { minimum: 12 }, allow_nil: true
+  validates :terms_of_service, acceptance: true
 end
