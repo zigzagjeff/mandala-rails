@@ -31,6 +31,17 @@
       <% end %>
     </nav>
 
+    <% flash.each do |type, message| %>
+      <%= tag.div message, class: "flash flash-#{type}" %>
+    <% end %>
+
+    <% if authenticated? && Current.user.unverified? %>
+      <div class="app-banner">
+        Please verify your email address.
+        <%= button_to "Resend verification", email_verifications_path, class: "button button-small" %>
+      </div>
+    <% end %>
+
     <main class="app-main">
       <%= yield %>
     </main>

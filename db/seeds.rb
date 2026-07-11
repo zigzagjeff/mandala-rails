@@ -7,7 +7,8 @@ User.destroy_all
 user = User.create!(
   email_address: "jeff@example.com",
   password: "password1234",
-  password_confirmation: "password1234"
+  password_confirmation: "password1234",
+  verified_at: Time.current
 )
 
 # Chart#after_create seeds the root grid, and Grid#after_create seeds its nine
