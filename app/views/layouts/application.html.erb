@@ -45,5 +45,11 @@
     <main class="app-main">
       <%= yield %>
     </main>
+
+    <footer class="app-footer">
+      <%= link_to "Privacy Policy", privacy_path %>
+      <%= link_to "Terms of Service", terms_path %>
+      <%= link_to "Legal Notice", legal_path %>
+    </footer>
   </body>
 </html>

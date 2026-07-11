@@ -37,4 +37,15 @@ class UserTest < ActiveSupport::TestCase
   test "does not demand a password on a save that leaves it untouched" do
     assert users(:one).update(email_address: "renamed@example.com")
   end
+
+  test "rejects a signup that declines the terms of service" do
+    user = User.new(email_address: "new@example.com", password: "a-secure-passphrase", terms_of_service: "0")
+    assert_not user.valid?
+    assert user.errors.of_kind?(:terms_of_service, :accepted)
+  end
+
+  test "accepts a signup that accepts the terms of service" do
+    user = User.new(email_address: "new@example.com", password: "a-secure-passphrase", terms_of_service: "1")
+    assert user.valid?
+  end
 end
