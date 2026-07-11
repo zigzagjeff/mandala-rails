@@ -42,6 +42,13 @@
       </div>
     <% end %>
 
+    <% if authenticated? && Current.user.closed? %>
+      <div class="app-banner">
+        Your account is scheduled for deletion on <%= Current.user.deletes_on.to_date.to_fs(:long) %>.
+        <%= button_to "Cancel deletion", account_closure_path, method: :delete, class: "button button-small" %>
+      </div>
+    <% end %>
+
     <main class="app-main">
       <%= yield %>
     </main>

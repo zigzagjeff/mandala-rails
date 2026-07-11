@@ -1,0 +1,22 @@
+<% content_for :title, "Account settings" %>
+
+<h1>Account settings</h1>
+
+<p><%= Current.user.email_address %></p>
+
+<section>
+  <h2>Your data</h2>
+  <p>Download a copy of your charts and account data.</p>
+  <%= link_to "Export my data", data_export_path %>
+</section>
+
+<section>
+  <h2>Delete your account</h2>
+  <% if Current.user.closed? %>
+    <p>Your account is scheduled for deletion on <%= Current.user.deletes_on.to_date.to_fs(:long) %>.</p>
+    <%= button_to "Cancel deletion", account_closure_path, method: :delete %>
+  <% else %>
+    <p>Permanently delete your account and everything in it. You can undo this during a <%= pluralize User::Closeable::INCINERATED_AFTER.in_days.to_i, "day" %> grace period.</p>
+    <%= link_to "Delete my account", new_account_closure_path %>
+  <% end %>
+</section>

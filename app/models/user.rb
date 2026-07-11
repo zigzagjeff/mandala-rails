@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  include Closeable
   include Verification
 
   has_secure_password
