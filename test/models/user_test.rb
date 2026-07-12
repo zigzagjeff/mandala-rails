@@ -23,6 +23,12 @@ class UserTest < ActiveSupport::TestCase
     assert user.errors.of_kind?(:email_address, :taken)
   end
 
+  test "rejects a malformed email address" do
+    user = User.new(email_address: "not-an-email", password: "a-secure-passphrase")
+    assert_not user.valid?
+    assert user.errors.of_kind?(:email_address, :invalid)
+  end
+
   test "rejects a password shorter than the minimum" do
     user = User.new(email_address: "new@example.com", password: "short")
     assert_not user.valid?
