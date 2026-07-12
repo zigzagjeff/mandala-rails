@@ -1,4 +1,14 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(bin/check)",
+      "Bash(bin/check *)",
+      "Bash(git fetch *)",
+      "mcp__github__issue_read",
+      "mcp__github__pull_request_read",
+      "mcp__Claude_Browser__read_page"
+    ]
+  },
   "hooks": {
     "PostToolUse": [
       {

@@ -38,6 +38,16 @@ class TilesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Changed Title", @tile.reload.title
   end
 
+  # Regression for CHANGELOG 0.2.0: the drill arrow was dropped from the frame
+  # a rename replaces. The arrow lives in the shared tile partial, so the frame
+  # Turbo extracts from the update's redirect must still carry it.
+  test "the drill arrow survives a rename" do
+    assert @tile.drillable?
+    patch chart_tile_path(@chart, @tile), params: { tile: { title: "Renamed" } }
+    follow_redirect!
+    assert_select "turbo-frame#tile_#{@tile.id} .tile-drill"
+  end
+
   test "update cannot modify another user's tile" do
     other_chart = charts(:two)
     other_tile = tiles(:two)
