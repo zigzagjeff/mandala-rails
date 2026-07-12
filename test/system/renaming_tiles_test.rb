@@ -9,6 +9,7 @@ class RenamingTilesTest < ApplicationSystemTestCase
   test "a drillable tile keeps its drill arrow after renaming" do
     tile = tiles(:one)
     visit chart_path(charts(:one))
+    wait_for_cable_connection
 
     assert_selector "#tile_#{tile.id} .tile-drill"
 
