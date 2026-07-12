@@ -4,7 +4,8 @@ pin "application"
 pin "lexxy", to: "lexxy.js"
 pin "lexxy_config", to: "lexxy_config.js"
 pin "@rails/activestorage", to: "@rails--activestorage.js" # @8.1.300
-pin "@hotwired/turbo", to: "@hotwired--turbo.js" # @8.0.23
+pin "@hotwired/turbo-rails", to: "turbo.min.js"
+pin "@rails/actioncable", to: "actioncable.esm.js"
 pin "@rails/actiontext", to: "@rails--actiontext.js" # @8.1.300
 pin "trix" # @2.1.19
 pin "@hotwired/stimulus", to: "stimulus.min.js"

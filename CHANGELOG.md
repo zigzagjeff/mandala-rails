@@ -22,6 +22,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Drill speaks the domain and stops mutating on GET — `Tile#find_or_create_child_grid!` renamed to `Tile#drill` (the domain word, canon C4.5; bang dropped per C4.7 — raise semantics still propagate from `create!` inside); web route `get :drill, on: :member` replaced with `resource :drill, only: :create` → new `Tiles::DrillsController#create` (canon C2.13, fizzy closures pattern — also fixes grid creation on a GET, which prefetchers could trigger); tile arrow is now a `button_to` POST; API v1 `POST /tiles/:id/drill` route unchanged pending #65; drill controller tests moved to `test/controllers/tiles/drills_controller_test.rb` mirroring the new controller, plus a cross-user scoping test the old action lacked
 - Database switched from PostgreSQL to SQLite — `gem "pg"` replaced with `gem "sqlite3", "~> 2.1"`; `config/database.yml` rewritten for file-based adapter (`storage/*.sqlite3`); `grids.parent_tile_id` column type changed from `uuid` to `string`; `tiles.metadata` column type changed from `jsonb` to `text`; `serialize :metadata, coder: JSON` added to `Tile` model
 
+### Fixed
+- Live broadcasts now reach the browser — a live/broadcast feature (#68) shipped without its client-side cable wiring, invisible because it was only ever eyeball-verified in a single session. The app imported bare `@hotwired/turbo`, which does not register `<turbo-cable-stream-source>` or create an ActionCable consumer, so `turbo_stream_from`'s element was inert and every `broadcast_refresh_later_to` was pushed to a channel no browser subscribed to — a change was only visible on a manual reload. Now imports `@hotwired/turbo-rails` and pins `@rails/actioncable` (the 37signals wiring); a two-session system test asserts the update arrives live (part of #91)
+
+### Added
+- First system tests (`test/system/`) — `ApplicationSystemTestCase` (headless Chrome via selenium) with `sign_in_as`, `wait_for_cable_connection`, and `rename_tile` helpers; a regression test that the drill arrow survives a tile rename (the CHANGELOG 0.2.0 fix, previously untested) and a cross-session live-update test for the broadcast feature; CI installs Chrome and runs `test:system`, uploading screenshots from failures (part of #91)
+
 ### Issues filed
 - [#56](https://github.com/zigzagjeff/mandala-rails/issues/56) — Infra: switch database from PostgreSQL to SQLite ✅ closed
 - [#57](https://github.com/zigzagjeff/mandala-rails/issues/57) — Infra: configure SQLite for production — backup strategy + Neon data migration
