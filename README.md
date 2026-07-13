@@ -61,8 +61,9 @@ The center tile is position 4. `tile_type` returns `:goal` (root grid, position 
 
 - Ruby (see `Gemfile` — Rails `~> 8.1.3`)
 - Bundler
+- **libvips** — the system image library used by Active Storage for image variants (via the `ruby-vips` and `image_processing` gems). Install it with `brew install vips` (macOS) or `apt-get install libvips` (Debian/Ubuntu). Without it, `bundle install` and image uploads will fail.
 
-SQLite needs no separate install — the `sqlite3` gem bundles it.
+SQLite needs no separate install — the `sqlite3` gem bundles it. `libjemalloc` is optional locally (production wires it in via the Dockerfile).
 
 ### Setup
 
