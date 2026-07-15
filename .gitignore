@@ -73,3 +73,6 @@
 # opencode CLI config (not part of this project's toolchain)
 /.opencode/
 /opencode.json
+
+# Local deploy log (reconstructed from kamal audit — not tracked)
+DEPLOY_LOG.md
