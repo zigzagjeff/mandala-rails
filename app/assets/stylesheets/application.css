@@ -11,15 +11,19 @@ body {
   font-family: var(--font-sans);
   background: var(--color-canvas);
   color: var(--color-ink);
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 /* ── Nav ── */
 .app-nav {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-sm);
+  gap: var(--space-2xs) var(--space-sm);
   padding: var(--space-xs) var(--space-md);
+  padding-top: calc(var(--space-xs) + var(--safe-top));
+  padding-right: calc(var(--space-md) + var(--safe-right));
+  padding-left: calc(var(--space-md) + var(--safe-left));
   background: var(--color-ink);
   color: var(--color-canvas);
 }
@@ -70,7 +74,8 @@ body {
 /* ── Footer ── */
 .app-footer {
   display: flex;
-  gap: var(--space-md);
+  flex-wrap: wrap;
+  gap: var(--space-2xs) var(--space-md);
   justify-content: center;
   padding: var(--space-md);
   font-size: var(--text-xs);
@@ -80,6 +85,7 @@ body {
 /* ── Charts List ── */
 .charts-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--space-sm);
   margin-bottom: var(--space-lg);
@@ -107,6 +113,7 @@ body {
 /* ── Chart Show ── */
 .chart-show-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--space-sm);
   margin-bottom: var(--space-lg);
@@ -267,19 +274,29 @@ body {
 
 .tile-drill {
   position: absolute;
-  bottom: 5px;
-  right: 8px;
+  bottom: 0;
+  right: 0;
+  min-width: var(--tap-min);
+  min-height: var(--tap-min);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 5px 8px;
   font-size: var(--text-2xs);
   color: var(--color-gray-200);
   background: none;
   border: none;
-  padding: 0;
   cursor: pointer;
   line-height: 1;
+  touch-action: manipulation;
   transition: color 0.15s;
   z-index: 1;
 }
 .tile-drill:hover { color: var(--color-ink-hover); }
+/* No hover on touch — keep the affordance legible instead of near-invisible. */
+@media (hover: none) and (pointer: coarse) {
+  .tile-drill { color: var(--color-gray-400); }
+}
 
 /* ── In-place rename ── */
 .tile-renaming {
@@ -343,9 +360,13 @@ body {
 /* ── Tile Document Page (full-page editor) ── */
 .tile-document-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-sm);
+  gap: var(--space-2xs) var(--space-sm);
   padding: var(--space-xs) var(--space-md);
+  padding-top: calc(var(--space-xs) + var(--safe-top));
+  padding-right: calc(var(--space-md) + var(--safe-right));
+  padding-left: calc(var(--space-md) + var(--safe-left));
   background: var(--color-surface);
   border-bottom: var(--border);
   position: sticky;
@@ -448,3 +469,19 @@ body {
 
 /* Inline validation errors (e.g. signup form) */
 .error-text { color: var(--color-negative); }
+
+/* ── Mobile (≤ 40rem / ~640px) ──
+ *
+ * The app's single breakpoint (documented in _global.css). Phone-sized tiles
+ * are ~110px, so reclaim space: drop the body preview and tighten padding so
+ * the title/subtitle aren't clipped. Edit responsive behaviour here — one block.
+ */
+@media (max-width: 40rem) {
+  .app-main { padding: var(--space-md) var(--space-sm); }
+
+  .tile-body-preview { display: none; }
+  .tile-title-zone { padding: var(--space-3xs); }
+  .tile-body-zone { padding: 0 var(--space-3xs) var(--space-sm); }
+
+  .tile-document-page { margin-top: var(--space-md); padding: 0 var(--space-sm) calc(4rem + var(--safe-bottom)); }
+}
