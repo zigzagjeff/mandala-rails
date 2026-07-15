@@ -51,8 +51,10 @@
   --text-sm: 0.9rem;
   --text-base: 1rem;
   --text-md: 1.1rem;
-  --text-lg: 1.5rem;
-  --text-xl: 1.8rem;
+  /* Headings scale with the viewport so they don't dominate a phone screen.
+     Body steps above stay fixed to keep small text readable. */
+  --text-lg: clamp(1.25rem, 1rem + 1.4vw, 1.5rem);
+  --text-xl: clamp(1.4rem, 1rem + 2.4vw, 1.8rem);
 
   /* ── Spacing ── */
   --space-3xs: 0.25rem;
@@ -68,4 +70,23 @@
   --radius-card: 6px;
   --radius-pill: 99px;
   --border: 1px solid var(--color-border);
+
+  /* ── Responsive ──
+   *
+   * The app has a single mobile breakpoint. CSS `@media` conditions can't read
+   * custom properties, so the value can't literally be a token — but this is
+   * its documented source of truth. Change it here and in the matching
+   * `@media (max-width: 40rem)` blocks (application.css). 40rem ≈ 640px, the
+   * same one-breakpoint model fizzy and campfire use.
+   */
+
+  /* Minimum comfortable touch target (iOS/Android guidance is ~44px). */
+  --tap-min: 44px;
+
+  /* Safe-area insets for notched phones / installed web apps. Zero on every
+   * other device. Fed by `viewport-fit=cover` in the layout head. */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
 }
