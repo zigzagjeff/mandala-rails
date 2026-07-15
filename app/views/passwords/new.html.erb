@@ -1,6 +1,16 @@
-<h1>Forgot your password?</h1>
+<% content_for :title, "Forgot your password?" %>
 
-<%= form_with url: passwords_path do |form| %>
-  <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address] %><br>
-  <%= form.submit "Email reset instructions" %>
-<% end %>
+<div class="form-wrapper">
+  <h1>Forgot your password?</h1>
+
+  <%= form_with url: passwords_path do |form| %>
+    <div class="field">
+      <%= form.label :email_address, "Email address" %>
+      <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address] %>
+    </div>
+
+    <div class="form-actions">
+      <%= form.submit "Email reset instructions", class: "button" %>
+    </div>
+  <% end %>
+</div>
