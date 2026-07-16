@@ -2,20 +2,20 @@ require "test_helper"
 
 class Api::V1::EventsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @chart = charts(:one)
+    @mandala = mandalas(:one)
     @tile = tiles(:one)
   end
 
   test "index requires authentication" do
-    get api_v1_chart_events_path(@chart)
+    get api_v1_mandala_events_path(@mandala)
     assert_response :unauthorized
   end
 
-  test "index lists the chart's events chronologically" do
+  test "index lists the mandala's events chronologically" do
     rename_tile_to "First pass"
     rename_tile_to "Second pass"
 
-    get api_v1_chart_events_path(@chart), headers: authorized_headers
+    get api_v1_mandala_events_path(@mandala), headers: authorized_headers
 
     assert_response :success
     events = response.parsed_body
@@ -32,7 +32,7 @@ class Api::V1::EventsControllerTest < ActionDispatch::IntegrationTest
     end
     rename_tile_to "Fresh"
 
-    get api_v1_chart_events_path(@chart, since: 30.minutes.ago.iso8601), headers: authorized_headers
+    get api_v1_mandala_events_path(@mandala, since: 30.minutes.ago.iso8601), headers: authorized_headers
 
     events = response.parsed_body
     assert_equal 1, events.size
@@ -40,14 +40,14 @@ class Api::V1::EventsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "a malformed since is a bad request" do
-    get api_v1_chart_events_path(@chart, since: "yesterdayish"), headers: authorized_headers
+    get api_v1_mandala_events_path(@mandala, since: "yesterdayish"), headers: authorized_headers
 
     assert_response :bad_request
     assert response.parsed_body["errors"].any?
   end
 
-  test "another user's chart is not found" do
-    get api_v1_chart_events_path(charts(:two)), headers: authorized_headers
+  test "another user's mandala is not found" do
+    get api_v1_mandala_events_path(mandalas(:two)), headers: authorized_headers
 
     assert_response :not_found
   end

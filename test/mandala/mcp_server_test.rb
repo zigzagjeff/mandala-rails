@@ -1,15 +1,15 @@
 require "test_helper"
 require_relative "../../lib/mandala/mcp_server"
 
-class Mandala::McpServerTest < ActiveSupport::TestCase
+class MandalaClient::McpServerTest < ActiveSupport::TestCase
   setup do
-    @server = Mandala::McpServer.new
+    @server = MandalaClient::McpServer.new
   end
 
   test "initialize handshake declares the tools capability" do
     response = @server.handle({ "jsonrpc" => "2.0", "id" => 1, "method" => "initialize" })
     assert_equal 1, response[:id]
-    assert_equal Mandala::McpServer::PROTOCOL_VERSION, response[:result][:protocolVersion]
+    assert_equal MandalaClient::McpServer::PROTOCOL_VERSION, response[:result][:protocolVersion]
     assert response[:result][:capabilities].key?(:tools)
     assert_equal "mandala", response[:result][:serverInfo][:name]
   end
@@ -17,7 +17,7 @@ class Mandala::McpServerTest < ActiveSupport::TestCase
   test "tools/list exposes the five tools from issue #10" do
     response = @server.handle({ "jsonrpc" => "2.0", "id" => 2, "method" => "tools/list" })
     names = response[:result][:tools].map { |tool| tool[:name] }
-    assert_equal %w[list_charts get_chart get_grid get_tile write_agentic_summary], names
+    assert_equal %w[list_mandalas get_mandala get_grid get_tile write_agentic_summary], names
   end
 
   test "notifications get no response" do

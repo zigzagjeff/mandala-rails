@@ -12,15 +12,15 @@ class DataExportsControllerTest < ActionDispatch::IntegrationTest
 
     document = JSON.parse(response.body)
     assert_equal @user.email_address, document.dig("account", "email_address")
-    assert_equal @user.charts.count, document["charts"].length
+    assert_equal @user.mandalas.count, document["mandalas"].length
   end
 
   test "show scopes the export to the current user" do
     get data_export_path
 
-    titles = JSON.parse(response.body)["charts"].map { |chart| chart["title"] }
-    assert_includes titles, charts(:one).title
-    assert_not_includes titles, charts(:two).title
+    titles = JSON.parse(response.body)["mandalas"].map { |mandala| mandala["title"] }
+    assert_includes titles, mandalas(:one).title
+    assert_not_includes titles, mandalas(:two).title
   end
 
   test "show requires authentication" do

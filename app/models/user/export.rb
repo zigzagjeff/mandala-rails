@@ -9,7 +9,7 @@ class User::Export
 
   private
     def document
-      { account: account, charts: charts }
+      { account: account, mandalas: mandalas }
     end
 
     def account
@@ -20,17 +20,16 @@ class User::Export
       }
     end
 
-    def charts
-      @user.charts.map { |chart| chart_document chart }
+    def mandalas
+      @user.mandalas.map { |mandala| mandala_document mandala }
     end
 
-    def chart_document(chart)
+    def mandala_document(mandala)
       {
-        title: chart.title,
-        mode: chart.mode,
-        created_at: chart.created_at,
-        grid: grid_document(chart.root_grid),
-        events: chart.events.chronologically.map { |event| event_document event }
+        title: mandala.title,
+        created_at: mandala.created_at,
+        grid: grid_document(mandala.root_grid),
+        events: mandala.events.chronologically.map { |event| event_document event }
       }
     end
 

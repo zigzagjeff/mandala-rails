@@ -1,8 +1,8 @@
 class GridsController < ApplicationController
-  before_action :set_chart
+  before_action :set_mandala
 
   def show
-    @grid = @chart.grids.find(params[:id])
+    @grid = @mandala.grids.find(params[:id])
     @parent_tile = @grid.parent_tile
     @tiles = @grid.tiles.with_previews.positioned
     @breadcrumb = build_breadcrumb
@@ -10,13 +10,13 @@ class GridsController < ApplicationController
 
   private
 
-  def set_chart
-    @chart = Current.user.charts.find(params[:chart_id])
+  def set_mandala
+    @mandala = Current.user.mandalas.find(params[:mandala_id])
   end
 
   def build_breadcrumb
     # 2 queries (all grids + their parent tiles) instead of 2 per depth level.
-    grids_by_id = @chart.grids.includes(:parent_tile).index_by(&:id)
+    grids_by_id = @mandala.grids.includes(:parent_tile).index_by(&:id)
 
     crumbs = []
     # The view renders @parent_tile as the final, non-linked label, so the

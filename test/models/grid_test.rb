@@ -6,14 +6,14 @@ class GridTest < ActiveSupport::TestCase
   end
 
   test "root? is false when parent_tile_id is set" do
-    chart = charts(:one)
+    mandala = mandalas(:one)
     parent_tile = tiles(:one)
-    child_grid = chart.grids.create!(parent_tile: parent_tile)
+    child_grid = mandala.grids.create!(parent_tile: parent_tile)
     assert_not child_grid.root?
   end
 
-  test "belongs to chart" do
-    assert_equal charts(:one), grids(:one).chart
+  test "belongs to mandala" do
+    assert_equal mandalas(:one), grids(:one).mandala
   end
 
   test "center_tile returns the tile at the center position" do

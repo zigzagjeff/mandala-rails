@@ -3,12 +3,12 @@ require_relative "xml"
 
 # The Unix-pipe face of API v1: one HTTP call per subcommand, nested XML
 # to stdout, errors to stderr with a non-zero exit.
-module Mandala
+module MandalaClient
   class Cli
     USAGE = <<~TEXT
       Usage: bin/mandala <command> [args]
-        charts                      list charts
-        chart <id>                  chart metadata + root grid id
+        list                        list mandalas
+        show <id>                   mandala metadata + root grid id
         grid <id>                   grid with its nine tiles (no bodies)
         tile <id>                   full tile including body
         drill <tile-id>             create or return the tile's child grid
@@ -35,8 +35,8 @@ module Mandala
 
     def perform
       case @command
-      when "charts" then Xml.charts(api.get("/api/v1/charts"))
-      when "chart" then Xml.chart(api.get("/api/v1/charts/#{id}"))
+      when "list" then Xml.mandalas(api.get("/api/v1/mandalas"))
+      when "show" then Xml.mandala(api.get("/api/v1/mandalas/#{id}"))
       when "grid" then Xml.grid(api.get("/api/v1/grids/#{id}"))
       when "tile" then Xml.tile(api.get("/api/v1/tiles/#{id}"))
       when "drill" then Xml.grid(api.post("/api/v1/tiles/#{id}/drill"))

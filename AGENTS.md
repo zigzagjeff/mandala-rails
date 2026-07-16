@@ -14,7 +14,7 @@ This is not a repo where AI quietly generated everything and a human rubber-stam
 
 ## What this is
 
-A web-based Mandala Chart tool. The Mandala Chart is a 9-square planning framework rooted in Miller's Law (7 ± 2). Users create charts, fill tiles, and drill down into sub-grids — creating a fractal structure for planning, brainstorming, or writing.
+A web-based Mandala Chart tool. The Mandala Chart is a 9-square planning framework rooted in Miller's Law (7 ± 2). Users create mandalas, fill tiles, and drill down into sub-grids — creating a fractal structure for planning, brainstorming, or writing.
 
 Tiles are documents. Each has a `title`, `subtitle`, and `body`. The tile card surface shows title and subtitle. The body opens in a full document view with a Lexxy rich text editor. This is the product. Do not expand it into something else without an issue and a decision.
 
@@ -34,9 +34,14 @@ Current version: **0.3.0** (see [CHANGELOG.md](./CHANGELOG.md)).
 
 ### Data model
 
+A Mandala has a title and holds up to 81 tiles, organized into a root grid
+(always present) and up to 8 child grids (created lazily, one per drilled
+surrounding tile). Hierarchy: **Mandala > Grid > Tile** — three concrete nouns,
+recursion living inside `Grid`.
+
 ```
 User
-└── Chart (max 9 per user — Miller's Law)
+└── Mandala (max 9 per user — Miller's Law)
     └── Grid (root + one per drilled tile)
         └── Tile (9 per grid, positions 0–8)
 ```
@@ -45,14 +50,14 @@ Key files:
 
 | Path | Purpose |
 |---|---|
-| `app/models/chart.rb` | Chart model — belongs to user, has many grids, mode: planning/brainstorm |
+| `app/models/mandala.rb` | Mandala model — belongs to user, has many grids; seeds the root center tile from its title |
 | `app/models/grid.rb` | Grid model — root? when parent_tile_id is nil |
-| `app/models/tile.rb` | Tile model — position 0–8, TITLE_MAX_LENGTH, SUBTITLE_MAX_LENGTH constants |
-| `app/controllers/charts_controller.rb` | Chart CRUD |
+| `app/models/tile.rb` | Tile model — position 0–8, TITLE_MAX_LENGTH, SUBTITLE_MAX_LENGTH constants; center? vs. surrounding |
+| `app/controllers/mandalas_controller.rb` | Mandala CRUD |
 | `app/controllers/tiles_controller.rb` | Tile edit, update, drill |
 | `app/controllers/grids_controller.rb` | Grid show with breadcrumb |
 | `app/views/tiles/_tile.html.erb` | **Single source of truth for tile card markup** — use this partial everywhere |
-| `config/routes.rb` | Nested: charts → grids, charts → tiles (with drill member route) |
+| `config/routes.rb` | Nested: mandalas → grids, mandalas → tiles (with drill member route) |
 | `db/schema.rb` | Current schema — read this before writing migrations |
 
 ### Turbo pattern
@@ -69,29 +74,29 @@ Every `Tile` has an `agentic_summary` text column. This field is:
 
 - **Nullable** — blank until an agent populates it
 - **Agent-owned** — agents write here; users write to `title`, `subtitle`, and `body`
-- **Intended format**: XML-nested summaries reflecting the Chart → Grid → Tile hierarchy
+- **Intended format**: XML-nested summaries reflecting the Mandala → Grid → Tile hierarchy
 
 Example of intended summary format:
 
 ```xml
-<chart id="1" title="Q3 Focus">
+<mandala id="1" title="Q3 Focus">
   <grid depth="0">
-    <tile position="4" type="goal">
+    <tile position="4" heading_level="1">
       <summary>Build and ship mandala-rails MVP.</summary>
     </tile>
-    <tile position="0" type="theme">
+    <tile position="0" heading_level="2">
       <summary>Establish local dev environment for fast iteration.</summary>
       <grid depth="1">
-        <tile position="4" type="task">
+        <tile position="4" heading_level="2">
           <summary>Establish the SQLite dev database and load fixtures.</summary>
         </tile>
       </grid>
     </tile>
   </grid>
-</chart>
+</mandala>
 ```
 
-This format enables efficient context traversal without loading full `body` content. When navigating a chart, read `agentic_summary` first. Load `body` only when the task requires it.
+This format enables efficient context traversal without loading full `body` content. When navigating a mandala, read `agentic_summary` first. Load `body` only when the task requires it.
 
 ### API v1 — how agents read and write
 
@@ -101,17 +106,17 @@ The versioned JSON API (issue [#25](https://github.com/zigzagjeff/mandala-rails/
 Authorization: Bearer <api_token>
 ```
 
-The token lives on the user (`User#api_token`, `has_secure_token`). Retrieve it locally with `bin/rails runner 'print User.first.api_token'`; regenerate with `user.regenerate_api_token` if leaked. One token, one user, scoped to that user's charts. Rotate on any suspicion of a leak, and as a habit whenever you wire up a new agent integration — the blast radius of a leaked token is that one user's charts, read and write, so rotation is cheap insurance (issue [#100](https://github.com/zigzagjeff/mandala-rails/issues/100)).
+The token lives on the user (`User#api_token`, `has_secure_token`). Retrieve it locally with `bin/rails runner 'print User.first.api_token'`; regenerate with `user.regenerate_api_token` if leaked. One token, one user, scoped to that user's mandalas. Rotate on any suspicion of a leak, and as a habit whenever you wire up a new agent integration — the blast radius of a leaked token is that one user's mandalas, read and write, so rotation is cheap insurance (issue [#100](https://github.com/zigzagjeff/mandala-rails/issues/100)).
 
-Requests are rate-limited (issue [#89](https://github.com/zigzagjeff/mandala-rails/issues/89)): **60 requests/minute per token**, with a wider 120/minute per-address backstop against token guessing. Exceeding either returns `429` with `{ "error": "Too many requests" }`. Budget accordingly when polling `?since=` or traversing large charts — the traversal model below exists so you rarely need more.
+Requests are rate-limited (issue [#89](https://github.com/zigzagjeff/mandala-rails/issues/89)): **60 requests/minute per token**, with a wider 120/minute per-address backstop against token guessing. Exceeding either returns `429` with `{ "error": "Too many requests" }`. Budget accordingly when polling `?since=` or traversing large mandalas — the traversal model below exists so you rarely need more.
 
 The traversal model: read summaries first, load a body only when the task demands it.
 
 | Verb + path | Returns |
 |---|---|
-| `GET /api/v1/charts` | the user's charts |
-| `GET /api/v1/charts/:id` | chart metadata + `root_grid_id` |
-| `POST /api/v1/charts` | creates a chart (born with root grid + 9 tiles) |
+| `GET /api/v1/mandalas` | the user's mandalas |
+| `GET /api/v1/mandalas/:id` | mandala metadata + `root_grid_id` |
+| `POST /api/v1/mandalas` | creates a mandala (born with root grid + 9 tiles, center titled from the mandala) |
 | `GET /api/v1/grids/:id` | grid + its 9 tiles embedded — titles, subtitles, `agentic_summary`, `heading_level`, `child_grid_id`; **no bodies** |
 | `GET /api/v1/tiles/:id` | full tile including `body` as plain text |
 | `PATCH /api/v1/tiles/:id` | writes `title`, `subtitle`, `body`, `agentic_summary` |
@@ -121,7 +126,7 @@ The traversal model: read summaries first, load a body only when the task demand
 
 Descend by following `root_grid_id` → tiles → `child_grid_id`. Errors are `{ "errors": [...] }` with 401/404/422. No deletes — the API deliberately has none.
 
-`heading_level` on every tile is derived from stored grid depth (issue [#63](https://github.com/zigzagjeff/mandala-rails/issues/63)): depth 0 center → 1 (the goal), depth 0 ring → 2 (themes), depth 1 center → 2, depth 1 ring → 3 (tasks). When assembling chart context client-side, order by depth then position — the same order the server derives in one query.
+`heading_level` on every tile is derived from stored grid depth (issue [#63](https://github.com/zigzagjeff/mandala-rails/issues/63)): depth 0 center → 1, depth 0 surrounding → 2, depth 1 center → 2, depth 1 surrounding → 3. When assembling mandala context client-side, order by depth then position — the same order the server derives in one query.
 
 ### Populating `agentic_summary` (issue #24)
 
@@ -133,15 +138,15 @@ To summarize one tile:
 4. Compose a snake_case XML slug capturing the tile's **unique contribution within its grid** — neighbors force distinctness, the parent anchors meaning. A human would write `<hiring>`; seeing the whole grid, write `<revenue_hiring_growth>Hiring three new sales reps to hit 2026 revenue targets</revenue_hiring_growth>`.
 5. `PATCH /api/v1/tiles/:id` with `{ "tile": { "agentic_summary": "<slug>…</slug>" } }`.
 
-Per-tile slugs are what is stored; the nested chart document above is what gets *assembled* from them at read time. Re-summarize a tile when its title or body changes materially; neighbors changing is usually not reason enough.
+Per-tile slugs are what is stored; the nested mandala document above is what gets *assembled* from them at read time. Re-summarize a tile when its title or body changes materially; neighbors changing is usually not reason enough.
 
 ### CLI
 
 `bin/mandala` (issue [#64](https://github.com/zigzagjeff/mandala-rails/issues/64)) is the Unix-pipe face of the same API — one HTTP call per subcommand, nested XML to stdout, errors to stderr:
 
 ```sh
-bin/mandala charts                      # list charts
-bin/mandala chart 2                     # metadata + root grid id
+bin/mandala list                        # list mandalas
+bin/mandala show 2                      # metadata + root grid id
 bin/mandala grid 15                     # nine tiles, no bodies
 bin/mandala tile 128                    # full tile including body
 bin/mandala drill 128                   # create/return the child grid
@@ -152,7 +157,7 @@ Same env vars as the MCP server; composes with `gh`, `jq`-adjacent tooling, and 
 
 ### MCP server
 
-`bin/mcp` (issue [#10](https://github.com/zigzagjeff/mandala-rails/issues/10), shipped) is a stdio MCP server exposing five tools: `list_charts`, `get_chart`, `get_grid`, `get_tile`, and `write_agentic_summary`. It is a consumption layer over API v1 — every tool is one HTTP call rendered as nested XML, no new capabilities. It boots without Rails; configure with env vars:
+`bin/mcp` (issue [#10](https://github.com/zigzagjeff/mandala-rails/issues/10), shipped) is a stdio MCP server exposing five tools: `list_mandalas`, `get_mandala`, `get_grid`, `get_tile`, and `write_agentic_summary`. It is a consumption layer over API v1 — every tool is one HTTP call rendered as nested XML, no new capabilities. It boots without Rails; configure with env vars:
 
 ```sh
 claude mcp add mandala \

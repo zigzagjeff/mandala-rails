@@ -2,8 +2,7 @@ require "test_helper"
 
 class TileTest < ActiveSupport::TestCase
   setup do
-    @user = users(:one)
-    @chart = charts(:one)
+    @mandala = mandalas(:one)
     @grid = grids(:one)
   end
 
@@ -41,18 +40,18 @@ class TileTest < ActiveSupport::TestCase
 
   # --- title_placeholder ---
 
-  test "title_placeholder invites a goal on the root center tile" do
+  test "title_placeholder names the center on the root center tile" do
     center = @grid.tiles.create!(position: 4)
-    assert_equal "Set your goal", center.title_placeholder
+    assert_equal "Name the center", center.title_placeholder
   end
 
-  test "title_placeholder invites a theme on root surrounding tiles" do
-    assert_equal "Add a theme", tiles(:one).title_placeholder
+  test "title_placeholder invites a tile on root surrounding tiles" do
+    assert_equal "Add a tile", tiles(:one).title_placeholder
   end
 
-  test "title_placeholder invites a task on sub-grid tiles" do
+  test "title_placeholder invites a tile on sub-grid surrounding tiles" do
     child = tiles(:one).drill
-    assert_equal "Add a task", child.tiles.find_by(position: 0).title_placeholder
+    assert_equal "Add a tile", child.tiles.find_by(position: 0).title_placeholder
   end
 
   # --- has_children? ---
@@ -94,7 +93,7 @@ class TileTest < ActiveSupport::TestCase
   test "drill does not duplicate when a child grid appears after its nil check" do
     tile = tiles(:one)
     assert_nil tile.child_grid
-    Grid.create!(chart: tile.chart, parent_tile_id: tile.id)
+    Grid.create!(mandala: tile.mandala, parent_tile_id: tile.id)
 
     tile.drill
 
@@ -103,10 +102,10 @@ class TileTest < ActiveSupport::TestCase
 
   test "the database refuses a second child grid for the same tile" do
     tile = tiles(:one)
-    Grid.create!(chart: tile.chart, parent_tile_id: tile.id)
+    Grid.create!(mandala: tile.mandala, parent_tile_id: tile.id)
 
     assert_raises ActiveRecord::RecordNotUnique do
-      Grid.create!(chart: tile.chart, parent_tile_id: tile.id)
+      Grid.create!(mandala: tile.mandala, parent_tile_id: tile.id)
     end
   end
 
@@ -139,23 +138,5 @@ class TileTest < ActiveSupport::TestCase
   test "heading_level is 3 for child grid surrounding tiles" do
     child = tiles(:one).drill
     assert_equal 3, child.tiles.find_by(position: 0).heading_level
-  end
-
-  # --- tile_type ---
-
-  test "tile_type is :goal for root grid center tile (position 4)" do
-    center = @grid.tiles.create!(position: 4)
-    assert_equal :goal, center.tile_type
-  end
-
-  test "tile_type is :theme for root grid non-center tile" do
-    assert_equal :theme, tiles(:one).tile_type
-  end
-
-  test "tile_type is :task for tile in a sub-grid" do
-    parent_tile = tiles(:one)
-    child_grid = parent_tile.drill
-    task_tile = child_grid.tiles.find_by(position: 0)
-    assert_equal :task, task_tile.tile_type
   end
 end

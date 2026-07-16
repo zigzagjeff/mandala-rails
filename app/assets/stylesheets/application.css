@@ -82,19 +82,19 @@ body {
   opacity: 0.6;
 }
 
-/* ── Charts List ── */
-.charts-header {
+/* ── Mandalas List ── */
+.mandalas-header {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-sm);
   margin-bottom: var(--space-lg);
 }
-.charts-header h1 { margin-right: auto; }
+.mandalas-header h1 { margin-right: auto; }
 
-.charts-list { display: flex; flex-direction: column; gap: var(--space-xs); }
+.mandalas-list { display: flex; flex-direction: column; gap: var(--space-xs); }
 
-.chart-card {
+.mandala-card {
   display: flex;
   align-items: center;
   padding: var(--space-sm) 1.25rem;
@@ -102,31 +102,30 @@ body {
   border-radius: var(--radius-card);
   border: var(--border);
 }
-.chart-card-info  { flex: 1; display: flex; flex-direction: column; gap: var(--space-3xs); }
-.chart-title      { font-weight: 600; font-size: var(--text-base); }
-.chart-goal-preview { font-size: var(--text-xs); color: var(--color-gray-600); }
-.chart-mode       { font-size: var(--text-xs); color: var(--color-gray-500); text-transform: capitalize; }
-.chart-card-actions { display: flex; gap: var(--space-2xs); }
+.mandala-card-info  { flex: 1; display: flex; flex-direction: column; gap: var(--space-3xs); }
+.mandala-title      { font-weight: 600; font-size: var(--text-base); }
+.mandala-center-preview { font-size: var(--text-xs); color: var(--color-gray-600); }
+.mandala-card-actions { display: flex; gap: var(--space-2xs); }
 
 .empty-state { color: var(--color-gray-500); font-style: italic; margin-top: var(--space-lg); }
 
-/* ── Chart Show ── */
-.chart-show-header {
+/* ── Mandala Show ── */
+.mandala-show-header {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-sm);
   margin-bottom: var(--space-lg);
 }
-.chart-show-header h1 { margin-right: auto; }
+.mandala-show-header h1 { margin-right: auto; }
 
-/* ── Chart title inline edit ── */
-.chart-show-header turbo-frame {
+/* ── Mandala title inline edit ── */
+.mandala-show-header turbo-frame {
   flex: 1;
   display: block;
 }
 
-.chart-title-editable {
+.mandala-title-editable {
   display: inline-block;
   font-size: var(--text-lg);
   font-weight: 700;
@@ -136,17 +135,17 @@ body {
   border-bottom: 2px solid transparent;
   transition: border-color 0.15s;
 }
-.chart-title-editable:hover {
+.mandala-title-editable:hover {
   border-bottom-color: var(--color-gray-200);
 }
 
-.chart-title-form {
+.mandala-title-form {
   display: flex;
   align-items: center;
   gap: var(--space-xs);
   width: 100%;
 }
-.chart-title-input {
+.mandala-title-input {
   flex: 1;
   font-size: var(--text-lg);
   font-weight: 700;
@@ -158,13 +157,6 @@ body {
   background: transparent;
   outline: none;
   min-width: 12ch;
-}
-.chart-mode-badge {
-  font-size: var(--text-xs);
-  padding: var(--space-3xs) 0.6rem;
-  background: var(--color-badge-bg);
-  border-radius: var(--radius-pill);
-  text-transform: capitalize;
 }
 
 /* ── Mandala Grid ── */
@@ -387,7 +379,7 @@ body {
   font-size: var(--text-xs);
   color: var(--color-gray-500);
 }
-.tile-document-chart-title { font-weight: 500; }
+.tile-document-mandala-title { font-weight: 500; }
 .tile-document-sep { color: var(--color-gray-200); }
 .tile-document-grid-label { color: var(--color-gray-300); }
 

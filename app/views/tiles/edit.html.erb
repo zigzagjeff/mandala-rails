@@ -3,7 +3,7 @@
 <div class="tile-document-header">
   <%= link_to "← Back", surface_path, class: "tile-document-back" %>
   <div class="tile-document-context">
-    <span class="tile-document-chart-title"><%= @chart.title %></span>
+    <span class="tile-document-mandala-title"><%= @mandala.title %></span>
     <% unless @tile.grid.root? %>
       <span class="tile-document-sep">›</span>
       <span class="tile-document-grid-label"><%= @tile.grid.parent_tile&.title %></span>
@@ -12,7 +12,7 @@
 </div>
 
 <div class="tile-document-page">
-  <%= form_with model: [@chart, @tile], class: "tile-document-form" do |f| %>
+  <%= form_with model: [@mandala, @tile], class: "tile-document-form" do |f| %>
     <div class="tile-document-title-wrap" data-controller="character-counter" data-character-counter-max-value="<%= Tile::TITLE_MAX_LENGTH %>">
       <%= f.text_field :title,
             placeholder: "Title",

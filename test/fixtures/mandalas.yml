@@ -1,9 +1,7 @@
 one:
   title: My Planning Mandala
-  mode: planning
   user: one
 
 two:
   title: My Brainstorm Mandala
-  mode: brainstorm
   user: two

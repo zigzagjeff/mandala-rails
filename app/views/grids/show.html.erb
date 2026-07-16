@@ -1,26 +1,25 @@
-<% content_for :title, @chart.title %>
+<% content_for :title, @mandala.title %>
 
-<%= turbo_stream_from @chart %>
+<%= turbo_stream_from @mandala %>
 
-<div class="chart-show-header">
+<div class="mandala-show-header">
   <div class="breadcrumb">
-    <%= link_to "← My Mandalas", charts_path %>
+    <%= link_to "← My Mandalas", mandalas_path %>
     <span class="breadcrumb-sep">›</span>
-    <%= link_to @chart.title, chart_path(@chart) %>
+    <%= link_to @mandala.title, mandala_path(@mandala) %>
     <% @breadcrumb.each do |crumb| %>
       <span class="breadcrumb-sep">›</span>
-      <%= link_to crumb[:label], chart_grid_path(@chart, crumb[:grid]) %>
+      <%= link_to crumb[:label], mandala_grid_path(@mandala, crumb[:grid]) %>
     <% end %>
     <span class="breadcrumb-sep">›</span>
     <span class="breadcrumb-current"><%= @parent_tile&.title %></span>
   </div>
-  <span class="chart-mode-badge"><%= @chart.mode %></span>
 </div>
 
 <div class="mandala-grid">
   <% @tiles.each do |tile| %>
     <turbo-frame id="tile_<%= tile.id %>">
-      <%= render "tiles/tile", tile: tile, chart: @chart %>
+      <%= render "tiles/tile", tile: tile, mandala: @mandala %>
     </turbo-frame>
   <% end %>
 </div>

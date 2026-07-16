@@ -12,12 +12,7 @@ This app is opinionated software. Tiles are documents — not containers, not la
 
 The character limits on `title` (60 chars) and `subtitle` (120 chars) are not arbitrary — they mirror Substack post and Notes card discipline. A tile is a post that hasn't been published yet.
 
-Users are limited to 9 charts. That's Miller's Law too.
-
-### Two modes
-
-- **Planning** — start with a center goal, build outward. Classic Mandala use.
-- **Brainstorm** — start with a blank outside, fill in, then ask: what belongs in the center? How are these related?
+Users are limited to 9 mandalas. That's Miller's Law too.
 
 ---
 
@@ -34,9 +29,11 @@ Users are limited to 9 charts. That's Miller's Law too.
 
 ## Data model
 
+A Mandala has a title and holds up to 81 tiles, organized into a root grid (always present) and up to 8 child grids (created lazily, one per drilled surrounding tile). The hierarchy is three concrete nouns — **Mandala > Grid > Tile** — with the recursion living inside `Grid`.
+
 ```
 User
-└── Chart (max 9 per user)
+└── Mandala (max 9 per user)
     └── Grid (root grid + one per drilled tile)
         └── Tile (9 per grid, positions 0–8)
             ├── title (string, max 60 chars)
@@ -47,11 +44,11 @@ User
             └── child_grid → Grid (fractal drill-down)
 ```
 
-The center tile is position 4. `tile_type` returns `:goal` (root grid, position 4), `:theme` (root grid, positions 0–3, 5–8), or `:task` (any sub-grid tile).
+The center tile is position 4. Every tile is either the **center** of its grid or one of the eight **surrounding** tiles — the same distinction at every depth. The root center is seeded from the Mandala's title on creation, then edited freely.
 
 ### AI-first schema design
 
-`agentic_summary` is a first-class field, not an afterthought. When the agent pipeline is ready (see issue [#10](https://github.com/zigzagjeff/mandala-rails/issues/10)), agents will write summaries here. Summaries are intended to be nested in XML tags reflecting the Chart → Grid → Tile hierarchy, enabling efficient context traversal without loading full body content.
+`agentic_summary` is a first-class field, not an afterthought. When the agent pipeline is ready (see issue [#10](https://github.com/zigzagjeff/mandala-rails/issues/10)), agents will write summaries here. Summaries are intended to be nested in XML tags reflecting the Mandala → Grid → Tile hierarchy, enabling efficient context traversal without loading full body content.
 
 ---
 
@@ -108,7 +105,7 @@ kamal deploy
 
 | Decision | Rationale |
 |---|---|
-| 9-chart limit per user | Miller's Law — the mind works best with 7 ± 2 chunks |
+| 9-mandala limit per user | Miller's Law — the mind works best with 7 ± 2 chunks |
 | Title: 60 chars, subtitle: 120 chars | Substack post discipline; forces clarity on the card surface |
 | Tiles are documents, not containers | External service launchers and image tiles are explicitly out of scope (see issue [#18](https://github.com/zigzagjeff/mandala-rails/issues/18)) |
 | Rails over alternatives | 37signals-adjacent methodology (Shape Up); Hotwire is the right tool for this interaction model |

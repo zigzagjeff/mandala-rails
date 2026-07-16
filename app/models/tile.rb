@@ -5,7 +5,7 @@ class Tile < ApplicationRecord
   has_one :child_grid, class_name: "Grid", foreign_key: :parent_tile_id, primary_key: :id, dependent: :destroy
   has_rich_text :body
 
-  delegate :chart, to: :grid
+  delegate :mandala, to: :grid
 
   serialize :metadata, coder: JSON
 
@@ -28,11 +28,7 @@ class Tile < ApplicationRecord
   end
 
   def title_placeholder
-    case tile_type
-    when :goal  then "Set your goal"
-    when :theme then "Add a theme"
-    else             "Add a task"
-    end
+    center? ? "Name the center" : "Add a tile"
   end
 
   def body_preview
@@ -55,18 +51,9 @@ class Tile < ApplicationRecord
     center? ? grid.depth + 1 : grid.depth + 2
   end
 
-  # Used by agent pipeline and UI to classify tiles without a stored column.
-  def tile_type
-    if grid.root?
-      center? ? :goal : :theme
-    else
-      :task
-    end
-  end
-
   private
     def create_child_grid_once
-      Grid.create_or_find_by!(chart: chart, parent_tile: self).tap do |grid|
+      Grid.create_or_find_by!(mandala: mandala, parent_tile: self).tap do |grid|
         if grid.previously_new_record?
           Event.suppressing_recording do
             grid.center_tile.update!(title: title)

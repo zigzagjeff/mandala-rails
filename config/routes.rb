@@ -21,7 +21,7 @@ Rails.application.routes.draw do
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
-  resources :charts, only: [ :index, :new, :create, :show, :edit, :update, :destroy ] do
+  resources :mandalas, only: [ :index, :new, :create, :show, :edit, :update, :destroy ] do
     resources :grids, only: [ :show ]
     resources :tiles, only: [ :edit, :update ] do
       # Priced bend of C2.13 (canon C0.3): a read-only GET rendering the
@@ -35,7 +35,7 @@ Rails.application.routes.draw do
 
   namespace :api, defaults: { format: :json } do
     namespace :v1 do
-      resources :charts, only: [ :index, :show, :create ] do
+      resources :mandalas, only: [ :index, :show, :create ] do
         resources :events, only: :index
       end
       resources :grids, only: [ :show ]
@@ -48,5 +48,5 @@ Rails.application.routes.draw do
     end
   end
 
-  root "charts#index"
+  root "mandalas#index"
 end

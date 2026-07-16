@@ -2,40 +2,40 @@ require "test_helper"
 require_relative "../../lib/mandala/mcp_server"
 
 # Real Api against stubbed sockets — the Campfire webhook_test pattern.
-class Mandala::ToolRoutesTest < ActiveSupport::TestCase
+class MandalaClient::ToolRoutesTest < ActiveSupport::TestCase
   BASE = "http://mandala.test"
   AUTH = { "Authorization" => "Bearer secret-token" }
 
   setup do
-    @server = Mandala::McpServer.new(api: Mandala::Api.new(base_url: BASE, token: "secret-token"))
+    @server = MandalaClient::McpServer.new(api: MandalaClient::Api.new(base_url: BASE, token: "secret-token"))
   end
 
-  test "list_charts GETs the charts index and renders the list" do
-    stub_request(:get, "#{BASE}/api/v1/charts").with(headers: AUTH)
-      .to_return(body: [ { id: 1, title: "OMM", mode: "planning" } ].to_json)
+  test "list_mandalas GETs the mandalas index and renders the list" do
+    stub_request(:get, "#{BASE}/api/v1/mandalas").with(headers: AUTH)
+      .to_return(body: [ { id: 1, title: "OMM" } ].to_json)
 
-    text = call_tool("list_charts")
+    text = call_tool("list_mandalas")
 
-    assert_includes text, %(<chart id="1" title="OMM" mode="planning"/>)
+    assert_includes text, %(<mandala id="1" title="OMM"/>)
   end
 
-  test "get_chart GETs the chart and renders root_grid_id" do
-    stub_request(:get, "#{BASE}/api/v1/charts/2").with(headers: AUTH)
-      .to_return(body: { id: 2, title: "Sunday", mode: "brainstorm", root_grid_id: 15 }.to_json)
+  test "get_mandala GETs the mandala and renders root_grid_id" do
+    stub_request(:get, "#{BASE}/api/v1/mandalas/2").with(headers: AUTH)
+      .to_return(body: { id: 2, title: "Sunday", root_grid_id: 15 }.to_json)
 
-    text = call_tool("get_chart", "chart_id" => 2)
+    text = call_tool("get_mandala", "mandala_id" => 2)
 
     assert_includes text, %(root_grid_id="15")
   end
 
   test "get_grid GETs the grid and nests its tiles" do
     stub_request(:get, "#{BASE}/api/v1/grids/15").with(headers: AUTH)
-      .to_return(body: { id: 15, chart_id: 2, depth: 0,
+      .to_return(body: { id: 15, mandala_id: 2, depth: 0,
                          tiles: [ { id: 128, position: 1, title: "Hello" } ] }.to_json)
 
     text = call_tool("get_grid", "grid_id" => 15)
 
-    assert_includes text, %(<grid id="15" chart_id="2" depth="0">)
+    assert_includes text, %(<grid id="15" mandala_id="2" depth="0">)
     assert_includes text, "<title>Hello</title>"
   end
 

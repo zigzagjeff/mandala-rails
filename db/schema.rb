@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_11_130000) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_15_190349) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -49,36 +49,35 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_11_130000) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "charts", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "mode"
-    t.string "title"
-    t.datetime "updated_at", null: false
-    t.bigint "user_id"
-  end
-
   create_table "events", force: :cascade do |t|
     t.string "action", null: false
-    t.integer "chart_id", null: false
     t.datetime "created_at", null: false
     t.integer "creator_id", null: false
     t.integer "eventable_id", null: false
     t.string "eventable_type", null: false
+    t.integer "mandala_id", null: false
     t.json "particulars", default: {}, null: false
     t.datetime "updated_at", null: false
-    t.index ["chart_id", "created_at"], name: "index_events_on_chart_id_and_created_at"
     t.index ["creator_id"], name: "index_events_on_creator_id"
     t.index ["eventable_type", "eventable_id"], name: "index_events_on_eventable"
+    t.index ["mandala_id", "created_at"], name: "index_events_on_mandala_id_and_created_at"
   end
 
   create_table "grids", force: :cascade do |t|
-    t.bigint "chart_id", null: false
     t.datetime "created_at", null: false
     t.integer "depth", default: 0, null: false
+    t.bigint "mandala_id", null: false
     t.bigint "parent_tile_id"
     t.datetime "updated_at", null: false
-    t.index ["chart_id"], name: "index_grids_on_chart_id"
+    t.index ["mandala_id"], name: "index_grids_on_mandala_id"
     t.index ["parent_tile_id"], name: "index_grids_on_parent_tile_id", unique: true, where: "parent_tile_id IS NOT NULL"
+  end
+
+  create_table "mandalas", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -116,9 +115,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_11_130000) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "events", "charts"
+  add_foreign_key "events", "mandalas"
   add_foreign_key "events", "users", column: "creator_id"
-  add_foreign_key "grids", "charts"
+  add_foreign_key "grids", "mandalas"
   add_foreign_key "sessions", "users"
   add_foreign_key "tiles", "grids"
 end
