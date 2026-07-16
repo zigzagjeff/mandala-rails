@@ -29,30 +29,7 @@ class MandalaTest < ActiveSupport::TestCase
   # --- root center seeding ---
 
   test "seeds the root center tile from the title on create" do
-    mandala = @user.mandalas.create!(title: "Run a marathon")
+    mandala = users(:one).mandalas.create!(title: "Run a marathon")
     assert_equal "Run a marathon", mandala.center_tile.title
-  end
-
-  # --- 9-mandala limit ---
-
-  setup do
-    @user = User.create!(email_address: "test_mandala_#{SecureRandom.hex(4)}@example.com", password: "a-secure-passphrase")
-  end
-
-  test "allows creating up to 9 mandalas" do
-    8.times { |i| @user.mandalas.create!(title: "Mandala #{i}") }
-    mandala = @user.mandalas.build(title: "Mandala 9")
-    assert mandala.valid?, "Expected 9th mandala to be valid"
-  end
-
-  test "rejects a 10th mandala" do
-    9.times { |i| @user.mandalas.create!(title: "Mandala #{i}") }
-    mandala = @user.mandalas.build(title: "Over the limit")
-    assert_not mandala.valid?
-    assert_includes mandala.errors[:base].first, "9-mandala limit"
-  end
-
-  test "LIMIT constant is 9" do
-    assert_equal 9, Mandala::LIMIT
   end
 end

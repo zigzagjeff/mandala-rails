@@ -2,15 +2,11 @@
 
 <div class="mandalas-header">
   <h1>My Mandalas</h1>
-  <% if @mandalas.size >= Mandala::LIMIT %>
-    <p class="mandala-limit-notice">9-mandala limit reached. Delete a mandala to create a new one.</p>
-  <% else %>
-    <%= link_to "New Mandala", new_mandala_path, class: "button" %>
-  <% end %>
+  <%= link_to "New Mandala", new_mandala_path, class: "button" %>
 </div>
 
 <% if @mandalas.empty? %>
-  <p class="empty-state">No mandalas yet. Create your first one.</p>
+  <p class="empty-state">No mandalas. Create one when you're ready.</p>
 <% else %>
   <div class="mandalas-list">
     <% @mandalas.each do |mandala| %>

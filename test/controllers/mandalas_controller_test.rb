@@ -30,13 +30,6 @@ class MandalasControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
   end
 
-  test "new redirects to mandalas_path when user has 9 mandalas" do
-    # @user already has 1 mandala from fixtures; create 8 more to hit the limit
-    8.times { |i| @user.mandalas.create!(title: "Mandala #{i}") }
-    get new_mandala_path
-    assert_redirected_to mandalas_path
-  end
-
   test "show maps tile zones: title renames, body writes, arrow drills" do
     mandala = mandalas(:one)
     tile = tiles(:one)

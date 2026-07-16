@@ -4,10 +4,6 @@ class MandalasController < ApplicationController
   end
 
   def new
-    if Current.user.mandalas.count >= Mandala::LIMIT
-      redirect_to mandalas_path, alert: "You've reached the 9-mandala limit. To create a new mandala, delete an existing one."
-      return
-    end
     @mandala = Mandala.new
   end
 
