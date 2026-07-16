@@ -37,18 +37,22 @@ class Mandala::StartHereTemplate
     @user = user
   end
 
+  # Seeding is silent by design, not by circumstance: suppression wraps the
+  # mandala's own creation too, so no event records even when a Current.user is
+  # set (a console or admin path), where otherwise the seed would attribute a
+  # mandala_created event to whoever happened to be acting.
   def seed
-    @user.mandalas.create!(title: TITLE).tap do |mandala|
-      fill_surrounding_tiles mandala.root_grid
+    Event.suppressing_recording do
+      @user.mandalas.create!(title: TITLE).tap do |mandala|
+        fill_surrounding_tiles mandala.root_grid
+      end
     end
   end
 
   private
     def fill_surrounding_tiles(grid)
-      Event.suppressing_recording do
-        SURROUNDING_TILES.each do |position, content|
-          grid.tiles.find_by!(position:).update!(content)
-        end
+      SURROUNDING_TILES.each do |position, content|
+        grid.tiles.find_by!(position:).update!(content)
       end
     end
 end

@@ -36,10 +36,10 @@ class Mandala::StartHereTemplateTest < ActiveSupport::TestCase
     end
   end
 
-  test "records no tile events while seeding" do
+  test "records no events while seeding, even with a Current user" do
     Current.user = @user
     mandala = Mandala::StartHereTemplate.seed_for(@user)
 
-    assert_empty mandala.events.where("action LIKE ?", "tile_%")
+    assert_empty mandala.events
   end
 end
