@@ -15,8 +15,8 @@ class LiveUpdatesTest < ApplicationSystemTestCase
   # session — surfaces live through turbo_stream_from's cable subscription and
   # the Event broadcast, with no reload here. This is the headline of #68 and
   # the reason the missing cable client (#124) went unnoticed.
-  test "an out-of-band tile change surfaces live on the chart" do
-    visit chart_path(charts(:one))
+  test "an out-of-band tile change surfaces live on the mandala" do
+    visit mandala_path(mandalas(:one))
     wait_for_cable_connection
     assert_text "BFP Community"
 

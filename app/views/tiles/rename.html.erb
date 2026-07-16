@@ -1,6 +1,6 @@
 <%= turbo_frame_tag @tile do %>
   <div class="mandala-tile <%= "tile-center" if @tile.center? %> tile-renaming">
-    <%= form_with model: [ @chart, @tile ], class: "tile-rename-form" do |f| %>
+    <%= form_with model: [ @mandala, @tile ], class: "tile-rename-form" do |f| %>
       <%= f.text_field :title,
             placeholder: "Title",
             autofocus: true,

@@ -1,5 +1,5 @@
 class TilesController < ApplicationController
-  before_action :set_chart
+  before_action :set_mandala
   before_action :set_tile
 
   helper_method :surface_path
@@ -20,12 +20,12 @@ class TilesController < ApplicationController
 
   private
 
-  def set_chart
-    @chart = Current.user.charts.find(params[:chart_id])
+  def set_mandala
+    @mandala = Current.user.mandalas.find(params[:mandala_id])
   end
 
   def set_tile
-    @tile = Tile.joins(:grid).find_by!(grids: { chart_id: @chart.id }, id: params[:id])
+    @tile = Tile.joins(:grid).find_by!(grids: { mandala_id: @mandala.id }, id: params[:id])
   end
 
   def tile_params
@@ -33,6 +33,6 @@ class TilesController < ApplicationController
   end
 
   def surface_path
-    @tile.grid.root? ? chart_path(@chart) : chart_grid_path(@chart, @tile.grid)
+    @tile.grid.root? ? mandala_path(@mandala) : mandala_grid_path(@mandala, @tile.grid)
   end
 end

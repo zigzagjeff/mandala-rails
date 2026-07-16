@@ -1,0 +1,18 @@
+<% content_for :title, @mandala.title %>
+
+<%= turbo_stream_from @mandala %>
+
+<div class="mandala-show-header">
+  <%= link_to "← My Mandalas", mandalas_path %>
+  <turbo-frame id="mandala-title">
+    <%= link_to @mandala.title, edit_mandala_path(@mandala), class: "mandala-title-editable" %>
+  </turbo-frame>
+</div>
+
+<div class="mandala-grid">
+  <% @tiles.each do |tile| %>
+    <turbo-frame id="tile_<%= tile.id %>">
+      <%= render "tiles/tile", tile: tile, mandala: @mandala %>
+    </turbo-frame>
+  <% end %>
+</div>

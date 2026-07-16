@@ -1,7 +1,7 @@
 <div class="mandala-tile <%= "tile-center" if tile.center? %> <%= "tile-has-children" if tile.has_children? %>">
-  <%= link_to tile.title.presence || tile.title_placeholder, rename_chart_tile_path(chart, tile),
+  <%= link_to tile.title.presence || tile.title_placeholder, rename_mandala_tile_path(mandala, tile),
         class: [ "tile-title", "tile-title-zone", "tile-title--placeholder": tile.title.blank? ], title: "Rename" %>
-  <%= link_to edit_chart_tile_path(chart, tile),
+  <%= link_to edit_mandala_tile_path(mandala, tile),
         class: "tile-body-zone", data: { turbo_frame: "_top" }, title: "Write" do %>
     <% if tile.subtitle.present? %>
       <span class="tile-subtitle"><%= tile.subtitle %></span>
@@ -11,7 +11,7 @@
     <% end %>
   <% end %>
   <% if tile.drillable? %>
-    <%= button_to "▶", chart_tile_drill_path(chart, tile),
+    <%= button_to "▶", mandala_tile_drill_path(mandala, tile),
           class: "tile-drill", form: { data: { turbo_frame: "_top" } }, title: "Open sub-grid" %>
   <% end %>
 </div>

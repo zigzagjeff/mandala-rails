@@ -6,4 +6,4 @@
 
 require_relative "../lib/mandala/mcp_server"
 
-Mandala::McpServer.new.run
+MandalaClient::McpServer.new.run

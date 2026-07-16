@@ -5,9 +5,9 @@ module Eventable
     has_many :events, as: :eventable, dependent: :destroy
   end
 
-  def track_event(action, creator: Current.user, chart: self.chart, **particulars)
+  def track_event(action, creator: Current.user, mandala: self.mandala, **particulars)
     if should_track_event?
-      chart.events.create!(action: "#{eventable_prefix}_#{action}", creator:, eventable: self, particulars:)
+      mandala.events.create!(action: "#{eventable_prefix}_#{action}", creator:, eventable: self, particulars:)
     end
   end
 

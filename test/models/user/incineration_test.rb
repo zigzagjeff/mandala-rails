@@ -4,10 +4,10 @@ class User::IncinerationTest < ActiveSupport::TestCase
   setup { @user = users(:one) }
 
   test "run destroys a due, closed user and cascades to their whole tree" do
-    chart_ids = @user.charts.pluck(:id)
-    grid_ids = Grid.where(chart_id: chart_ids).pluck(:id)
+    mandala_ids = @user.mandalas.pluck(:id)
+    grid_ids = Grid.where(mandala_id: mandala_ids).pluck(:id)
     tile_ids = Tile.where(grid_id: grid_ids).pluck(:id)
-    charts(:one).events.create!(action: "chart_created", creator: @user, eventable: charts(:one))
+    mandalas(:one).events.create!(action: "mandala_created", creator: @user, eventable: mandalas(:one))
 
     @user.close
     travel User::Closeable::INCINERATED_AFTER + 1.day do
@@ -15,10 +15,10 @@ class User::IncinerationTest < ActiveSupport::TestCase
     end
 
     assert_not User.exists?(@user.id)
-    assert_empty Chart.where(id: chart_ids)
+    assert_empty Mandala.where(id: mandala_ids)
     assert_empty Grid.where(id: grid_ids)
     assert_empty Tile.where(id: tile_ids)
-    assert_empty Event.where(chart_id: chart_ids)
+    assert_empty Event.where(mandala_id: mandala_ids)
   end
 
   test "possible? is false before the grace period elapses" do

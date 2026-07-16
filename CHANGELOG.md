@@ -8,6 +8,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+- Renamed `Chart` → `Mandala` end-to-end (issue #138, product-canon ruling R2) — model and table (`charts` → `mandalas`), routes and `MandalasController`, the `api/v1` surface (`GET/POST /api/v1/mandalas`, grid `mandala_id`), the `bin/mandala` CLI (`list` / `show <id>` subcommands, replacing the stuttering `bin/mandala mandala <id>`), the MCP tools (`list_mandalas` / `get_mandala`), the `lib/mandala` module (now `MandalaClient`, freeing the bare `Mandala` constant for the model), and the docs. The titled user-created document *is* the Mandala; `Grid` and `Tile` are unchanged. This is a breaking change to the (pre-public, no external consumers) v1 API and MCP tool names — no deprecation aliases
+- The root grid's center tile is now seeded from the Mandala's title at creation (previously blank), mirroring how a drilled child grid's center is seeded from its parent tile — independent and user-editable afterward
+- Tile placeholder copy is now center-vs-surrounding, self-similar at every depth: a center tile reads "Name the center", every surrounding tile reads "Add a tile" (was "Set your goal" / "Add a theme" / "Add a task")
+
+### Removed
+- `Chart#mode` — the required planning/brainstorm field and its new-mandala selector are gone; no shipped 37signals product gates container creation behind a mode selector (#138). The `mandalas` table drops the `mode` column
+- `Tile#tile_type` — collapsed from three roles (goal/theme/task) to the self-similar center/surrounding distinction; its only caller was `title_placeholder`, and it was never API-serialized
+
 ### Added
 - `bin/check` gate gains a bundler-audit stage (fizzy `bin/ci` parity) — activated by the existing `bin/bundler-audit` binstub; first run surfaced three advisories (crass GHSA-wwpr-jff3-395c, json CVE-2026-54696, msgpack CVE-2026-54522), patched with conservative updates to crass 1.0.7, json 2.20.0, msgpack 1.8.3
 - Enforce 9-chart limit per user (Miller's Law) — model validation on create, controller guard in `ChartsController#new`, UI replaces "New Mandala" button with limit notice at cap; `Chart::LIMIT = 9` constant; model tests cover valid 9th chart, rejection of 10th, and constant value (closes #17)

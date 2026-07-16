@@ -4,8 +4,8 @@ class Api::V1::EventsController < Api::V1::BaseController
   end
 
   def index
-    @chart = Current.user.charts.find(params[:chart_id])
-    @events = @chart.events.since(since).chronologically
+    @mandala = Current.user.mandalas.find(params[:mandala_id])
+    @events = @mandala.events.since(since).chronologically
   end
 
   private

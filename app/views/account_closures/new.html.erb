@@ -2,7 +2,7 @@
 
 <h1>Delete your account</h1>
 
-<p>This schedules your account for permanent deletion in <%= pluralize User::Closeable::INCINERATED_AFTER.in_days.to_i, "day" %>. Your charts, grids, and tiles will be erased. You can cancel any time before then from your account settings.</p>
+<p>This schedules your account for permanent deletion in <%= pluralize User::Closeable::INCINERATED_AFTER.in_days.to_i, "day" %>. Your mandalas, grids, and tiles will be erased. You can cancel any time before then from your account settings.</p>
 
 <%= form_with url: account_closure_path do |form| %>
   <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password to confirm" %><br>

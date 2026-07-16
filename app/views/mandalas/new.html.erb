@@ -3,10 +3,10 @@
 <div class="form-wrapper">
   <h1>New Mandala</h1>
 
-  <%= form_with model: @chart do |f| %>
-    <% if @chart.errors.any? %>
+  <%= form_with model: @mandala do |f| %>
+    <% if @mandala.errors.any? %>
       <div class="form-errors">
-        <% @chart.errors.full_messages.each do |msg| %>
+        <% @mandala.errors.full_messages.each do |msg| %>
           <p><%= msg %></p>
         <% end %>
       </div>
@@ -17,14 +17,9 @@
       <%= f.text_field :title, placeholder: "What are you working on?" %>
     </div>
 
-    <div class="field">
-      <%= f.label :mode, "Mode" %>
-      <%= f.select :mode, [["Planning (inside → out)", "planning"], ["Brainstorm (outside → in)", "brainstorm"]] %>
-    </div>
-
     <div class="form-actions">
       <%= f.submit "Create Mandala", class: "button" %>
-      <%= link_to "Cancel", charts_path %>
+      <%= link_to "Cancel", mandalas_path %>
     </div>
   <% end %>
 </div>

@@ -6,7 +6,7 @@ class EventTest < ActiveSupport::TestCase
   include Turbo::Broadcastable::TestHelper
 
   setup do
-    @chart = charts(:one)
+    @mandala = mandalas(:one)
     @user = users(:one)
   end
 
@@ -14,7 +14,7 @@ class EventTest < ActiveSupport::TestCase
     latest = record_event_at 1.minute.ago
     earliest = record_event_at 1.hour.ago
 
-    assert_equal [ earliest, latest ], @chart.events.chronologically.to_a
+    assert_equal [ earliest, latest ], @mandala.events.chronologically.to_a
   end
 
   test "since returns only events strictly after the cursor" do
@@ -23,21 +23,21 @@ class EventTest < ActiveSupport::TestCase
     at_cursor = record_event_at cursor
     after_cursor = record_event_at 1.minute.ago
 
-    assert_equal [ after_cursor ], @chart.events.since(cursor).to_a
-    assert_not_includes @chart.events.since(cursor), at_cursor
+    assert_equal [ after_cursor ], @mandala.events.since(cursor).to_a
+    assert_not_includes @mandala.events.since(cursor), at_cursor
   end
 
   test "since without a cursor returns everything" do
     event = record_event_at 1.hour.ago
 
-    assert_includes @chart.events.since(nil), event
+    assert_includes @mandala.events.since(nil), event
   end
 
-  test "recording an event broadcasts a refresh to the chart" do
+  test "recording an event broadcasts a refresh to the mandala" do
     Current.user = @user
 
     perform_enqueued_jobs do
-      assert_turbo_stream_broadcasts @chart, count: 1 do
+      assert_turbo_stream_broadcasts @mandala, count: 1 do
         tiles(:one).update!(title: "Live update")
       end
     end
@@ -47,7 +47,7 @@ class EventTest < ActiveSupport::TestCase
     Current.user = @user
 
     perform_enqueued_jobs do
-      assert_no_turbo_stream_broadcasts @chart do
+      assert_no_turbo_stream_broadcasts @mandala do
         Event.suppressing_recording { tiles(:one).update!(title: "Quiet update") }
       end
     end
@@ -70,7 +70,7 @@ class EventTest < ActiveSupport::TestCase
 
   def record_event_at(time)
     travel_to time do
-      @chart.events.create!(creator: @user, eventable: @chart, action: "chart_created")
+      @mandala.events.create!(creator: @user, eventable: @mandala, action: "mandala_created")
     end
   end
 end

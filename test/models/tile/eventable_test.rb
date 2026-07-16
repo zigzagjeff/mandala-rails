@@ -13,7 +13,7 @@ class Tile::EventableTest < ActiveSupport::TestCase
     assert_equal "tile_title_changed", event.action
     assert_equal "BFP Community", event.particulars["old_title"]
     assert_equal "Community Garden", event.particulars["new_title"]
-    assert_equal @tile.chart, event.chart
+    assert_equal @tile.mandala, event.mandala
   end
 
   test "changing the subtitle records the old and new subtitles" do
@@ -72,7 +72,7 @@ class Tile::EventableTest < ActiveSupport::TestCase
 
   test "losing the drill race records nothing" do
     assert_nil @tile.child_grid
-    Grid.create!(chart: @tile.chart, parent_tile_id: @tile.id)
+    Grid.create!(mandala: @tile.mandala, parent_tile_id: @tile.id)
 
     assert_no_difference "Event.count" do
       @tile.drill

@@ -3,20 +3,20 @@ require "cgi"
 # Renders API v1 payloads as the nested XML that agents consume.
 # All text is escaped, agentic_summary included: a summary is a leaf
 # text node here, even though its content is itself XML-shaped.
-module Mandala
+module MandalaClient
   module Xml
     module_function
 
-    def charts(list)
-      [ "<charts>", *list.map { |c| indent(chart(c)) }, "</charts>" ].join("\n")
+    def mandalas(list)
+      [ "<mandalas>", *list.map { |m| indent(mandala(m)) }, "</mandalas>" ].join("\n")
     end
 
-    def chart(chart)
-      "<chart #{attributes(id: chart["id"], title: chart["title"], mode: chart["mode"], root_grid_id: chart["root_grid_id"])}/>"
+    def mandala(mandala)
+      "<mandala #{attributes(id: mandala["id"], title: mandala["title"], root_grid_id: mandala["root_grid_id"])}/>"
     end
 
     def grid(grid)
-      opening = "<grid #{attributes(id: grid["id"], chart_id: grid["chart_id"], depth: grid["depth"], parent_tile_id: grid["parent_tile_id"])}>"
+      opening = "<grid #{attributes(id: grid["id"], mandala_id: grid["mandala_id"], depth: grid["depth"], parent_tile_id: grid["parent_tile_id"])}>"
       [ opening, *grid["tiles"].map { |t| indent(tile(t)) }, "</grid>" ].join("\n")
     end
 

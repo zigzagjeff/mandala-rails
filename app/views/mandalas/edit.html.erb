@@ -1,0 +1,15 @@
+<% content_for :title, @mandala.title %>
+
+<div class="mandala-show-header">
+  <%= link_to "← My Mandalas", mandalas_path %>
+  <turbo-frame id="mandala-title">
+    <%= form_with model: @mandala, class: "mandala-title-form" do |f| %>
+      <%= f.text_field :title,
+            autofocus: true,
+            class: "mandala-title-input",
+            placeholder: "Mandala title" %>
+      <%= f.submit "Save", class: "button button-small" %>
+      <%= link_to "Cancel", mandala_path(@mandala), class: "tile-edit-cancel" %>
+    <% end %>
+  </turbo-frame>
+</div>

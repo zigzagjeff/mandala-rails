@@ -1,5 +1,5 @@
 class Grid < ApplicationRecord
-  belongs_to :chart
+  belongs_to :mandala
   belongs_to :parent_tile, class_name: "Tile", optional: true
   has_many :tiles, dependent: :destroy
 

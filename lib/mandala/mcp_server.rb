@@ -6,17 +6,17 @@ require_relative "xml"
 # over API v1 — every tool is one HTTP call rendered as XML. The
 # protocol surface is hand-rolled on purpose: five tools do not earn
 # a gem dependency, and the framing below is the whole of it.
-module Mandala
+module MandalaClient
   class McpServer
     PROTOCOL_VERSION = "2024-11-05"
 
     TOOLS = [
-      { name: "list_charts",
-        description: "List the user's mandala charts.",
+      { name: "list_mandalas",
+        description: "List the user's mandalas.",
         inputSchema: { type: "object", properties: {}, required: [] } },
-      { name: "get_chart",
-        description: "Chart metadata plus its root_grid_id — the entry point for traversal.",
-        inputSchema: { type: "object", properties: { chart_id: { type: "integer" } }, required: [ "chart_id" ] } },
+      { name: "get_mandala",
+        description: "Mandala metadata plus its root_grid_id — the entry point for traversal.",
+        inputSchema: { type: "object", properties: { mandala_id: { type: "integer" } }, required: [ "mandala_id" ] } },
       { name: "get_grid",
         description: "A grid with its nine tiles: titles, agentic summaries, heading levels, child grid ids. No bodies — read those per tile.",
         inputSchema: { type: "object", properties: { grid_id: { type: "integer" } }, required: [ "grid_id" ] } },
@@ -64,8 +64,8 @@ module Mandala
     def call_tool(name, args)
       text =
         case name
-        when "list_charts" then Xml.charts(api.get("/api/v1/charts"))
-        when "get_chart" then Xml.chart(api.get("/api/v1/charts/#{args.fetch("chart_id")}"))
+        when "list_mandalas" then Xml.mandalas(api.get("/api/v1/mandalas"))
+        when "get_mandala" then Xml.mandala(api.get("/api/v1/mandalas/#{args.fetch("mandala_id")}"))
         when "get_grid" then Xml.grid(api.get("/api/v1/grids/#{args.fetch("grid_id")}"))
         when "get_tile" then Xml.tile(api.get("/api/v1/tiles/#{args.fetch("tile_id")}"))
         when "write_agentic_summary"

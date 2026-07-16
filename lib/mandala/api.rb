@@ -1,7 +1,7 @@
 require "net/http"
 require "json"
 
-module Mandala
+module MandalaClient
   class Api
     Error = Class.new(StandardError)
 
