@@ -4,6 +4,8 @@ Grid.destroy_all
 Mandala.destroy_all
 User.destroy_all
 
+# User#after_create seeds the Start Here onboarding mandala, so this user opens
+# with three mandalas: Start Here plus the two demo mandalas below.
 user = User.create!(
   email_address: "jeff@example.com",
   password: "password1234",
@@ -22,5 +24,5 @@ brainstorm = Mandala.create!(title: "Brainstorm", user: user)
   brainstorm.root_grid.tiles.find_by(position: position).update!(title: title)
 end
 
-puts "Seeded: 1 user, 2 mandalas, 2 grids, 18 tiles"
+puts "Seeded: 1 user, 3 mandalas (Start Here + 2 demo), 3 grids, 27 tiles"
 puts "Login: jeff@example.com / password1234"
