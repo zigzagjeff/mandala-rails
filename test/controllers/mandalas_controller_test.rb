@@ -66,4 +66,16 @@ class MandalasControllerTest < ActionDispatch::IntegrationTest
     get mandalas_path
     assert_select ".mandala-center-preview", count: 0
   end
+
+  test "index preloads center tiles rather than querying per mandala" do
+    3.times { |i| @user.mandalas.create!(title: "Mandala #{i}") }
+
+    assert_queries_match(/FROM ["`]grids["`].* IN \(/, count: 1) do
+      assert_queries_match(/FROM ["`]tiles["`].* IN \(/, count: 1) do
+        get mandalas_path
+      end
+    end
+
+    assert_response :success
+  end
 end

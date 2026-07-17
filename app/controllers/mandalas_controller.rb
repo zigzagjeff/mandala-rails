@@ -1,6 +1,6 @@
 class MandalasController < ApplicationController
   def index
-    @mandalas = Current.user.mandalas.order(created_at: :desc)
+    @mandalas = Current.user.mandalas.order(created_at: :desc).includes(root_grid: :center_tile)
   end
 
   def new
