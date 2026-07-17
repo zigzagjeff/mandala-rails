@@ -6,3 +6,10 @@ inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 # # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
 # Layout/SpaceInsideArrayLiteralBrackets:
 #   Enabled: false
+
+# Rails generates these; the schema dumper's style is not ours to argue with.
+# Matches fizzy-main/.rubocop.yml, widened to the Solid schemas Rails 8 ships.
+AllCops:
+  Exclude:
+    - 'db/migrate/**/*'
+    - 'db/*schema*.rb'
