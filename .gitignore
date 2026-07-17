@@ -54,6 +54,7 @@
 
 # Local working notes, not for publication.
 /resources/
+/.security-reports/
 
 # Ignore personal, machine-specific Claude Code config...
 .claude/*
