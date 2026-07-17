@@ -18,7 +18,7 @@ A web-based Mandala Chart tool. The Mandala Chart is a 9-square planning framewo
 
 Tiles are documents. Each has a `title`, `subtitle`, and `body`. The tile card surface shows title and subtitle. The body opens in a full document view with a Lexxy rich text editor. This is the product. Do not expand it into something else without an issue and a decision.
 
-Current version: **0.3.0** (see [CHANGELOG.md](./CHANGELOG.md)).
+For the current version and what has shipped, see [CHANGELOG.md](./CHANGELOG.md) — the source of truth. (This file used to pin a version number here; it drifted, so it now points at the changelog instead.)
 
 ---
 
@@ -52,7 +52,7 @@ Key files:
 |---|---|
 | `app/models/mandala.rb` | Mandala model — belongs to user, has many grids; seeds the root center tile from its title |
 | `app/models/grid.rb` | Grid model — root? when parent_tile_id is nil |
-| `app/models/tile.rb` | Tile model — position 0–8, TITLE_MAX_LENGTH, SUBTITLE_MAX_LENGTH constants; center? vs. surrounding |
+| `app/models/tile.rb` | Tile model — position 0–8, TITLE_MAX_LENGTH, SUBTITLE_MAX_LENGTH constants; center? vs. surrounding. Also has a JSON-serialized `metadata` column (`serialize :metadata`) that is present but currently unused by any product surface — don't repurpose it silently |
 | `app/controllers/mandalas_controller.rb` | Mandala CRUD |
 | `app/controllers/tiles_controller.rb` | Tile edit, update, drill |
 | `app/controllers/grids_controller.rb` | Grid show with breadcrumb |
@@ -121,12 +121,25 @@ The traversal model: read summaries first, load a body only when the task demand
 | `GET /api/v1/tiles/:id` | full tile including `body` as plain text |
 | `PATCH /api/v1/tiles/:id` | writes `title`, `subtitle`, `body`, `agentic_summary` |
 | `POST /api/v1/tiles/:id/drill` | creates/returns the tile's child grid |
+| `GET /api/v1/mandalas/:id/events?since=` | the mandala's event log, chronological; `since` (ISO8601) is the incremental cursor (issues [#67](https://github.com/zigzagjeff/mandala-rails/issues/67), [#68](https://github.com/zigzagjeff/mandala-rails/issues/68)) |
 
 `drill` is a priced bend of C2.13 (canon C0.3): the CRUD-conforming shape would be `POST /api/v1/tiles/:id/grid` (create-or-return the child grid), but `drill` is the domain verb (C4.1) and reads clearer to agent consumers than a nested `grid` resource. It stays as the published v1 contract; a conforming alias would only be added if an external consumer needed it (issue [#65](https://github.com/zigzagjeff/mandala-rails/issues/65)).
 
 Descend by following `root_grid_id` → tiles → `child_grid_id`. Errors are `{ "errors": [...] }` with 401/404/422. No deletes — the API deliberately has none.
 
 `heading_level` on every tile is derived from stored grid depth (issue [#63](https://github.com/zigzagjeff/mandala-rails/issues/63)): depth 0 center → 1, depth 0 surrounding → 2, depth 1 center → 2, depth 1 surrounding → 3. When assembling mandala context client-side, order by depth then position — the same order the server derives in one query.
+
+### Events and live broadcasts
+
+Mutations record polymorphic `Event` rows (`app/models/event.rb`,
+`Eventable` concern) — title/subtitle/body changes, summarization, drills.
+Agents read them incrementally via `GET /api/v1/mandalas/:id/events?since=`
+(above); a human-facing activity view is backlogged, not built (#151/#79).
+Every event also fires `broadcast_refresh_later_to mandala` (#68), so an open
+mandala show page updates live when an agent writes. Both surfaces are
+un-tuned for heavy agent load by design — the per-event full-mandala refresh
+and the unbounded no-`since` read are tracked in #150 (agentic pre-flight
+hardening), deferred until agents produce real production load.
 
 ### Populating `agentic_summary` (issue #24)
 
