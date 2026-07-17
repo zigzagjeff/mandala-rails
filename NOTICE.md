@@ -7,7 +7,10 @@ direct adaptation of Fizzy source, included here per condition 1 of
 Fizzy's O'Saasy License:
 
 - `app/models/concerns/eventable.rb` — adapted from Fizzy's
-  `app/models/concerns/eventable.rb` (domain renamed from board to chart).
+  `app/models/concerns/eventable.rb`. The polymorphic `events` association,
+  the `track_event` shape, and `eventable_prefix` are Fizzy's; the domain is
+  renamed from board to mandala, and the recording guard
+  (`should_track_event?`) is Mandala's own.
 
 Fizzy's design conventions also informed several other files
 (authentication, session, and export patterns), but those were rebuilt for

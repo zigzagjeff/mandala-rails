@@ -12,8 +12,6 @@ This app is opinionated software. Tiles are documents — not containers, not la
 
 The character limits on `title` (60 chars) and `subtitle` (120 chars) are not arbitrary — they mirror Substack post and Notes card discipline. A tile is a post that hasn't been published yet.
 
-Users are limited to 9 mandalas. That's Miller's Law too.
-
 ---
 
 ## Architecture
@@ -33,7 +31,7 @@ A Mandala has a title and holds up to 81 tiles, organized into a root grid (alwa
 
 ```
 User
-└── Mandala (max 9 per user)
+└── Mandala
     └── Grid (root grid + one per drilled tile)
         └── Tile (9 per grid, positions 0–8)
             ├── title (string, max 60 chars)
@@ -48,7 +46,7 @@ The center tile is position 4. Every tile is either the **center** of its grid o
 
 ### AI-first schema design
 
-`agentic_summary` is a first-class field, not an afterthought. When the agent pipeline is ready (see issue [#10](https://github.com/zigzagjeff/mandala-rails/issues/10)), agents will write summaries here. Summaries are intended to be nested in XML tags reflecting the Mandala → Grid → Tile hierarchy, enabling efficient context traversal without loading full body content.
+`agentic_summary` is a first-class field, not an afterthought. Agents write summaries here through the MCP server and API v1 (see [AGENTS.md](./AGENTS.md)). Summaries nest in XML tags reflecting the Mandala → Grid → Tile hierarchy, enabling efficient context traversal without loading full body content.
 
 ---
 
@@ -85,7 +83,7 @@ App runs at `http://localhost:3000`.
 
 | Variable | Purpose |
 |---|---|
-| `RAILS_MASTER_KEY` | Credentials decryption key — get from project owner |
+| `RAILS_MASTER_KEY` | Decrypts `config/credentials.yml.enc`. A fresh public clone does **not** include the key, and doesn't need it — regenerate your own credentials with `rm config/credentials.yml.enc && bin/rails credentials:edit`. |
 
 The database is file-based SQLite (`storage/*.sqlite3`), configured in `config/database.yml`. No `DATABASE_URL` or external database in any environment.
 
@@ -105,22 +103,11 @@ kamal deploy
 
 | Decision | Rationale |
 |---|---|
-| 9-mandala limit per user | Miller's Law — the mind works best with 7 ± 2 chunks |
+| The 3×3 grid, not a document count | Miller's Law governs the grid (7 ± 2 tiles in view), not how many mandalas you keep — a cap on your own documents was tried and dropped |
 | Title: 60 chars, subtitle: 120 chars | Substack post discipline; forces clarity on the card surface |
 | Tiles are documents, not containers | External service launchers and image tiles are explicitly out of scope (see issue [#18](https://github.com/zigzagjeff/mandala-rails/issues/18)) |
 | Rails over alternatives | 37signals-adjacent methodology (Shape Up); Hotwire is the right tool for this interaction model |
 | AI-first schema | `agentic_summary` is a schema-level commitment, not a retrofit |
-
----
-
-## Open issues
-
-See [GitHub Issues](https://github.com/zigzagjeff/mandala-rails/issues) for the full list. Key open items:
-
-- [#7](https://github.com/zigzagjeff/mandala-rails/issues/7) — Tile card partial (single source of truth for tile markup)
-- [#10](https://github.com/zigzagjeff/mandala-rails/issues/10) — MCP server for AI agent access
-- [#13](https://github.com/zigzagjeff/mandala-rails/issues/13) — Drag and drop tile reordering
-- [#17](https://github.com/zigzagjeff/mandala-rails/issues/17) — Enforce 9-chart limit
 
 ---
 
