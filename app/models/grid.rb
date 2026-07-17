@@ -2,6 +2,7 @@ class Grid < ApplicationRecord
   belongs_to :mandala
   belongs_to :parent_tile, class_name: "Tile", optional: true
   has_many :tiles, dependent: :destroy
+  has_one :center_tile, -> { where(position: Tile::CENTER_POSITION) }, class_name: "Tile"
 
   POSITIONS = (0..8)
 
@@ -10,10 +11,6 @@ class Grid < ApplicationRecord
 
   def root?
     parent_tile_id.nil?
-  end
-
-  def center_tile
-    tiles.find_by(position: Tile::CENTER_POSITION)
   end
 
   private

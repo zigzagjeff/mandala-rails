@@ -3,18 +3,13 @@ class Mandala < ApplicationRecord
 
   belongs_to :user
   has_many :grids, dependent: :destroy
+  has_one :root_grid, -> { where(parent_tile_id: nil) }, class_name: "Grid"
+
+  delegate :center_tile, to: :root_grid
 
   validates :title, presence: true
 
   after_create :seed_root_grid
-
-  def root_grid
-    grids.find_by(parent_tile_id: nil)
-  end
-
-  def center_tile
-    root_grid.center_tile
-  end
 
   private
 
