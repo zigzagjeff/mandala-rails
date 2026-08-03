@@ -197,19 +197,74 @@ body {
 .breadcrumb-sep     { color: var(--color-gray-300); }
 .breadcrumb-current { font-weight: 600; }
 
-/* ── Tile zones: title renames, body writes, arrow drills ── */
+/* ── Tile zones: centre title renames, centre area writes, ring drills ──
+ *
+ * Three targets stacked over one square, as siblings rather than nested
+ * because an anchor cannot contain another anchor: the drill ring underneath
+ * (painting order bottom-up matches DOM order), the write zone over it, the
+ * title on top. The ring is the tile's own surface left showing around an
+ * inset write zone, so only .tile-drillable tiles inset it — elsewhere the
+ * write zone fills the square rather than matting a target that isn't there.
+ */
 .mandala-tile {
   position: relative;
 }
 
-.tile-title-zone {
-  display: block;
+.tile-drill {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
   width: 100%;
-  padding: var(--space-2xs) var(--space-2xs) var(--space-3xs);
+  background: none;
+  border: none;
+  border-radius: var(--radius-card);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background 0.15s;
+}
+.tile-drill:hover { background: var(--overlay-hover); }
+
+.tile-body-zone {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--color-ink);
+  transition: background 0.15s;
+}
+.tile-body-zone:hover { background: var(--overlay-hover-subtle); }
+
+/* Opaque so a ring hover stays confined to the band, and outlined so the ring
+ * reads as a target rather than as padding — it replaces a labelled arrow. */
+.tile-drillable .tile-body-zone {
+  inset: var(--tile-ring);
+  background: var(--color-surface);
+  box-shadow: 0 0 0 1px var(--color-border);
+}
+.tile-drillable .tile-body-zone:hover { background: var(--color-canvas); }
+
+/* Keep the title inside the write zone so it never straddles the ring's edge. */
+.tile-drillable .tile-title-zone {
+  max-width: calc(100% - 2 * var(--tile-ring) - var(--space-3xs));
+}
+
+.tile-title-zone {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  /* max-content, not shrink-to-fit: an absolutely positioned box sizes itself
+   * from the clamped span's intrinsic width and lands well short of the room
+   * available, truncating titles that would otherwise fit. */
+  width: max-content;
+  max-width: calc(100% - var(--space-sm));
+  padding: var(--space-3xs) var(--space-2xs);
+  border-radius: var(--radius);
   text-align: center;
   text-decoration: none;
   color: var(--color-ink);
-  min-height: 1.8rem;
 }
 .tile-title-zone:hover { background: var(--overlay-hover); }
 
@@ -219,21 +274,9 @@ body {
   font-weight: 400;
 }
 
-.tile-body-zone {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  color: var(--color-ink);
-  padding: 0 var(--space-2xs) 1.4rem;
-  text-align: center;
-  gap: var(--space-3xs);
-}
-.tile-body-zone:hover { background: var(--overlay-hover-subtle); }
-
+/* The clamp lives on this inner span, not on .tile-title-zone: absolute
+ * positioning blockifies `display`, which would silently discard
+ * -webkit-box and let long titles overflow un-ellipsised. */
 .tile-title {
   font-size: var(--text-sm);
   font-weight: 500;
@@ -244,50 +287,11 @@ body {
   overflow: hidden;
 }
 
-.tile-subtitle {
-  font-size: var(--text-xs);
-  color: var(--color-gray-500);
-  line-height: 1.2;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.tile-body-preview {
-  font-size: var(--text-xs);
-  color: var(--color-gray-300);
-  line-height: 1.2;
-  font-style: italic;
-}
-
-/* ── Drill arrow ── */
 .mandala-tile form.button_to { display: contents; }
 
-.tile-drill {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  min-width: var(--tap-min);
-  min-height: var(--tap-min);
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  padding: 5px 8px;
-  font-size: var(--text-2xs);
-  color: var(--color-gray-200);
-  background: none;
-  border: none;
-  cursor: pointer;
-  line-height: 1;
-  touch-action: manipulation;
-  transition: color 0.15s;
-  z-index: 1;
-}
-.tile-drill:hover { color: var(--color-ink-hover); }
-/* No hover on touch — keep the affordance legible instead of near-invisible. */
+/* No hover on touch — keep the ring's edge legible instead of near-invisible. */
 @media (hover: none) and (pointer: coarse) {
-  .tile-drill { color: var(--color-gray-400); }
+  .tile-drillable .tile-body-zone { box-shadow: 0 0 0 1px var(--color-gray-400); }
 }
 
 /* ── In-place rename ── */
@@ -465,15 +469,14 @@ body {
 /* ── Mobile (≤ 40rem / ~640px) ──
  *
  * The app's single breakpoint (documented in _global.css). Phone-sized tiles
- * are ~110px, so reclaim space: drop the body preview and tighten padding so
- * the title/subtitle aren't clipped. Edit responsive behaviour here — one block.
+ * are ~110px, so reclaim space: thin the drill ring and tighten the title's
+ * padding so it isn't clipped. Edit responsive behaviour here — one block.
  */
 @media (max-width: 40rem) {
   .app-main { padding: var(--space-md) var(--space-sm); }
 
-  .tile-body-preview { display: none; }
+  :root { --tile-ring: 14px; }
   .tile-title-zone { padding: var(--space-3xs); }
-  .tile-body-zone { padding: 0 var(--space-3xs) var(--space-sm); }
 
   .tile-document-page { margin-top: var(--space-md); padding: 0 var(--space-sm) calc(4rem + var(--safe-bottom)); }
 }

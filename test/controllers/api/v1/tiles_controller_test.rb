@@ -73,6 +73,16 @@ class Api::V1::TilesControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
   end
 
+  test "drill on a blank tile is rejected" do
+    blank = @tile.grid.tiles.create!(position: 0)
+
+    assert_no_difference "Grid.count" do
+      post drill_api_v1_tile_path(blank), headers: authorized_headers
+    end
+
+    assert_response :unprocessable_entity
+  end
+
   test "tiles of another user are not reachable" do
     get api_v1_tile_path(tiles(:two)), headers: authorized_headers
     assert_response :not_found

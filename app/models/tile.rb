@@ -12,7 +12,6 @@ class Tile < ApplicationRecord
   CENTER_POSITION = 4
   TITLE_MAX_LENGTH = 60
   SUBTITLE_MAX_LENGTH = 120
-  BODY_PREVIEW_LENGTH = 80
 
   validates :position, presence: true,
                        inclusion: { in: Grid::POSITIONS },
@@ -21,7 +20,6 @@ class Tile < ApplicationRecord
   validates :subtitle, length: { maximum: SUBTITLE_MAX_LENGTH }, allow_blank: true
 
   scope :positioned, -> { order(:position) }
-  scope :with_previews, -> { with_rich_text_body.includes(:child_grid) }
 
   def has_children?
     child_grid.present?
@@ -31,16 +29,12 @@ class Tile < ApplicationRecord
     center? ? "Name the center" : "Add a tile"
   end
 
-  def body_preview
-    body.to_plain_text.gsub(/\[\s?[xX]?\]/, "").squish.truncate(BODY_PREVIEW_LENGTH)
-  end
-
   def center?
     position == CENTER_POSITION
   end
 
   def drillable?
-    grid.root? && !center?
+    grid.root? && !center? && title.present?
   end
 
   def drill
