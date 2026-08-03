@@ -19,7 +19,7 @@ class MandalasController < ApplicationController
   def show
     @mandala = Current.user.mandalas.find(params[:id])
     @root_grid = @mandala.root_grid
-    @tiles = @root_grid.tiles.with_previews.positioned
+    @tiles = @root_grid.tiles.includes(:child_grid).positioned
   end
 
   def edit

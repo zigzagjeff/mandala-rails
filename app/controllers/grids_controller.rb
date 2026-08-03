@@ -4,7 +4,7 @@ class GridsController < ApplicationController
   def show
     @grid = @mandala.grids.find(params[:id])
     @parent_tile = @grid.parent_tile
-    @tiles = @grid.tiles.with_previews.positioned
+    @tiles = @grid.tiles.includes(:child_grid).positioned
     @breadcrumb = build_breadcrumb
   end
 

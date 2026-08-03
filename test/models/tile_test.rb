@@ -66,6 +66,31 @@ class TileTest < ActiveSupport::TestCase
     assert tile.reload.has_children?
   end
 
+  # --- drillable? ---
+
+  test "drillable? is true for a titled root surrounding tile" do
+    assert tiles(:one).drillable?
+  end
+
+  test "drillable? is false until the tile is named" do
+    blank = @grid.tiles.create!(position: 0)
+    assert_not blank.drillable?
+
+    blank.update!(title: "Now it has a name")
+    assert blank.drillable?
+  end
+
+  test "drillable? is false for the root center tile" do
+    center = @grid.tiles.create!(position: 4, title: "My Planning Mandala")
+    assert_not center.drillable?
+  end
+
+  test "drillable? is false in a sub-grid even when titled" do
+    sub_tile = tiles(:one).drill.tiles.find_by(position: 0)
+    sub_tile.update!(title: "Deep enough")
+    assert_not sub_tile.drillable?
+  end
+
   # --- drill ---
 
   test "drill creates a child grid with 9 tiles" do

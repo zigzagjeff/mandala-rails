@@ -14,11 +14,11 @@
       <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72 %>
     </div>
 
+    <p><strong>New here?</strong> <%= link_to "Sign up", new_registration_path %> to create an account.</p>
+
     <div class="form-actions">
       <%= form.submit "Sign in", class: "button" %>
       <%= link_to "Forgot password?", new_password_path %>
     </div>
   <% end %>
-
-  <p><%= link_to "Need an account? Sign up", new_registration_path %></p>
 </div>

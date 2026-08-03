@@ -83,6 +83,11 @@
   /* Minimum comfortable touch target (iOS/Android guidance is ~44px). */
   --tap-min: 44px;
 
+  /* Width of the drill ring around a tile's write zone. Deliberately below
+   * --tap-min: the ring is a band, not a corner button, and a 44px band would
+   * leave no centre on a ~110px phone tile. Revisit with mobile (#51). */
+  --tile-ring: 18px;
+
   /* Safe-area insets for notched phones / installed web apps. Zero on every
    * other device. Fed by `viewport-fit=cover` in the layout head. */
   --safe-top: env(safe-area-inset-top, 0px);
