@@ -17,7 +17,7 @@ class Mandala::StartHereTemplate
     },
     1 => {
       title: "How to Use It",
-      body: %q(<p>Each Mandala has a front page made up of a center tile for theme, and surrounding tiles for topics</p><p>Clicking the top of a tile will allow you to create a title for the topic. </p><p>Once you have created a topic, clicking that tile will open up a fully featured markdown text editor to say more about the topic. </p><p>Clicking ▶️ in the lower right hand corner of each tile will load a child mandala. The parent topic tile now loads into the center, and the surrounding tiles allow you to create sub topics. Clicking the sub-topic tile again opens up a text editor. </p>)
+      body: %q(<p>Each Mandala has a center tile for the theme and surrounding tiles for topics.</p><p>Click a tile's title to name it. Click the area around the title to open a full text editor and say more.</p><p>Once a tile has a title, a ring appears around its edge. Click the ring to open that topic as its own Mandala — the topic moves to the center, and the surrounding tiles become its sub-topics. Those work the same way, all the way down.</p>)
     },
     2 => {
       title: "How you can help",
