@@ -20,6 +20,7 @@ class Tile < ApplicationRecord
   validates :subtitle, length: { maximum: SUBTITLE_MAX_LENGTH }, allow_blank: true
 
   scope :positioned, -> { order(:position) }
+  scope :preloaded, -> { includes(:child_grid) }
 
   def has_children?
     child_grid.present?

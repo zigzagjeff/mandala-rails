@@ -17,7 +17,7 @@ class Mandala::StartHereTemplate
     },
     1 => {
       title: "How to Use It",
-      body: %q(<p>Each Mandala has a center tile for the theme and surrounding tiles for topics.</p><p>Click a tile's title to name it. Click the area around the title to open a full text editor and say more.</p><p>Once a tile has a title, a ring appears around its edge. Click the ring to open that topic as its own Mandala — the topic moves to the center, and the surrounding tiles become its sub-topics. Those work the same way, all the way down.</p>)
+      body: %q(<p>Each Mandala has a center tile for the theme and surrounding tiles for topics.</p><p>Click a tile's title to name it. Click the area around the title to open a full text editor and say more.</p><p>Once a surrounding tile has a title, a ring appears around its edge. Click the ring to open that topic as its own Mandala — the topic moves to the center, and the surrounding tiles become its sub-topics. You name and write sub-topics the same way, but they go only one level deep, so they have no ring.</p>)
     },
     2 => {
       title: "How you can help",
@@ -25,7 +25,7 @@ class Mandala::StartHereTemplate
     },
     3 => {
       title: "What's next?",
-      body: %q(<h3>Sidebar widgets</h3><ul><li value="1">A task editor on the left or right</li><li value="2">An AI chat on the left or right</li></ul><h3>AI</h3><ul><li value="1">This was written as an AI-first app.<ul><li value="1">The SQLite database for each mandala has an ID for each individual tile.</li><li value="2">The schema for each tile includes user facing data such as title, subtitle, and body</li><li value="3">The schema also includes an AI summary.</li><li value="4">The goal is for a background agent to interact with the user data and create a token efficient summary. </li><li value="5">Mistral will be used as the model, making this a 100% EU app. </li></ul></li><li value="2">This will allow the app to selectively load whatever depth of summaries into the context and the user to chat with the mandala.<ul><li value="1">Chat with a single page</li><li value="2">Chat with a specific grid.</li><li value="3">Chat with the entire chart.</li></ul></li></ul>)
+      body: %q(<h3>Sidebar widgets</h3><ul><li value="1">A task editor on the left or right</li><li value="2">An AI chat on the left or right</li></ul><h3>AI</h3><ul><li value="1">This was written as an AI-first app.<ul><li value="1">The SQLite database for each mandala has an ID for each individual tile.</li><li value="2">The schema for each tile includes user facing data such as title, subtitle, and body</li><li value="3">The schema also includes an AI summary.</li><li value="4">The goal is for a background agent to interact with the user data and create a token efficient summary. </li><li value="5">Mistral will be used as the model, making this a 100% EU app. </li></ul></li><li value="2">This will allow the app to selectively load whatever depth of summaries into the context and the user to chat with the mandala.<ul><li value="1">Chat with a single page</li><li value="2">Chat with a specific grid.</li><li value="3">Chat with the entire mandala.</li></ul></li></ul>)
     }
   }.freeze
 

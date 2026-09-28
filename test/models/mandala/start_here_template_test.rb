@@ -34,6 +34,14 @@ class Mandala::StartHereTemplateTest < ActiveSupport::TestCase
     assert_not_includes help.body.to_s, "There is no privacy"
   end
 
+  test "the walkthrough says sub-topics go only one level deep" do
+    mandala = Mandala::StartHereTemplate.seed_for(@user)
+    how_to = mandala.root_grid.tiles.positioned[1]
+
+    assert_includes how_to.body.to_s, "one level deep"
+    assert_not_includes how_to.body.to_s, "all the way down"
+  end
+
   test "leaves the outer tiles blank for the user to grow into" do
     mandala = Mandala::StartHereTemplate.seed_for(@user)
     tiles = mandala.root_grid.tiles.positioned
