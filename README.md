@@ -2,6 +2,8 @@
 
 A web-based Mandala Chart tool built with Ruby on Rails. Active development — not yet production-ready for general use.
 
+**Live:** [mandala.jlintelligence.net](https://mandala.jlintelligence.net)
+
 ---
 
 ## What this is
