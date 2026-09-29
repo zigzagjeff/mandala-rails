@@ -52,8 +52,8 @@ class MandalasControllerTest < ActionDispatch::IntegrationTest
     mandala.root_grid.tiles.create!(position: 4)
     mandala.root_grid.tiles.create!(position: 0)
     get mandala_path(mandala)
-    assert_select "a.tile-title--placeholder", text: "Name the center"
-    assert_select "a.tile-title--placeholder", text: "Add a tile"
+    assert_select "span.tile-title--placeholder", text: "Name the center"
+    assert_select "span.tile-title--placeholder", text: "Add a tile"
   end
 
   test "index previews each mandala's center under its title" do

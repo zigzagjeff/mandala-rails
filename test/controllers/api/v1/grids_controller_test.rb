@@ -17,6 +17,16 @@ class Api::V1::GridsControllerTest < ActionDispatch::IntegrationTest
     assert tiles.none? { |t| t.key?("body") }
   end
 
+  test "show preloads child grids rather than querying per tile" do
+    grid = tiles(:one).drill
+
+    assert_queries_match(/FROM ["`]grids["`].* IN \(/, count: 1) do
+      get api_v1_grid_path(grid), headers: authorized_headers
+    end
+
+    assert_response :success
+  end
+
   test "show cannot reach another user's grid" do
     get api_v1_grid_path(grids(:two)), headers: authorized_headers
     assert_response :not_found

@@ -21,6 +21,17 @@ class Tiles::DrillsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 1, @mandala.grids.where(parent_tile: @tile).count
   end
 
+  test "drill on a blank tile redirects back without creating a nameless sub-grid" do
+    blank = @tile.grid.tiles.create!(position: 0)
+
+    assert_no_difference "Grid.count" do
+      post mandala_tile_drill_path(@mandala, blank)
+    end
+
+    assert_redirected_to mandala_path(@mandala)
+    assert_nil blank.reload.child_grid
+  end
+
   test "drill on the center tile redirects back to the mandala" do
     center = @tile.grid.tiles.create!(position: 4)
     post mandala_tile_drill_path(@mandala, center)
