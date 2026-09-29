@@ -1,18 +1,14 @@
-<% tile_name = tile.title.presence || tile.title_placeholder %>
-<div class="mandala-tile <%= "tile-center" if tile.center? %> <%= "tile-has-children" if tile.has_children? %>">
-  <%= link_to tile_name, rename_mandala_tile_path(mandala, tile),
-        class: [ "tile-title", "tile-title-zone", "tile-title--placeholder": tile.title.blank? ], "aria-label": "Rename #{tile_name}" %>
-  <%= link_to edit_mandala_tile_path(mandala, tile),
-        class: "tile-body-zone", data: { turbo_frame: "_top" }, "aria-label": "Write #{tile_name}" do %>
-    <% if tile.subtitle.present? %>
-      <span class="tile-subtitle"><%= tile.subtitle %></span>
-    <% end %>
-    <% if tile.body.present? %>
-      <span class="tile-body-preview"><%= tile.body_preview %></span>
-    <% end %>
-  <% end %>
-  <% if tile.drillable? %>
-    <%= button_to "▶", mandala_tile_drill_path(mandala, tile),
+<% tile_name = tile.title.presence || tile.title_placeholder
+   drillable = tile.drillable? %>
+<%= tag.div class: [ "mandala-tile", { "tile-center": tile.center?, "tile-has-children": tile.has_children?, "tile-drillable": drillable } ] do %>
+  <% if drillable %>
+    <%= button_to "", mandala_tile_drill_path(mandala, tile),
           class: "tile-drill", form: { data: { turbo_frame: "_top" } }, "aria-label": "Open sub-grid for #{tile_name}" %>
   <% end %>
-</div>
+  <%= link_to "", edit_mandala_tile_path(mandala, tile),
+        class: "tile-body-zone", data: { turbo_frame: "_top" }, "aria-label": "Write #{tile_name}" %>
+  <%= link_to rename_mandala_tile_path(mandala, tile),
+        class: "tile-title-zone", "aria-label": "Rename #{tile_name}" do %>
+    <%= tag.span tile_name, class: [ "tile-title", "tile-title--placeholder": tile.title.blank? ] %>
+  <% end %>
+<% end %>
