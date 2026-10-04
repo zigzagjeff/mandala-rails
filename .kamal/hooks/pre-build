@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Images are built in CI (.github/workflows/image.yml), not here. A local build
+# would run amd64 under QEMU on the arm64 Mac and push the result over the wire.
+# Set KAMAL_LOCAL_BUILD=1 to build locally anyway.
+
+if [ "$KAMAL_LOCAL_BUILD" != "1" ]; then
+  echo "Images are built in CI. Deploy with: bin/kamal deploy -P" >&2
+  echo "(Set KAMAL_LOCAL_BUILD=1 to build locally anyway.)" >&2
+  exit 1
+fi
