@@ -7,7 +7,10 @@ image: zigzagjeff/mandala-rails
 # Deploy to these servers.
 servers:
   web:
-    - 167.233.95.168
+    hosts:
+      - 62.238.103.228
+    options:
+      memory: 768m
   # job:
   #   hosts:
   #     - 192.168.0.1
@@ -20,9 +23,19 @@ servers:
 #
 # Don't use this when deploying to multiple web servers (then you have to terminate SSL at your load balancer).
 #
+# The lab box's Caddy owns 80/443 and terminates TLS, so kamal-proxy listens on
+# loopback only and Caddy reverse-proxies mandala.jlintelligence.net to it.
+# Rails still sees HTTPS through config.assume_ssl.
 proxy:
-  ssl: true
+  ssl: false
   host: mandala.jlintelligence.net
+  run:
+    http_port: 8180
+    https_port: 8543
+    bind_ips:
+      - 127.0.0.1
+    options:
+      memory: 128m
 
 # Where you keep your container images.
 registry:
@@ -90,11 +103,13 @@ volumes:
 asset_path: /rails/public/assets
 
 # Configure the image builder.
+#
+# Images are built by .github/workflows/image.yml on every push to main, so
+# deploy with `bin/kamal deploy -P` (skip build and push) from a clean checkout
+# of a commit CI has built. The pre-build hook refuses local builds: the Mac is
+# arm64 and the lab box can't spare the memory.
 builder:
   arch: amd64
-  # Build on the x86 server itself — native amd64, avoids slow QEMU emulation
-  # on the arm64 (Apple Silicon) workstation.
-  remote: ssh://root@167.233.95.168
   #
   # # Pass arguments and secrets to the Docker build process
   # args:
@@ -116,7 +131,9 @@ accessories:
   # container writes to; the web container only restores-on-boot, never replicates.
   litestream:
     image: litestream/litestream:0.5.14
-    host: 167.233.95.168
+    host: 62.238.103.228
+    options:
+      memory: 128m
     cmd: replicate -config /etc/litestream.yml
     volumes:
       - mandala_rails_storage:/rails/storage
