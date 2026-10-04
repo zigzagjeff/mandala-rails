@@ -58,17 +58,17 @@ Stop the app, remove the bad database file, redeploy. The entrypoint restores
 automatically because the file is now missing:
 
 ```sh
-kamal app stop
-ssh <box> 'docker run --rm -v mandala_rails_storage:/s alpine rm -f /s/production.sqlite3 /s/production.sqlite3-wal /s/production.sqlite3-shm'
-kamal deploy      # entrypoint: restore-if-db-not-exists → integrity_check → serve
+bin/kamal app stop
+ssh lab 'docker run --rm -v mandala_rails_storage:/s alpine rm -f /s/production.sqlite3 /s/production.sqlite3-wal /s/production.sqlite3-shm'
+bin/kamal deploy -P   # entrypoint: restore-if-db-not-exists → integrity_check → serve
 ```
 
 ### 3. Brand-new box (total loss)
-Provision the box, then:
+Provision the box, point `servers.web` in `config/deploy.yml` at it, then:
 
 ```sh
-kamal setup                       # web container restores from Scaleway on first boot
-kamal accessory boot litestream   # start the replicator against the restored db
+bin/kamal setup -P                    # web container restores from Scaleway on first boot
+bin/kamal accessory boot litestream   # start the replicator against the restored db
 ```
 
 Order matters on a first-ever setup: the web container creates/restores the
@@ -78,7 +78,7 @@ the app is safe.
 
 ## Operational notes
 
-- Sidecar logs: `ssh <box> 'docker logs mandala_rails-litestream'` — healthy
+- Sidecar logs: `ssh lab 'docker logs mandala_rails-litestream'` — healthy
   output shows `replica sync` with `txid.replica == txid.db`.
 - The credentials live in gitignored files (`.kamal/.s3_*`), pulled
   into `.kamal/secrets` at deploy time; nothing secret is committed.
