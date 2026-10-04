@@ -21,7 +21,7 @@ class Mandala::StartHereTemplate
     },
     2 => {
       title: "How you can help",
-      body: %q(<p>This Mandala is yours. Everything you create here is private to your account — nobody else can see it. The app runs on a Hetzner server in Nuremberg and backs up to Scaleway in Paris, so your data stays in the EU.</p><p>Poke around. Name tiles. Write in them.</p><h2>Ideally, answer this question:</h2><blockquote><p>What's on my mind.</p></blockquote><p>If something breaks or surprises you, I would like to hear about it. What did you expect to happen that didn't? What do you wish it could do?</p>)
+      body: %q(<p>This Mandala is yours. Everything you create here is private to your account — nobody else can see it. The app runs on a Hetzner server in Helsinki and backs up to Scaleway in Paris, so your data stays in the EU.</p><p>Poke around. Name tiles. Write in them.</p><h2>Ideally, answer this question:</h2><blockquote><p>What's on my mind.</p></blockquote><p>If something breaks or surprises you, I would like to hear about it. What did you expect to happen that didn't? What do you wish it could do?</p>)
     },
     3 => {
       title: "What's next?",

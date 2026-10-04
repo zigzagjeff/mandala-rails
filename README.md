@@ -93,11 +93,17 @@ The database is file-based SQLite (`storage/*.sqlite3`), configured in `config/d
 
 ## Deployment
 
-Kamal. See `config/deploy.yml` for configuration. The production database is SQLite on a Kamal-mounted volume (`storage/`).
+Kamal, to a single Hetzner box in Helsinki. See `config/deploy.yml` for configuration. The production database is SQLite on a Kamal-mounted volume (`storage/`), replicated off-site by Litestream (see [docs/disaster-recovery.md](docs/disaster-recovery.md)).
+
+Images are built in CI, not by Kamal. Every push to `main` runs `.github/workflows/image.yml`, which builds `linux/amd64` and pushes `ghcr.io/zigzagjeff/mandala-rails:<full sha>`. A `.kamal/hooks/pre-build` hook refuses local builds: the development Mac is arm64, and the production box can't spare the memory for one.
+
+To deploy, from a clean checkout of `main`, wait for that commit's Image run to succeed, then:
 
 ```bash
-kamal deploy
+bin/kamal deploy -P
 ```
+
+`-P` skips the build and pulls the image CI pushed for the current commit. To deploy a commit CI hasn't built, pass `--version=<sha>` of one it has. To build locally anyway, set `KAMAL_LOCAL_BUILD=1`.
 
 ---
 
