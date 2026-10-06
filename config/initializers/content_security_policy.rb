@@ -12,7 +12,7 @@ Rails.application.configure do
     policy.object_src  :none
     # Lexical (Lexxy) uses the Function constructor for state serialization.
     policy.script_src  :self, :unsafe_eval
-    # Trix (Action Text) applies inline styles to editor content.
+    # Lexical (Lexxy) writes inline style attributes on editor content (indent, alignment).
     policy.style_src   :self, :unsafe_inline
     policy.connect_src :self
     policy.media_src   :self
