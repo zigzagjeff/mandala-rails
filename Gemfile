@@ -33,7 +33,7 @@ gem "kamal", require: false
 gem "thruster", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-gem "image_processing", "~> 2.0"
+gem "image_processing", "~> 2.2"
 gem "ruby-vips", "~> 2.0", require: false # image_processing's vips backend; config.active_storage.variant_processor is :vips
 
 # Store Active Storage blobs on Scaleway Object Storage (S3-compatible) in production.
