@@ -71,4 +71,4 @@ gem "importmap-rails", "~> 2.2"
 
 gem "stimulus-rails", "~> 1.3"
 
-gem "webmock", "~> 3.26", group: :test
+gem "webmock", "~> 3.34", group: :test
